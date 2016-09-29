@@ -1,0 +1,5 @@
+{
+  "name":"Meow!",
+  "description":"This could also be a js file",
+  "otherstuff":"It is passed to marko files on compilation at build time"
+}

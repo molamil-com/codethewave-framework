@@ -1,0 +1,22 @@
+<svg id="PS_graphic_phone" xmlns="http://www.w3.org/2000/svg" width="73" height="133" viewBox="0 0 73 133">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: none;
+        stroke: #fff;
+      }
+
+      .cls-1 {
+        stroke-width: 3px;
+      }
+
+      .cls-2 {
+        stroke-width: 1px;
+        fill-rule: evenodd;
+        opacity: 0.5;
+      }
+    </style>
+  </defs>
+  <rect id="line_3px" data-name="line 3px" class="cls-1" x="1.5" y="1.5" width="70" height="130" rx="8" ry="8"/>
+  <path id="line_1px" data-name="line 1px" class="cls-2" d="M1217,2256h54v92h-54v-92Zm23.5-8h7a1.5,1.5,0,0,1,0,3h-7A1.5,1.5,0,0,1,1240.5,2248Zm3.5,105a5,5,0,1,1-5,5A5,5,0,0,1,1244,2353Z" transform="translate(-1207.5 -2239.5)"/>
+</svg>

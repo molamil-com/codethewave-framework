@@ -1,0 +1,39 @@
+
+
+
+
+
+	Trouble (2 ex Hello Monday guys)- Design Agency (B&O Play) + Pop group
+
+		Prototype: Jorge, Staus, Patrik
+	
+		Target: 15 years olds
+	
+		Result: Different video based on user interaction
+	
+	
+	CHALLENGE:
+	
+		- iPhone, iPad, Chrome, Android.
+		
+		- Video on IOS? inline video in IOS-10
+		
+	
+	FRAMEWORK FOR CONTRIBUTORS
+	
+		- Artists can create their own
+	
+	
+	INTERACTIVE MUSIC VIDEO (1 song)
+	
+		
+		Layers:
+		
+			- Background (maybe could be also interactive)
+		
+			- Interactive layer
+		
+			- Alpha video
+
+
+

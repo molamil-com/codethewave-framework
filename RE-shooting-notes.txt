@@ -1,0 +1,21 @@
+
+
+    Video:
+
+
+        - Mobile force to landscape mode
+
+        - Video: scale to full height and adapt width based on that with will follow
+
+    Framework:
+
+        - Color palettes suggestions
+
+        - Setup 4-6 patterns
+
+        - Setup graphics elements (separate elements from patters to be able re-mix)
+
+
+
+
+

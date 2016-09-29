@@ -1,0 +1,225 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>RE3</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="./js/pixi.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="sp-framework.js"></script><script>
+
+
+        function Point(x, y){
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Point.prototype.x = null;
+        Point.prototype.y = null;
+        Point.prototype.add = function(v){
+            return new Point(this.x + v.x, this.y + v.y);
+        };
+        Point.prototype.clone = function(){
+            return new Point(this.x, this.y);
+        };
+        Point.prototype.degreesTo = function(v){
+            var dx = this.x - v.x;
+            var dy = this.y - v.y;
+            var angle = Math.atan2(dy, dx); // radians
+            return angle * (180 / Math.PI); // degrees
+        };
+        Point.prototype.distance = function(v){
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Point.prototype.equals = function(toCompare){
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Point.prototype.interpolate = function(v, f){
+            return new Point((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Point.prototype.length = function(){
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Point.prototype.normalize = function(thickness){
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Point.prototype.orbit = function(origin, arcWidth, arcHeight, degrees){
+            var radians = degrees * (Math.PI / 180);
+            this.x = origin.x + arcWidth * Math.cos(radians);
+            this.y = origin.y + arcHeight * Math.sin(radians);
+        };
+        Point.prototype.offset = function(dx, dy){
+            this.x += dx;
+            this.y += dy;
+        };
+        Point.prototype.subtract = function(v){
+            return new Point(this.x - v.x, this.y - v.y);
+        };
+        Point.prototype.toString = function(){
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+
+        Point.interpolate = function(pt1, pt2, f){
+            return new Point((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Point.polar = function(len, angle){
+            return new Point(len * Math.sin(angle), len * Math.cos(angle));
+        };
+        Point.distance = function(pt1, pt2){
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
+
+        var background;
+
+        SPF.set({
+
+            at:"back",
+
+
+            load: function(PIXI, input) {
+                return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) {
+
+                background = new PIXI.extras.TilingSprite(input.patterns.animaltech, 1, 1);
+                background.anchor.set(0);
+                input.container.addChild(background);
+
+            },
+
+            resize :function(PIXI, input) {
+                var w =  input.width;
+                var h =  input.height;
+
+                background.width = w*2;
+                background.height = h*2;
+            }
+
+        });
+
+
+        var points;
+        var ropeLength;
+        var wave;
+        var count;
+        var screenCenterPoint;
+        var mousePoint;
+        var maxDistance;
+        var centerScreenDistance;
+
+        function createWave(PIXI, input){
+
+            var w =  input.width;
+            var h =  input.height;
+
+            screenCenterPoint = new Point(w/2, h/2);
+
+            maxDistance = Point.distance(new Point(0,0), screenCenterPoint);
+
+            var totalPoints = 20;
+            ropeLength = (w+1200) / totalPoints;
+
+            count = 0;
+
+            // Remove existing graphics to create them again on resize!
+
+            if(wave != null){
+                input.container.removeChild(wave);
+            }
+
+            points = [];
+            for (var i = 0; i < totalPoints; i++){
+                points.push(new PIXI.Point(i * ropeLength, 0));
+            }
+
+            wave = new PIXI.mesh.Rope(input.patterns.animaltech, points);
+
+            wave.height = h*2.5;
+            wave.position.x = -600;
+            wave.position.y = h/2;
+
+            input.container.addChild(wave);
+
+        };
+
+
+        SPF.set({
+
+            at:"mid",
+
+            load: function(PIXI, input) {
+                return [input.patterns.animaltech];
+            },
+            init: function(PIXI, input) {
+
+                createWave(PIXI, input);
+                wave.alpha = 0;
+
+
+            },
+
+            render:function(PIXI, input){
+
+                if(wave == null)
+                    return;
+
+                var fs = input.audio.frequencies();
+
+                var f = 0;
+                var fAvailable = 0;
+
+                if(fs) {
+
+                    for(var i=0;i<fs.length; i++){
+                        if(fs[i] > 0){
+                            f += fs[i];
+                            fAvailable++;
+                        }
+                    }
+
+                    f = 10 + (f/(255*fAvailable))*50;
+
+                };
+
+
+                wave.position.y = input.mouseTouchPosition.y;
+
+                mousePoint = new Point(input.mouseTouchPosition.x, input.mouseTouchPosition.y);
+
+                centerScreenDistance = (1/maxDistance)*Point.distance(mousePoint, screenCenterPoint);
+
+                count += 0.1;
+
+                for (var i = 0; i < points.length; i++) {
+
+                    points[i].y = Math.sin((i * 0.5) + count) * (70 -(50*centerScreenDistance));
+
+                    points[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * (200-(200*centerScreenDistance));
+
+                }
+
+
+            },
+
+            resize :function(PIXI, input) {
+                if(wave){
+                    input.container.removeChild(wave);
+                    wave = null;
+                    createWave(PIXI, input);
+                    wave.alpha = 1;
+                }
+
+            }
+
+        });
+
+        SPF.info({debug:false, title:"RE WAVES", tip:"Mouve your cursor or finger around to change the size and position of the wave.", firstName:"Ramiro", lastName:"Espada", email:"re@ramiroespada.com"});
+
+        SPF.start("intro");
+
+
+
+    </script></body></html>

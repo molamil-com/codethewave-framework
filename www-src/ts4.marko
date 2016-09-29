@@ -1,0 +1,180 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>sp-framework</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="./js/pixi.min.js"></script>
+
+        <script src="./js/popcorn.js"></script>
+
+        <script src="./js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="sp-framework.js"></script>
+
+    <script>
+    
+    var positionAround = function(center, radius, angle){
+        var rad = angle * Math.PI / 180.0;// Convert to radians
+        return {
+            x:center.x+radius*Math.cos(rad),
+            y:center.y+radius*Math.sin(rad)
+        }
+    }
+    function lerp(start, end, amt){
+            return (1-amt)*start+amt*end
+        }
+    var Spiro = function(center, objects, radi, speeds, angles){
+        
+        
+        var _this = this;
+        if(typeof(radi) == 'number'){
+            radi = objects.map(function(){return radi})
+        }
+        if(typeof(speeds) == 'undefined') speeds = 1;
+        if(typeof(speeds) == 'number'){
+            speeds = objects.map(function(){return speeds})
+        }
+        _this.speeds = speeds;
+        _this.objects = objects;
+        _this.radi = radi;
+        _this.center = center;
+        _this.angles = angles || objects.map(function(e, i){
+            return i*(360/objects.length)
+        })
+        _this.tick = function(){
+            var pos;
+            for(var i = 0; i<objects.length; i++){
+                _this.angles[i]+=_this.speeds[i]
+                pos= positionAround(_this.center, _this.radi[i], _this.angles[i])
+                _this.objects[i].x = pos.x;
+                _this.objects[i].y = pos.y;
+            }
+            // console.log(_this.angles)
+        }
+
+    }
+    
+
+
+        var spiros = [];
+        var pixiPoint = function(color){
+                color = color || 0x00ff00
+                var container = new PIXI.Container()
+                var graphics = new PIXI.Graphics();
+                // draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+                graphics.lineStyle(0);
+                graphics.beginFill(color, 1);
+                graphics.drawCircle(0, 0, 20);
+                graphics.endFill();
+                container.addChild(graphics)
+                return container
+            }
+        
+    	SPF.set({
+    		at: 'fore', // "fore" "mid" or "back"
+
+            load: function(PIXI, input) {
+                window.input = input
+                return [input.graphics.handdrawnanimal1, input.graphics.handdrawnanimal2, input.graphics.handdrawnanimal3];
+            },
+
+            init: function(PIXI, input) {
+                window.inputs = input
+                var numCircles = 3;
+                var center = {
+                    x:window.innerWidth/2,
+                    y:window.innerHeight/2
+                }
+                for(var i = 0; i<numCircles; i++){
+                    var point = pixiPoint()
+                    var s = new Spiro(center,
+                        [pixiPoint(),pixiPoint(),pixiPoint(), pixiPoint()],
+                        // [new PIXI.Sprite(input.graphics.handdrawnanimal1),new PIXI.Sprite(input.graphics.handdrawnanimal1),new PIXI.Sprite(input.graphics.handdrawnanimal1), new PIXI.Sprite(input.graphics.handdrawnanimal1)],
+                        i*100+100
+                        )
+                    spiros.push(s)
+                    
+                    // console.log(s.objects)
+                    s.objects.forEach(function(obj){
+                        input.container.addChild(obj)
+
+                        var s2 = new Spiro(obj,
+                            [pixiPoint(0xff0000),pixiPoint(0xff0000),pixiPoint(0xff0000)],
+                            // [new PIXI.Sprite(input.graphics.handdrawnanimal1)],
+                            50,
+                            -3
+                            )
+                        spiros.push(s2)
+                        s2.objects.forEach(function(obj2){input.container.addChild(obj2)})
+                    })
+                }
+            },
+
+            render: function(PIXI, input) {
+                var l = spiros.length;
+                var rs
+                for (var i = 0; i <l; i++) {
+                    var rs = spiros[i].angles
+                    spiros[i].radi = rs.map(function(r, i){
+                        var f = input.audio.frequencies()[0]
+                        var fp = f/255
+                        return lerp(10, 300, fp)
+                    })
+                    spiros[i].tick()
+                }
+            },
+
+            resize: function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                tilingSpriteBack.width = w*2;
+                tilingSpriteBack.height = h*2;
+
+                tilingSpriteBack2.width = w*2;
+                tilingSpriteBack2.height = h*2;
+
+            }
+    	})
+
+        SPF.info({debug:false, tip:"Click or tap for changing the video-mask. Move your cursor or finger around to modify the background", firstName:"Ramiro", lastName:"Espada", email:"re@ramiroespada.com"});
+
+        SPF.start();
+
+
+    </script>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,286 @@
+
+
+Scarlet Pleasure Framework
+
+    Library: http://scarletpleasure.molamil.com/sp-framework.js
+
+
+    Description:
+
+        SPFramework is a small framework to help digital artists to collaborate in the creation of an unique interactive video reactive experience for Scarlet Pleasure with the supoort of B&O Play.
+
+    How it works:
+
+        You can create graphics for 3 layers of that will be merged together with the video as follows:
+
+           - Background (visual)
+
+           - Midground (visual)
+
+           - Video (fix)
+
+           - Foreground (visual)
+
+           - UX (fix)
+
+        Midground layer has also the capability of being masked by the band's video if and when the artist decides to do it.
+
+        The framework will provide a number graphics, inputs and metadata for you to be able to quickly start building your own SPVisual.
+
+        We are using PIXI as the main engine for drawing graphics into canvas but if you prefer to do you own thing on a separate canvas you can of course do and use PIXI for drawing that canvas.
+
+    Graphics available:
+
+        - Pattern: tilling jpgs
+
+        - Graphics: transparent pngs
+
+        - Maskers: fullscreen jpgs to be used as a mask for other layers
+
+        - Colors
+
+
+    A few rules we want you follow to have better chances to join the party:
+
+        - A SPVisual should always have at least a background layer.
+
+        - Some SPVisuals works best when some of the graphics react to the sound.
+
+        - We want users to also interact with your piece so each experience is unique.
+
+
+
+    How To create a SPVisual:
+
+
+        1- include the library (sp-framework.js)
+
+
+        2- Create a background layer
+
+
+            SPF.set({
+
+                at:"back"
+
+            });
+
+
+        3- Load the assets you need to use on your SPVisual:
+
+
+            SPF.set({
+
+                at:"back",
+
+                load: function(PIXI, input) {
+
+                    return [input.patterns.botanicorganic1, input.maskers.handdrawnanimal1]; //  array of: patterns, maskers or graphics
+
+                }
+
+            });
+
+
+        4- Set the methods you need to use to create your magic:
+
+
+            SPF.set({
+
+                at:"back",
+
+                load: function(PIXI, input) {
+
+                    return [input.patterns.botanicorganic1, input.maskers.handdrawnanimal1]; //  array of: patterns, maskers or graphics
+
+                },
+
+                init: function(PIXI, input) {
+
+                    //  Draw you graphics in PIXI adding them to input.container
+
+                },
+
+                render: function(PIXI, input) {
+
+                    //  Change you graphics using all the data sent on input
+
+                },
+
+                resize: function(PIXI, input, width, height) {
+
+                    // Make sure your graphics always works on all screen sizes including mobile and tablets.
+
+                }
+
+            });
+
+        5- Now follow steps 2, 3 and 4 setting up at property in different layers: "mid" and "fore"
+
+        6- Setup information of your visual:
+
+            SPF.info({
+
+                debug:true, // boolean
+
+                tip:"Use your mouse to create particles", // description on how to interact with your visual
+
+                firstName:"Ramiro",
+
+                lastName:"Espada"
+
+                section: "s1" // id of the section of the song this visual is preferable prepared for.
+
+            });
+
+        7- Start the framework to test it all together!
+
+             SPF.start();
+
+
+------------------------------------------------------------
+
+    SPF
+
+        - set (method)
+
+            - at (String)
+
+            - load(PIXI, input) (Function)
+
+                returns (Array)
+
+            - init(PIXI, input) (Function)
+
+            - render(PIXI, input) (Function)
+
+            - resize(PIXI, input) (Function)
+
+            - mouseDownTouchStart (PIXI, input) (Function)
+
+            - mouseUpTouchEnd (PIXI, input) (Function)
+
+        - info
+
+            - debug (Bboolean)
+
+            - tip (String)
+
+            - title (String)
+
+            - firstName (String)
+
+            - lastName (String)
+
+            - email (String)
+
+        - start (method)
+
+
+------------------------------------------------------------
+
+
+    Input Object
+
+
+        - input.dom (DOM Object)
+
+        - input.container (DisplayObject)
+
+        - input.resolution (Number)
+
+        - input.width (Number)
+
+        - input.height (Number)
+
+        - input.frameRate (Number)
+
+        - input.patterns (Object of several PIXI.Texture)
+
+            input.patterns.animaltech
+            input.patterns.bbbbird1
+            input.patterns.bbbbird2
+            input.patterns.botanicorganic1
+            input.patterns.botanicorganic2
+            input.patterns.botanicorganic3
+            input.patterns.handdrawnanimal
+
+        - input.maskers (Object of several  of PIXI.Texture)
+
+            input.maskers.bbbbird1
+            input.maskers.botanicorganic1
+            input.maskers.botanicorganic2
+            input.maskers.handdrawnanimal1
+            input.maskers.handdrawnanimal2
+            input.maskers.handdrawnanimal3
+            input.maskers.handdrawnanimal4
+
+        - input.graphics (Object of several  of PIXI.Texture)
+
+            input.graphics.animaltech
+            input.graphics.bbbbird1
+            input.graphics.bbbbird2
+            input.graphics.bbbbird3
+            input.graphics.botanicorganic
+            input.graphics.handdrawnanimal1
+            input.graphics.handdrawnanimal2
+            input.graphics.handdrawnanimal3
+
+        - input.colors (Array of Hexadecimal colors)
+
+        - input.isTouchDevice (Boolean)
+
+        - input.orientation (Object) example: {gamma:0, beta:0, alpha:0}
+
+            // only available for touchDevices
+
+        - input.mouseTouchPosition (Object) example: {x:0, y:0}
+
+           // desktop = cursor position on touchDevice = tapMove position
+
+        - input.audio (WebAudioAnalyser) require('web-audio-analyser');
+
+        - input.sections (String)
+
+                available: "intro", "verse1", "preChorus1", "chorus1", "verse2", "preChorus2", "chorus2", "bridge", "chorus3", "outro"
+
+        - input.currentSection (Object) example: {"id": "section1", starts:"0", ends:"10"}
+
+        - input.editing
+
+            // (JSON Object) example: {"id": "fullBand"} {"id": "closeUp"}
+
+            // editing.vtt - Molamil
+
+        - input.cast
+
+            // (JSON Object) example: {"id": "singer"} {"id": "drummer"} {"id": "bass"} {"id": "all"}
+
+            // cast.vtt - Molamil
+
+        - input.beat
+
+            // (JSON Object) example: {"id": "onBeat"} {"id": "offBeat"}
+
+            // beat.vtt - Molamil
+
+            // Ask Kasper for audio plugin + scripts for markers to vtt
+
+
+------------------------------------------------------------
+
+
+    Helpers
+
+        - midgroundMask(Boolean)
+
+            // if current instance is set at = "mid" this layer will be masked the video
+
+        - fullscreenSprite(PIXI.Texture)
+
+            returns (PIXI.Sprite)
+
+
+
+------------------------------------------------------------
+

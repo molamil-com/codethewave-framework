@@ -1,0 +1,15 @@
+
+
+    Video:
+
+        - Video: Create a layer of visual that displays graphics masked instead of the video (visual silhouete)
+
+        - Use cuePoints events to take care of sound data and video events
+
+        - CodePen: add star time (percentage of the song)
+
+        - Add input tilt for touch devices
+
+        - Top layer: filters (like vignete)
+
+

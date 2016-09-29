@@ -1,0 +1,259 @@
+
+
+
+Scarlet Pleasure
+
+Requirements and Rules based on our meeting 22-08-2016
+
+
+```
+
+    Frontend:
+
+        - The song will be divided in 10 to 12 sections
+
+        - User should be able to select each section and then choose a visual style for that section.
+
+        - A visual consists in a full-set creation for all 3 layers based on the data received from SPFramework.
+
+        - Trouble/Molamil will decide what visual will be available for each section of the song.
+
+        - Users cannot combine layers form different artists, only select a visual per section.
+
+        - When users share on FB we should share an image of the current Visual from the current Section playing.
+
+        - When interacting with sections and visuals we'll refresh the url deep linking to the current preselected style. Example: url.com?&section-1:visual_id&section-2:visual_id
+
+
+    Framework:
+
+        - Methods:
+
+            - set:
+
+                - debug: true or false
+
+                - at: "back", "mid" or "fore" (layer id)
+
+                - section: "s1" "s2" "s3"... (the section of the song the player should start playing first for testing)
+
+                - tip: 140 max explanation on how to interact with this visual. Example: "Move your mouse or drag your finger around to create particles"
+
+            - start:
+
+                - section-id: id of the desired section to start the song from.
+
+                This method should be called only after defining all 3 layers of the Visual.
+
+                Once this method is called we'll start loading all assets added on load of each layer.
+
+                We'll add a video to be previewed by the artist as a reference.
+
+                We will add also a layer of branding and controls to navigate between sections so artists can preview their work with better context.
+
+            - load: array of App assets by id
+
+            - init
+
+            - render
+
+                - input:
+
+                    // framework input
+
+                    - input.container
+
+                    - input.resolution
+
+                    - input.textures
+
+                    - input.graphics
+
+                    - input.colors
+
+                    - input.isTouchDevice
+
+                    -
+
+                    // media input
+
+                    - input.audio: WebAudioAnalyser instance (https://github.com/hughsk/web-audio-analyser)
+
+                    // vtt input
+
+                    - Pulse (Molamil)
+
+                    - Off pulse (Molamil)
+
+                    - Sections (Trouble)
+
+                    - Frame-style (editing, cuts): full-band, detail, ... (Trouble)
+
+                    - Cast: drummer, singer, bass, all (Molamil)
+
+                    - Tracking (only one at the time) example: {x:1234, y:234, label:"head"} (Trouble)
+
+            - resize
+
+                - width: number
+
+                - height: number
+
+                - resolution:
+
+            //  user input will be sent in the following methods
+
+            - click
+
+            - move:
+
+                - position: {x:0, y:20} if is mobile this information should be send when you tap and drag your finger around.
+
+            - tilt:
+
+                - accel: {ax:0, ay:0}
+
+        - Rules:
+
+            - Artists should use CodePen as a main tool for coding and sharing their visuals using our SPFramework.
+
+            - Artists can use other tools to code but once they are done they have to be pasted into CodePen to get a chance to feature the video.
+
+            - Artists are free to create graphics and colors as they want but we'll encourage them to use the ones provided on the framework.
+
+            - If a visual looks cool but we think it could look better with a few tweaks we will go ahead and change the visual forking their work in CodePen. Then we'll request their permission to use our forked version in the site.
+
+            - Artists should informed the nature open source nature of their body work, so they should be open to share their code to be forked in the CodePen community.
+
+            - A visual should always have at least a background (midground and foreground are possible but not mandatory)
+
+            - Midground is the only layer than can be masked by the video, artists should be able to decide when and if this happens.
+
+
+```
+
+
+
+
+
+
+
+
+
+------------------------------------------------------
+
+
+
+Framework:
+
+
+    - Artists should have a fix canvas we scale or they should know about building a resizable experience?
+
+        free resize
+
+    - Can artists add their own graphics or only they are only allowed to use the ones we provide?
+
+        yes. We should motivate them to use our graphics or colors.
+
+        We could fork their work to match our style and then ask for their permission.
+
+    - Can artists add their own colors or only the one provided?
+
+        yes.
+
+    - Background is always visible, correct?
+
+        yes
+
+    - Midground is always visible, correct?
+
+        it depends on the artist
+
+
+Frontend:
+
+    - Can users choose when and how all 3 layers of visuals are combined?
+
+        no. full sets.
+
+    - What's the minimum amount of layers users can set? 1, 2 or 3?
+
+        we decide based on the artist.
+
+
+------------------------------------------------------
+
+
+    System:
+
+        - CodePen: Artist should share there and be open to share their code to be forked.
+
+        - We decide what styles will be available for each Section (the time of the video).
+
+        - We'll set around 10-12 Sections for changing visuals.
+
+        - Share depth link with pre-selected style: url?&section-1:artist_id
+
+        - Framework: Artists tip should be added so they can describe what user can do to interact with.
+
+
+    Rules:
+
+        - Midground is the only layer that can be masked by the video. Users can decide if and when is masked.
+
+        - Foreground is always on top of everything.
+
+        - Always a background
+
+        - 1 style/artist at the time (all 3 layers)
+
+        - User input in the framework:
+
+                - Mouse position (on mobile requires tap and release)
+
+                - Click or tap
+
+                - Tilt for mobile/tablets
+
+
+        - Framework input:
+
+            - Color palettes
+
+            - Graphics
+
+            -  Patterns
+
+            - Resolution
+
+            - isMobile
+
+            - Audio data
+
+            - Video
+
+            - VTT:
+
+                - Pulse (Molamil)
+
+                - Off pulse (Molamil)
+
+                - Sections (Trouble)
+
+                - Frame-style (editing, cuts): full-band, detail, ... (Trouble)
+
+                - Cast: drummer, singer, bass, all
+
+                - Tracking (only one at the time) example: {x:1234, y:234, label:"head"}
+
+
+            - CodePen branding:
+
+                - Frame, Logo and Sections.
+
+
+    Frontend:
+
+        - One click to play around.
+
+        - FB share: when users share we should get the current image to share.

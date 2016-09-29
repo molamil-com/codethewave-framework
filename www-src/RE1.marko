@@ -1,0 +1,239 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>RE1</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="./js/pixi.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="sp-framework.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.11/require.min.js"></script>
+
+    <script>
+
+
+        require.config({
+            baseUrl: 'http://scarletpleasure.molamil.com/node_modules/',
+            packages: [
+                {
+                    name: 'boid',
+                    main: 'dist/boid.min.js'
+                }
+
+            ]
+        });
+
+        require(
+                ['boid'],
+
+                function(Boid) {
+
+
+                    var background;
+
+                    SPF.set({
+
+                        at:"back",
+
+
+                        init: function(PIXI, input) {
+
+                            var w =  input.width;
+                            var h =  input.height;
+
+                            background = new PIXI.Graphics();
+
+                            var c = input.colors[Math.round(Math.random()*( input.colors.length-1))];
+                            background.clear();
+                            background.beginFill(c, 1);
+                            background.drawRect(0,0,w,h);
+                            background.endFill();
+
+                            input.container.addChild(background);
+
+                        }
+
+
+                    });
+
+
+
+
+                    var tilingSpriteBack;
+
+                    var total = 22;
+                    var boids = new Array(); // of b and g
+                    var b, g;
+
+
+                    function createBoids(input, w,h){
+
+
+                        if(boids != null){
+                            for(var i=0;i<boids.length; i++){
+                                input.container.removeChild(boids[i]["g"]);
+                            }
+                        }
+
+                        boids = new Array();
+
+                        for(var i=0;i<total; i++){
+
+                            b = new Boid();
+                            b.position.x = w / 2;
+                            b.position.y = h / 2;
+
+                            b.setBounds(w, h, 0,0);
+
+                            b.edgeBehavior = Boid.EDGE_WRAP;
+
+                            var ts = [input.graphics.handdrawnanimal1, input.graphics.handdrawnanimal2];
+
+                            var t = ts[Math.round(Math.random()*(ts.length-1))];
+
+                            g = new PIXI.Sprite(t);
+                            g.scale.set(0.8);
+                            g.rotation = (Math.random()*90)*4;
+                            g.position.set(b.position.x, b.position.y);
+                            input.container.addChild(g);
+
+                            boids.push({"b":b, "g":g});
+                        }
+
+                    };
+
+
+                    SPF.set({
+
+                        at: 'mid', // "fore" "mid" or "back"
+
+                        load: function(PIXI, input) {
+                            return [input.patterns.botanicorganic2, input.graphics.handdrawnanimal2, input.graphics.handdrawnanimal1];
+                        },
+
+                        init: function(PIXI, input) {
+
+                            var w =  input.width;
+                            var h =  input.height;
+
+                            tilingSpriteBack = new PIXI.extras.TilingSprite(input.patterns.botanicorganic2, 1, 1);
+                            tilingSpriteBack.anchor.set(0);
+                            input.container.addChild(tilingSpriteBack);
+
+                            createBoids(input,w,h);
+
+                            SPF.midgroundMask(true);
+
+                        },
+
+                        render: function(PIXI, input) {
+
+                            var w =  input.width;
+                            var h =  input.height;
+
+
+                            for (var i = 0; i < boids.length; i++) {
+
+                                b = boids[i]["b"];
+                                g = boids[i]["g"];
+
+                                b.wander().update();
+
+                                g.position.set(b.position.x, b.position.y);
+
+                            }
+
+                            var fs = input.audio.frequencies();
+
+                            var f = 0;
+                            var fAvailable= 0;
+
+                            if(fs) {
+
+                                for(var i=0;i<fs.length; i++){
+                                    if(fs[i] > 0){
+                                        f += fs[i];
+                                        fAvailable++;
+                                    }
+                                }
+
+                                f = (f/(255*fAvailable));
+
+
+                                if(f>0.4){
+                                    SPF.midgroundMask(false);
+
+                                    var c = input.colors[Math.round(Math.random()*( input.colors.length-1))];
+                                    background.clear();
+                                    background.beginFill(c, 1);
+                                    background.drawRect(0,0,w,h);
+                                    background.endFill();
+
+                                } else {
+                                    SPF.midgroundMask(true);
+                                }
+
+
+                            };
+
+                        },
+
+                        resize: function(PIXI, input) {
+
+                            var w =  input.width;
+                            var h =  input.height;
+
+                            createBoids(input, w, h);
+
+                            tilingSpriteBack.width = w*2;
+                            tilingSpriteBack.height = h*2;
+
+                        }
+
+                    });
+
+
+                    SPF.info({debug:false, title:"RE BOIDS 01", tip:"", firstName:"Ramiro", lastName:"Espada", email:"re@ramiroespada.com"});
+
+                    SPF.start("chorus1");
+
+
+                }
+
+        );
+
+
+    </script>
+
+    </body>
+
+</html>

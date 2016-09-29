@@ -1,0 +1,1106 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'screen-orientation',
+1 verbose cli   '--save',
+1 verbose cli   'dev' ]
+2 info using npm@2.5.1
+3 info using node@v4.2.1
+4 warn package.json TroublePrototype@0.0.0 No repository field.
+5 silly cache add args [ 'screen-orientation', null ]
+6 verbose cache add spec screen-orientation
+7 silly cache add args [ 'dev', null ]
+8 verbose cache add spec dev
+9 silly cache add parsed spec Result {
+9 silly cache add   raw: 'screen-orientation',
+9 silly cache add   scope: null,
+9 silly cache add   name: 'screen-orientation',
+9 silly cache add   rawSpec: '',
+9 silly cache add   spec: '*',
+9 silly cache add   type: 'range' }
+10 verbose addNamed screen-orientation@*
+11 silly addNamed semver.valid null
+12 silly addNamed semver.validRange *
+13 silly addNameRange { name: 'screen-orientation', range: '*', hasData: false }
+14 silly mapToRegistry name screen-orientation
+15 silly mapToRegistry using default registry
+16 silly mapToRegistry registry https://registry.npmjs.org/
+17 silly mapToRegistry uri https://registry.npmjs.org/screen-orientation
+18 verbose addNameRange registry:https://registry.npmjs.org/screen-orientation not in flight; fetching
+19 silly cache add parsed spec Result {
+19 silly cache add   raw: 'dev',
+19 silly cache add   scope: null,
+19 silly cache add   name: 'dev',
+19 silly cache add   rawSpec: '',
+19 silly cache add   spec: '*',
+19 silly cache add   type: 'range' }
+20 verbose addNamed dev@*
+21 silly addNamed semver.valid null
+22 silly addNamed semver.validRange *
+23 silly addNameRange { name: 'dev', range: '*', hasData: false }
+24 silly mapToRegistry name dev
+25 silly mapToRegistry using default registry
+26 silly mapToRegistry registry https://registry.npmjs.org/
+27 silly mapToRegistry uri https://registry.npmjs.org/dev
+28 verbose addNameRange registry:https://registry.npmjs.org/dev not in flight; fetching
+29 verbose request uri https://registry.npmjs.org/dev
+30 verbose request no auth needed
+31 info attempt registry request try #1 at 12:36:43 PM
+32 verbose request id 3e98c960a77e57d5
+33 verbose etag "70CDUJPAHIRCO4UM5CM28RZUB"
+34 http request GET https://registry.npmjs.org/dev
+35 verbose request uri https://registry.npmjs.org/screen-orientation
+36 verbose request no auth needed
+37 info attempt registry request try #1 at 12:36:43 PM
+38 verbose etag "A91TZ3MLP06OKM2GI87X3M103"
+39 http request GET https://registry.npmjs.org/screen-orientation
+40 http 304 https://registry.npmjs.org/dev
+41 silly get cb [ 304,
+41 silly get   { date: 'Thu, 29 Sep 2016 10:36:43 GMT',
+41 silly get     via: '1.1 varnish',
+41 silly get     'cache-control': 'max-age=300',
+41 silly get     etag: '"70CDUJPAHIRCO4UM5CM28RZUB"',
+41 silly get     age: '204',
+41 silly get     connection: 'keep-alive',
+41 silly get     'x-served-by': 'cache-gru7122-GRU',
+41 silly get     'x-cache': 'HIT',
+41 silly get     'x-cache-hits': '1',
+41 silly get     'x-timer': 'S1475145403.947213,VS0,VE0',
+41 silly get     vary: 'Accept-Encoding' } ]
+42 verbose etag https://registry.npmjs.org/dev from cache
+43 verbose get saving dev to /Users/ramiroespada/.npm/registry.npmjs.org/dev/.cache.json
+44 silly addNameRange number 2 { name: 'dev', range: '*', hasData: true }
+45 silly addNameRange versions [ 'dev',
+45 silly addNameRange   [ '0.1.0',
+45 silly addNameRange     '0.1.1',
+45 silly addNameRange     '0.1.2',
+45 silly addNameRange     '0.1.3',
+45 silly addNameRange     '0.1.1-d',
+45 silly addNameRange     '0.1.1-e',
+45 silly addNameRange     '0.1.1-f',
+45 silly addNameRange     '0.1.1-g',
+45 silly addNameRange     '0.1.1-h',
+45 silly addNameRange     '0.1.1-n',
+45 silly addNameRange     '0.1.1-p' ] ]
+46 verbose addNamed dev@0.1.3
+47 silly addNamed semver.valid 0.1.3
+48 silly addNamed semver.validRange 0.1.3
+49 silly cache afterAdd dev@0.1.3
+50 verbose afterAdd /Users/ramiroespada/.npm/dev/0.1.3/package/package.json not in flight; writing
+51 verbose afterAdd /Users/ramiroespada/.npm/dev/0.1.3/package/package.json written
+52 http 304 https://registry.npmjs.org/screen-orientation
+53 silly get cb [ 304,
+53 silly get   { date: 'Thu, 29 Sep 2016 10:36:43 GMT',
+53 silly get     via: '1.1 varnish',
+53 silly get     'cache-control': 'max-age=300',
+53 silly get     etag: '"A91TZ3MLP06OKM2GI87X3M103"',
+53 silly get     age: '0',
+53 silly get     connection: 'keep-alive',
+53 silly get     'x-served-by': 'cache-gru7125-GRU',
+53 silly get     'x-cache': 'MISS',
+53 silly get     'x-cache-hits': '0',
+53 silly get     'x-timer': 'S1475145403.948036,VS0,VE556',
+53 silly get     vary: 'Accept-Encoding' } ]
+54 verbose etag https://registry.npmjs.org/screen-orientation from cache
+55 verbose get saving screen-orientation to /Users/ramiroespada/.npm/registry.npmjs.org/screen-orientation/.cache.json
+56 silly addNameRange number 2 { name: 'screen-orientation', range: '*', hasData: true }
+57 silly addNameRange versions [ 'screen-orientation', [ '1.0.0', '1.0.1', '1.0.2', '1.0.3' ] ]
+58 verbose addNamed screen-orientation@1.0.3
+59 silly addNamed semver.valid 1.0.3
+60 silly addNamed semver.validRange 1.0.3
+61 silly cache afterAdd screen-orientation@1.0.3
+62 verbose afterAdd /Users/ramiroespada/.npm/screen-orientation/1.0.3/package/package.json not in flight; writing
+63 verbose afterAdd /Users/ramiroespada/.npm/screen-orientation/1.0.3/package/package.json written
+64 silly install resolved [ { name: 'dev',
+64 silly install resolved     description: 'Reruns the given file whenever the current working dir subtree has modifications.',
+64 silly install resolved     version: '0.1.3',
+64 silly install resolved     repository: { type: 'git', url: 'git://github.com/iliakan/node-dev.git' },
+64 silly install resolved     author:
+64 silly install resolved      { name: 'Ilya Kantor',
+64 silly install resolved        email: 'iliakan@gmail.com',
+64 silly install resolved        url: 'http://javascript.info/' },
+64 silly install resolved     preferGlobal: true,
+64 silly install resolved     bin: { 'node-dev': './node-dev.sh' },
+64 silly install resolved     dependencies: { inotify: '>= 0.1.6' },
+64 silly install resolved     devDependencies: {},
+64 silly install resolved     _id: 'dev@0.1.3',
+64 silly install resolved     engines: { node: '*' },
+64 silly install resolved     _engineSupported: true,
+64 silly install resolved     _npmVersion: '1.0.6',
+64 silly install resolved     _nodeVersion: 'v0.5.0-pre',
+64 silly install resolved     _defaultsLoaded: true,
+64 silly install resolved     dist:
+64 silly install resolved      { shasum: '89fdc08705e0e7eaef92d012e26751e4d744322a',
+64 silly install resolved        tarball: 'https://registry.npmjs.org/dev/-/dev-0.1.3.tgz' },
+64 silly install resolved     scripts: {},
+64 silly install resolved     directories: {},
+64 silly install resolved     _shasum: '89fdc08705e0e7eaef92d012e26751e4d744322a',
+64 silly install resolved     _resolved: 'https://registry.npmjs.org/dev/-/dev-0.1.3.tgz',
+64 silly install resolved     _from: 'dev@*',
+64 silly install resolved     bugs: { url: 'https://github.com/iliakan/node-dev/issues' },
+64 silly install resolved     readme: 'ERROR: No README data found!',
+64 silly install resolved     homepage: 'https://github.com/iliakan/node-dev' },
+64 silly install resolved   { name: 'screen-orientation',
+64 silly install resolved     main: 'index.js',
+64 silly install resolved     version: '1.0.3',
+64 silly install resolved     description: 'Get the current screen orientation',
+64 silly install resolved     license: 'MIT',
+64 silly install resolved     repository:
+64 silly install resolved      { type: 'git',
+64 silly install resolved        url: 'git+https://github.com/bendrucker/screen-orientation.git' },
+64 silly install resolved     author:
+64 silly install resolved      { name: 'Ben Drucker',
+64 silly install resolved        email: 'bvdrucker@gmail.com',
+64 silly install resolved        url: 'bendrucker.me' },
+64 silly install resolved     scripts: { test: 'standard && tape test.js' },
+64 silly install resolved     keywords: [ 'screen', 'orientation' ],
+64 silly install resolved     devDependencies: { proxyquire: '~1.7.1', standard: '^4.0.0', tape: '^4.0.0' },
+64 silly install resolved     files: [ 'index.js' ],
+64 silly install resolved     dependencies: { global: '~4.3.0', 'view-size': '~1.0.1' },
+64 silly install resolved     gitHead: '79ecf4582d84e32c3c40b1f8208928657e0e6454',
+64 silly install resolved     bugs: { url: 'https://github.com/bendrucker/screen-orientation/issues' },
+64 silly install resolved     homepage: 'https://github.com/bendrucker/screen-orientation#readme',
+64 silly install resolved     _id: 'screen-orientation@1.0.3',
+64 silly install resolved     _shasum: 'a390951b13504417fa19293d5b7e1fb93e8766c4',
+64 silly install resolved     _from: 'screen-orientation@*',
+64 silly install resolved     _npmVersion: '2.13.5',
+64 silly install resolved     _nodeVersion: '2.3.3',
+64 silly install resolved     _npmUser: { name: 'bendrucker', email: 'bvdrucker@gmail.com' },
+64 silly install resolved     dist:
+64 silly install resolved      { shasum: 'a390951b13504417fa19293d5b7e1fb93e8766c4',
+64 silly install resolved        tarball: 'https://registry.npmjs.org/screen-orientation/-/screen-orientation-1.0.3.tgz' },
+64 silly install resolved     maintainers: [ [Object] ],
+64 silly install resolved     directories: {},
+64 silly install resolved     _resolved: 'https://registry.npmjs.org/screen-orientation/-/screen-orientation-1.0.3.tgz',
+64 silly install resolved     readme: 'ERROR: No README data found!' } ]
+65 info install dev@0.1.3 into /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework
+66 info install screen-orientation@1.0.3 into /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework
+67 info installOne dev@0.1.3
+68 verbose installOne of dev to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework not in flight; installing
+69 info installOne screen-orientation@1.0.3
+70 verbose installOne of screen-orientation to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework not in flight; installing
+71 verbose lock using /Users/ramiroespada/.npm/_locks/dev-8f487dcd9128cb35.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+72 verbose lock using /Users/ramiroespada/.npm/_locks/screen-orientation-7c8880128c170dcc.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+73 silly install write writing dev 0.1.3 to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+74 silly cache addNamed cb dev@0.1.3
+75 verbose unbuild node_modules/dev
+76 silly install write writing screen-orientation 1.0.3 to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+77 silly cache addNamed cb screen-orientation@1.0.3
+78 verbose unbuild node_modules/screen-orientation
+79 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+80 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+81 verbose tar unpack /Users/ramiroespada/.npm/dev/0.1.3/package.tgz
+82 verbose tar unpacking to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+83 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+84 verbose tar unpack /Users/ramiroespada/.npm/screen-orientation/1.0.3/package.tgz
+85 verbose tar unpacking to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+86 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+87 silly gunzTarPerm modes [ '755', '644' ]
+88 silly gunzTarPerm modes [ '755', '644' ]
+89 silly gunzTarPerm extractEntry index.js
+90 silly gunzTarPerm extractEntry package.json
+91 silly gunzTarPerm extractEntry .npmignore
+92 silly gunzTarPerm extractEntry readme.md
+93 silly gunzTarPerm extractEntry index.js
+94 silly gunzTarPerm extractEntry license
+95 silly gunzTarPerm extractEntry package.json
+96 silly gunzTarPerm extractEntry node-dev.sh
+97 silly gunzTarPerm extractEntry readme.md
+98 silly gunzTarPerm extractEntry manager.js
+99 info preinstall screen-orientation@1.0.3
+100 silly prepareForInstallMany adding global@~4.3.0 from screen-orientation dependencies
+101 silly prepareForInstallMany adding view-size@~1.0.1 from screen-orientation dependencies
+102 silly cache add args [ 'global@~4.3.0', null ]
+103 verbose cache add spec global@~4.3.0
+104 silly cache add args [ 'view-size@~1.0.1', null ]
+105 verbose cache add spec view-size@~1.0.1
+106 silly cache add parsed spec Result {
+106 silly cache add   raw: 'global@~4.3.0',
+106 silly cache add   scope: null,
+106 silly cache add   name: 'global',
+106 silly cache add   rawSpec: '~4.3.0',
+106 silly cache add   spec: '>=4.3.0 <4.4.0',
+106 silly cache add   type: 'range' }
+107 verbose addNamed global@>=4.3.0 <4.4.0
+108 silly addNamed semver.valid null
+109 silly addNamed semver.validRange >=4.3.0 <4.4.0
+110 silly addNameRange { name: 'global', range: '>=4.3.0 <4.4.0', hasData: false }
+111 silly mapToRegistry name global
+112 silly mapToRegistry using default registry
+113 silly mapToRegistry registry https://registry.npmjs.org/
+114 silly mapToRegistry uri https://registry.npmjs.org/global
+115 verbose addNameRange registry:https://registry.npmjs.org/global not in flight; fetching
+116 silly cache add parsed spec Result {
+116 silly cache add   raw: 'view-size@~1.0.1',
+116 silly cache add   scope: null,
+116 silly cache add   name: 'view-size',
+116 silly cache add   rawSpec: '~1.0.1',
+116 silly cache add   spec: '>=1.0.1 <1.1.0',
+116 silly cache add   type: 'range' }
+117 verbose addNamed view-size@>=1.0.1 <1.1.0
+118 silly addNamed semver.valid null
+119 silly addNamed semver.validRange >=1.0.1 <1.1.0
+120 silly addNameRange { name: 'view-size', range: '>=1.0.1 <1.1.0', hasData: false }
+121 silly mapToRegistry name view-size
+122 silly mapToRegistry using default registry
+123 silly mapToRegistry registry https://registry.npmjs.org/
+124 silly mapToRegistry uri https://registry.npmjs.org/view-size
+125 verbose addNameRange registry:https://registry.npmjs.org/view-size not in flight; fetching
+126 verbose request uri https://registry.npmjs.org/global
+127 verbose request no auth needed
+128 info attempt registry request try #1 at 12:36:44 PM
+129 verbose etag "BVJ4H4EGZ9WTSBT5DY72JKH9O"
+130 http request GET https://registry.npmjs.org/global
+131 verbose request uri https://registry.npmjs.org/view-size
+132 verbose request no auth needed
+133 info attempt registry request try #1 at 12:36:44 PM
+134 verbose etag "49FOAVUXKX2T9N2QY5EKAQZK9"
+135 http request GET https://registry.npmjs.org/view-size
+136 info preinstall dev@0.1.3
+137 silly prepareForInstallMany adding inotify@>= 0.1.6 from dev dependencies
+138 silly cache add args [ 'inotify@>= 0.1.6', null ]
+139 verbose cache add spec inotify@>= 0.1.6
+140 silly cache add parsed spec Result {
+140 silly cache add   raw: 'inotify@>= 0.1.6',
+140 silly cache add   scope: null,
+140 silly cache add   name: 'inotify',
+140 silly cache add   rawSpec: '>= 0.1.6',
+140 silly cache add   spec: '>=0.1.6',
+140 silly cache add   type: 'range' }
+141 verbose addNamed inotify@>=0.1.6
+142 silly addNamed semver.valid null
+143 silly addNamed semver.validRange >=0.1.6
+144 silly addNameRange { name: 'inotify', range: '>=0.1.6', hasData: false }
+145 silly mapToRegistry name inotify
+146 silly mapToRegistry using default registry
+147 silly mapToRegistry registry https://registry.npmjs.org/
+148 silly mapToRegistry uri https://registry.npmjs.org/inotify
+149 verbose addNameRange registry:https://registry.npmjs.org/inotify not in flight; fetching
+150 verbose request uri https://registry.npmjs.org/inotify
+151 verbose request no auth needed
+152 info attempt registry request try #1 at 12:36:44 PM
+153 verbose etag "2V1LOI5CGQOOFRYZZ7CR6I1W2"
+154 http request GET https://registry.npmjs.org/inotify
+155 http 304 https://registry.npmjs.org/inotify
+156 silly get cb [ 304,
+156 silly get   { date: 'Thu, 29 Sep 2016 10:36:44 GMT',
+156 silly get     via: '1.1 varnish',
+156 silly get     'cache-control': 'max-age=300',
+156 silly get     etag: '"2V1LOI5CGQOOFRYZZ7CR6I1W2"',
+156 silly get     age: '205',
+156 silly get     connection: 'keep-alive',
+156 silly get     'x-served-by': 'cache-gru7127-GRU',
+156 silly get     'x-cache': 'HIT',
+156 silly get     'x-cache-hits': '2',
+156 silly get     'x-timer': 'S1475145404.779399,VS0,VE0',
+156 silly get     vary: 'Accept-Encoding' } ]
+157 verbose etag https://registry.npmjs.org/inotify from cache
+158 verbose get saving inotify to /Users/ramiroespada/.npm/registry.npmjs.org/inotify/.cache.json
+159 http 304 https://registry.npmjs.org/global
+160 silly get cb [ 304,
+160 silly get   { date: 'Thu, 29 Sep 2016 10:36:44 GMT',
+160 silly get     via: '1.1 varnish',
+160 silly get     'cache-control': 'max-age=300',
+160 silly get     etag: '"BVJ4H4EGZ9WTSBT5DY72JKH9O"',
+160 silly get     age: '138',
+160 silly get     connection: 'keep-alive',
+160 silly get     'x-served-by': 'cache-gru7123-GRU',
+160 silly get     'x-cache': 'HIT',
+160 silly get     'x-cache-hits': '1',
+160 silly get     'x-timer': 'S1475145404.780457,VS0,VE0',
+160 silly get     vary: 'Accept-Encoding' } ]
+161 verbose etag https://registry.npmjs.org/global from cache
+162 verbose get saving global to /Users/ramiroespada/.npm/registry.npmjs.org/global/.cache.json
+163 silly addNameRange number 2 { name: 'global', range: '>=4.3.0 <4.4.0', hasData: true }
+164 silly addNameRange versions [ 'global',
+164 silly addNameRange   [ '1.0.0',
+164 silly addNameRange     '0.1.5',
+164 silly addNameRange     '2.0.1',
+164 silly addNameRange     '2.0.2',
+164 silly addNameRange     '2.0.3',
+164 silly addNameRange     '2.0.4',
+164 silly addNameRange     '2.0.5',
+164 silly addNameRange     '2.0.6',
+164 silly addNameRange     '2.0.7',
+164 silly addNameRange     '3.0.0',
+164 silly addNameRange     '3.0.1',
+164 silly addNameRange     '3.0.2',
+164 silly addNameRange     '4.0.0',
+164 silly addNameRange     '4.0.1',
+164 silly addNameRange     '4.1.0',
+164 silly addNameRange     '4.2.0',
+164 silly addNameRange     '4.2.1',
+164 silly addNameRange     '4.3.0',
+164 silly addNameRange     '4.3.1' ] ]
+165 verbose addNamed global@4.3.1
+166 silly addNamed semver.valid 4.3.1
+167 silly addNamed semver.validRange 4.3.1
+168 silly addNameRange number 2 { name: 'inotify', range: '>=0.1.6', hasData: true }
+169 silly addNameRange versions [ 'inotify',
+169 silly addNameRange   [ '0.1.2',
+169 silly addNameRange     '0.1.3',
+169 silly addNameRange     '0.1.4',
+169 silly addNameRange     '0.1.5',
+169 silly addNameRange     '0.1.6',
+169 silly addNameRange     '0.1.7',
+169 silly addNameRange     '0.1.8',
+169 silly addNameRange     '0.2.0',
+169 silly addNameRange     '0.2.1',
+169 silly addNameRange     '0.2.2',
+169 silly addNameRange     '1.0.0',
+169 silly addNameRange     '1.1.0',
+169 silly addNameRange     '1.2.0',
+169 silly addNameRange     '1.2.1',
+169 silly addNameRange     '1.3.0',
+169 silly addNameRange     '1.4.0',
+169 silly addNameRange     '1.4.1' ] ]
+170 verbose addNamed inotify@1.4.1
+171 silly addNamed semver.valid 1.4.1
+172 silly addNamed semver.validRange 1.4.1
+173 silly cache afterAdd global@4.3.1
+174 verbose afterAdd /Users/ramiroespada/.npm/global/4.3.1/package/package.json not in flight; writing
+175 silly cache afterAdd inotify@1.4.1
+176 verbose afterAdd /Users/ramiroespada/.npm/inotify/1.4.1/package/package.json not in flight; writing
+177 verbose afterAdd /Users/ramiroespada/.npm/global/4.3.1/package/package.json written
+178 verbose afterAdd /Users/ramiroespada/.npm/inotify/1.4.1/package/package.json written
+179 silly install resolved [ { name: 'inotify',
+179 silly install resolved     version: '1.4.1',
+179 silly install resolved     author: { name: 'Camilo Aguilar', email: 'camilo.aguilar@gmail.com' },
+179 silly install resolved     email: 'camilo.aguilar@gmail.com',
+179 silly install resolved     keywords:
+179 silly install resolved      [ 'inotify',
+179 silly install resolved        'watch',
+179 silly install resolved        'monitor',
+179 silly install resolved        'watch files',
+179 silly install resolved        'watch directories' ],
+179 silly install resolved     license: 'MIT',
+179 silly install resolved     description: 'inotify bindings for v8 javascript engine',
+179 silly install resolved     repository:
+179 silly install resolved      { type: 'git',
+179 silly install resolved        url: 'git+ssh://git@github.com/c4milo/node-inotify.git' },
+179 silly install resolved     os: [ 'linux' ],
+179 silly install resolved     engines: { node: '>=0.8' },
+179 silly install resolved     main: 'inotify',
+179 silly install resolved     dependencies: { bindings: '^1.2.1', nan: '^2.3.3' },
+179 silly install resolved     scripts:
+179 silly install resolved      { test: 'node-gyp configure build',
+179 silly install resolved        install: 'node-gyp rebuild' },
+179 silly install resolved     gypfile: true,
+179 silly install resolved     contributors:
+179 silly install resolved      [ [Object],
+179 silly install resolved        [Object],
+179 silly install resolved        [Object],
+179 silly install resolved        [Object],
+179 silly install resolved        [Object],
+179 silly install resolved        [Object],
+179 silly install resolved        [Object],
+179 silly install resolved        [Object],
+179 silly install resolved        [Object],
+179 silly install resolved        [Object] ],
+179 silly install resolved     gitHead: 'c1416dfada3ca4f3fb40e65eededc52461822ec5',
+179 silly install resolved     bugs: { url: 'https://github.com/c4milo/node-inotify/issues' },
+179 silly install resolved     homepage: 'https://github.com/c4milo/node-inotify#readme',
+179 silly install resolved     _id: 'inotify@1.4.1',
+179 silly install resolved     _shasum: '8abdeb7ee9cbc291542a252df00d848b2a8f9287',
+179 silly install resolved     _from: 'inotify@>=0.1.6',
+179 silly install resolved     _npmVersion: '3.8.6',
+179 silly install resolved     _nodeVersion: '5.11.0',
+179 silly install resolved     _npmUser: { name: 'c4milo', email: 'camilo.aguilar@gmail.com' },
+179 silly install resolved     maintainers: [ [Object], [Object] ],
+179 silly install resolved     dist:
+179 silly install resolved      { shasum: '8abdeb7ee9cbc291542a252df00d848b2a8f9287',
+179 silly install resolved        tarball: 'https://registry.npmjs.org/inotify/-/inotify-1.4.1.tgz' },
+179 silly install resolved     _npmOperationalInternal:
+179 silly install resolved      { host: 'packages-16-east.internal.npmjs.com',
+179 silly install resolved        tmp: 'tmp/inotify-1.4.1.tgz_1462444544613_0.7660284182056785' },
+179 silly install resolved     directories: {},
+179 silly install resolved     _resolved: 'https://registry.npmjs.org/inotify/-/inotify-1.4.1.tgz',
+179 silly install resolved     readme: 'ERROR: No README data found!' } ]
+180 info install inotify@1.4.1 into /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+181 info installOne inotify@1.4.1
+182 verbose installOne of inotify to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev not in flight; installing
+183 verbose lock using /Users/ramiroespada/.npm/_locks/inotify-1707d62546c7f49d.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev/node_modules/inotify
+184 verbose unlock done using /Users/ramiroespada/.npm/_locks/inotify-1707d62546c7f49d.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev/node_modules/inotify
+185 verbose about to build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+186 verbose unlock done using /Users/ramiroespada/.npm/_locks/dev-8f487dcd9128cb35.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+187 http 304 https://registry.npmjs.org/view-size
+188 silly get cb [ 304,
+188 silly get   { date: 'Thu, 29 Sep 2016 10:36:44 GMT',
+188 silly get     via: '1.1 varnish',
+188 silly get     'cache-control': 'max-age=300',
+188 silly get     etag: '"49FOAVUXKX2T9N2QY5EKAQZK9"',
+188 silly get     age: '0',
+188 silly get     connection: 'keep-alive',
+188 silly get     'x-served-by': 'cache-gru7122-GRU',
+188 silly get     'x-cache': 'MISS',
+188 silly get     'x-cache-hits': '0',
+188 silly get     'x-timer': 'S1475145404.778976,VS0,VE777',
+188 silly get     vary: 'Accept-Encoding' } ]
+189 verbose etag https://registry.npmjs.org/view-size from cache
+190 verbose get saving view-size to /Users/ramiroespada/.npm/registry.npmjs.org/view-size/.cache.json
+191 silly addNameRange number 2 { name: 'view-size', range: '>=1.0.1 <1.1.0', hasData: true }
+192 silly addNameRange versions [ 'view-size', [ '1.0.0', '1.0.1' ] ]
+193 verbose addNamed view-size@1.0.1
+194 silly addNamed semver.valid 1.0.1
+195 silly addNamed semver.validRange 1.0.1
+196 silly cache afterAdd view-size@1.0.1
+197 verbose afterAdd /Users/ramiroespada/.npm/view-size/1.0.1/package/package.json not in flight; writing
+198 verbose afterAdd /Users/ramiroespada/.npm/view-size/1.0.1/package/package.json written
+199 silly install resolved [ { name: 'global',
+199 silly install resolved     version: '4.3.1',
+199 silly install resolved     description: 'Require global variables',
+199 silly install resolved     keywords: [],
+199 silly install resolved     author: { name: 'Raynos', email: 'raynos2@gmail.com' },
+199 silly install resolved     repository: { type: 'git', url: 'git://github.com/Raynos/global.git' },
+199 silly install resolved     main: 'window.js',
+199 silly install resolved     homepage: 'https://github.com/Raynos/global',
+199 silly install resolved     contributors: [ [Object] ],
+199 silly install resolved     bugs:
+199 silly install resolved      { url: 'https://github.com/Raynos/global/issues',
+199 silly install resolved        email: 'raynos2@gmail.com' },
+199 silly install resolved     browser: { 'min-document': false, individual: false },
+199 silly install resolved     dependencies: { 'min-document': '^2.19.0', process: '~0.5.1' },
+199 silly install resolved     devDependencies: { tape: '^2.12.0' },
+199 silly install resolved     license: 'MIT',
+199 silly install resolved     scripts:
+199 silly install resolved      { test: 'node ./test',
+199 silly install resolved        build: 'browserify test/index.js -o test/static/bundle.js',
+199 silly install resolved        testem: 'testem' },
+199 silly install resolved     testling: { files: 'test/index.js', browsers: [Object] },
+199 silly install resolved     gitHead: '65eb66c398296ef52887e0ba06a21a88eae62ab6',
+199 silly install resolved     _id: 'global@4.3.1',
+199 silly install resolved     _shasum: '5f757908c7cbabce54f386ae440e11e26b7916df',
+199 silly install resolved     _from: 'global@>=4.3.0 <4.4.0',
+199 silly install resolved     _npmVersion: '2.15.9',
+199 silly install resolved     _nodeVersion: '0.10.32',
+199 silly install resolved     _npmUser: { name: 'raynos', email: 'raynos2@gmail.com' },
+199 silly install resolved     dist:
+199 silly install resolved      { shasum: '5f757908c7cbabce54f386ae440e11e26b7916df',
+199 silly install resolved        tarball: 'https://registry.npmjs.org/global/-/global-4.3.1.tgz' },
+199 silly install resolved     maintainers: [ [Object], [Object], [Object] ],
+199 silly install resolved     _npmOperationalInternal:
+199 silly install resolved      { host: 'packages-16-east.internal.npmjs.com',
+199 silly install resolved        tmp: 'tmp/global-4.3.1.tgz_1474513833151_0.2703236402012408' },
+199 silly install resolved     directories: {},
+199 silly install resolved     _resolved: 'https://registry.npmjs.org/global/-/global-4.3.1.tgz',
+199 silly install resolved     readme: 'ERROR: No README data found!' },
+199 silly install resolved   { name: 'view-size',
+199 silly install resolved     main: 'index.js',
+199 silly install resolved     version: '1.0.1',
+199 silly install resolved     description: 'Get the viewport size',
+199 silly install resolved     license: 'MIT',
+199 silly install resolved     repository:
+199 silly install resolved      { type: 'git',
+199 silly install resolved        url: 'git+https://github.com/bendrucker/view-size.git' },
+199 silly install resolved     author:
+199 silly install resolved      { name: 'Ben Drucker',
+199 silly install resolved        email: 'bvdrucker@gmail.com',
+199 silly install resolved        url: 'bendrucker.me' },
+199 silly install resolved     scripts: { test: 'standard' },
+199 silly install resolved     keywords: [ 'viewport', 'size', 'window' ],
+199 silly install resolved     devDependencies: { standard: '^4.0.0' },
+199 silly install resolved     files: [ 'index.js' ],
+199 silly install resolved     dependencies: { global: '~4.3.0' },
+199 silly install resolved     gitHead: 'fb1633c3edf951c2c387bdb0d8863691f80fb81e',
+199 silly install resolved     bugs: { url: 'https://github.com/bendrucker/view-size/issues' },
+199 silly install resolved     homepage: 'https://github.com/bendrucker/view-size#readme',
+199 silly install resolved     _id: 'view-size@1.0.1',
+199 silly install resolved     _shasum: '747d8285fab00896ba83e4c0dcf333e1e028ab11',
+199 silly install resolved     _from: 'view-size@>=1.0.1 <1.1.0',
+199 silly install resolved     _npmVersion: '2.13.5',
+199 silly install resolved     _nodeVersion: '2.3.3',
+199 silly install resolved     _npmUser: { name: 'bendrucker', email: 'bvdrucker@gmail.com' },
+199 silly install resolved     dist:
+199 silly install resolved      { shasum: '747d8285fab00896ba83e4c0dcf333e1e028ab11',
+199 silly install resolved        tarball: 'https://registry.npmjs.org/view-size/-/view-size-1.0.1.tgz' },
+199 silly install resolved     maintainers: [ [Object] ],
+199 silly install resolved     directories: {},
+199 silly install resolved     _resolved: 'https://registry.npmjs.org/view-size/-/view-size-1.0.1.tgz',
+199 silly install resolved     readme: 'ERROR: No README data found!' } ]
+200 info install global@4.3.1 into /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+201 info install view-size@1.0.1 into /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+202 info installOne global@4.3.1
+203 verbose installOne of global to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation not in flight; installing
+204 info installOne view-size@1.0.1
+205 verbose installOne of view-size to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation not in flight; installing
+206 verbose lock using /Users/ramiroespada/.npm/_locks/global-e35461bf0bf8e802.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+207 verbose lock using /Users/ramiroespada/.npm/_locks/view-size-775f36ab9fc84dbf.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/view-size
+208 silly install write writing global 4.3.1 to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+209 silly cache addNamed cb global@4.3.1
+210 verbose unbuild node_modules/screen-orientation/node_modules/global
+211 silly install write writing view-size 1.0.1 to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/view-size
+212 silly cache addNamed cb view-size@1.0.1
+213 verbose unbuild node_modules/screen-orientation/node_modules/view-size
+214 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+215 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/view-size
+216 verbose tar unpack /Users/ramiroespada/.npm/global/4.3.1/package.tgz
+217 verbose tar unpacking to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+218 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+219 verbose tar unpack /Users/ramiroespada/.npm/view-size/1.0.1/package.tgz
+220 verbose tar unpacking to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/view-size
+221 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/view-size
+222 silly gunzTarPerm modes [ '755', '644' ]
+223 silly gunzTarPerm modes [ '755', '644' ]
+224 silly gunzTarPerm extractEntry package.json
+225 silly gunzTarPerm modified mode [ 'package.json', 436, 420 ]
+226 silly gunzTarPerm extractEntry package.json
+227 silly gunzTarPerm extractEntry .npmignore
+228 silly gunzTarPerm modified mode [ '.npmignore', 436, 420 ]
+229 silly gunzTarPerm extractEntry README.md
+230 silly gunzTarPerm modified mode [ 'README.md', 436, 420 ]
+231 silly gunzTarPerm extractEntry index.js
+232 silly gunzTarPerm extractEntry license
+233 silly gunzTarPerm extractEntry LICENSE
+234 silly gunzTarPerm modified mode [ 'LICENSE', 436, 420 ]
+235 silly gunzTarPerm extractEntry console.js
+236 silly gunzTarPerm modified mode [ 'console.js', 436, 420 ]
+237 silly gunzTarPerm extractEntry readme.md
+238 silly gunzTarPerm extractEntry document.js
+239 silly gunzTarPerm modified mode [ 'document.js', 436, 420 ]
+240 silly gunzTarPerm extractEntry process.js
+241 silly gunzTarPerm modified mode [ 'process.js', 436, 420 ]
+242 silly gunzTarPerm extractEntry window.js
+243 silly gunzTarPerm modified mode [ 'window.js', 436, 420 ]
+244 silly gunzTarPerm extractEntry .travis.yml
+245 silly gunzTarPerm modified mode [ '.travis.yml', 436, 420 ]
+246 info preinstall view-size@1.0.1
+247 silly install resolved []
+248 verbose about to build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/view-size
+249 info build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/view-size
+250 verbose linkStuff [ false,
+250 verbose linkStuff   false,
+250 verbose linkStuff   false,
+250 verbose linkStuff   '/Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules' ]
+251 info linkStuff view-size@1.0.1
+252 verbose linkBins view-size@1.0.1
+253 verbose linkMans view-size@1.0.1
+254 verbose rebuildBundles view-size@1.0.1
+255 info install view-size@1.0.1
+256 info postinstall view-size@1.0.1
+257 verbose unlock done using /Users/ramiroespada/.npm/_locks/view-size-775f36ab9fc84dbf.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/view-size
+258 info preinstall global@4.3.1
+259 silly prepareForInstallMany adding min-document@^2.19.0 from global dependencies
+260 silly prepareForInstallMany adding process@~0.5.1 from global dependencies
+261 silly cache add args [ 'min-document@^2.19.0', null ]
+262 verbose cache add spec min-document@^2.19.0
+263 silly cache add args [ 'process@~0.5.1', null ]
+264 verbose cache add spec process@~0.5.1
+265 silly cache add parsed spec Result {
+265 silly cache add   raw: 'min-document@^2.19.0',
+265 silly cache add   scope: null,
+265 silly cache add   name: 'min-document',
+265 silly cache add   rawSpec: '^2.19.0',
+265 silly cache add   spec: '>=2.19.0 <3.0.0',
+265 silly cache add   type: 'range' }
+266 verbose addNamed min-document@>=2.19.0 <3.0.0
+267 silly addNamed semver.valid null
+268 silly addNamed semver.validRange >=2.19.0 <3.0.0
+269 silly addNameRange { name: 'min-document',
+269 silly addNameRange   range: '>=2.19.0 <3.0.0',
+269 silly addNameRange   hasData: false }
+270 silly mapToRegistry name min-document
+271 silly mapToRegistry using default registry
+272 silly mapToRegistry registry https://registry.npmjs.org/
+273 silly mapToRegistry uri https://registry.npmjs.org/min-document
+274 verbose addNameRange registry:https://registry.npmjs.org/min-document not in flight; fetching
+275 silly cache add parsed spec Result {
+275 silly cache add   raw: 'process@~0.5.1',
+275 silly cache add   scope: null,
+275 silly cache add   name: 'process',
+275 silly cache add   rawSpec: '~0.5.1',
+275 silly cache add   spec: '>=0.5.1 <0.6.0',
+275 silly cache add   type: 'range' }
+276 verbose addNamed process@>=0.5.1 <0.6.0
+277 silly addNamed semver.valid null
+278 silly addNamed semver.validRange >=0.5.1 <0.6.0
+279 silly addNameRange { name: 'process', range: '>=0.5.1 <0.6.0', hasData: false }
+280 silly mapToRegistry name process
+281 silly mapToRegistry using default registry
+282 silly mapToRegistry registry https://registry.npmjs.org/
+283 silly mapToRegistry uri https://registry.npmjs.org/process
+284 verbose addNameRange registry:https://registry.npmjs.org/process not in flight; fetching
+285 verbose request uri https://registry.npmjs.org/min-document
+286 verbose request no auth needed
+287 info attempt registry request try #1 at 12:36:45 PM
+288 verbose etag "7CYHQN870WPH6QL4H56GUS08H"
+289 http request GET https://registry.npmjs.org/min-document
+290 verbose request uri https://registry.npmjs.org/process
+291 verbose request no auth needed
+292 info attempt registry request try #1 at 12:36:45 PM
+293 verbose etag "71CV28LZOVHQKLHNIQI0MDX17"
+294 http request GET https://registry.npmjs.org/process
+295 http 304 https://registry.npmjs.org/min-document
+296 silly get cb [ 304,
+296 silly get   { date: 'Thu, 29 Sep 2016 10:36:45 GMT',
+296 silly get     via: '1.1 varnish',
+296 silly get     'cache-control': 'max-age=300',
+296 silly get     etag: '"7CYHQN870WPH6QL4H56GUS08H"',
+296 silly get     age: '138',
+296 silly get     connection: 'keep-alive',
+296 silly get     'x-served-by': 'cache-gru7127-GRU',
+296 silly get     'x-cache': 'HIT',
+296 silly get     'x-cache-hits': '1',
+296 silly get     'x-timer': 'S1475145405.737126,VS0,VE0',
+296 silly get     vary: 'Accept-Encoding' } ]
+297 verbose etag https://registry.npmjs.org/min-document from cache
+298 verbose get saving min-document to /Users/ramiroespada/.npm/registry.npmjs.org/min-document/.cache.json
+299 http 304 https://registry.npmjs.org/process
+300 silly get cb [ 304,
+300 silly get   { date: 'Thu, 29 Sep 2016 10:36:45 GMT',
+300 silly get     via: '1.1 varnish',
+300 silly get     'cache-control': 'max-age=300',
+300 silly get     etag: '"71CV28LZOVHQKLHNIQI0MDX17"',
+300 silly get     age: '208',
+300 silly get     connection: 'keep-alive',
+300 silly get     'x-served-by': 'cache-gru7124-GRU',
+300 silly get     'x-cache': 'HIT',
+300 silly get     'x-cache-hits': '1',
+300 silly get     'x-timer': 'S1475145405.737187,VS0,VE0',
+300 silly get     vary: 'Accept-Encoding' } ]
+301 verbose etag https://registry.npmjs.org/process from cache
+302 verbose get saving process to /Users/ramiroespada/.npm/registry.npmjs.org/process/.cache.json
+303 silly addNameRange number 2 { name: 'process', range: '>=0.5.1 <0.6.0', hasData: true }
+304 silly addNameRange versions [ 'process',
+304 silly addNameRange   [ '0.4.9',
+304 silly addNameRange     '0.5.0',
+304 silly addNameRange     '0.5.1',
+304 silly addNameRange     '0.5.2',
+304 silly addNameRange     '0.6.0',
+304 silly addNameRange     '0.7.0',
+304 silly addNameRange     '0.8.0',
+304 silly addNameRange     '0.9.0',
+304 silly addNameRange     '0.10.0',
+304 silly addNameRange     '0.10.1',
+304 silly addNameRange     '0.11.0',
+304 silly addNameRange     '0.11.1',
+304 silly addNameRange     '0.11.2',
+304 silly addNameRange     '0.11.3',
+304 silly addNameRange     '0.11.4',
+304 silly addNameRange     '0.11.5',
+304 silly addNameRange     '0.11.6',
+304 silly addNameRange     '0.11.7',
+304 silly addNameRange     '0.11.8',
+304 silly addNameRange     '0.11.9' ] ]
+305 verbose addNamed process@0.5.2
+306 silly addNamed semver.valid 0.5.2
+307 silly addNamed semver.validRange 0.5.2
+308 silly addNameRange number 2 { name: 'min-document', range: '>=2.19.0 <3.0.0', hasData: true }
+309 silly addNameRange versions [ 'min-document',
+309 silly addNameRange   [ '0.2.2',
+309 silly addNameRange     '0.2.3',
+309 silly addNameRange     '0.2.4',
+309 silly addNameRange     '0.2.6',
+309 silly addNameRange     '0.2.7',
+309 silly addNameRange     '0.2.8',
+309 silly addNameRange     '0.3.1',
+309 silly addNameRange     '1.0.1',
+309 silly addNameRange     '1.0.2',
+309 silly addNameRange     '1.0.3',
+309 silly addNameRange     '2.0.0',
+309 silly addNameRange     '2.1.0',
+309 silly addNameRange     '2.2.0',
+309 silly addNameRange     '2.2.1',
+309 silly addNameRange     '2.3.0',
+309 silly addNameRange     '2.4.0',
+309 silly addNameRange     '2.4.1',
+309 silly addNameRange     '2.5.0',
+309 silly addNameRange     '2.6.0',
+309 silly addNameRange     '2.6.1',
+309 silly addNameRange     '2.7.0',
+309 silly addNameRange     '2.8.0',
+309 silly addNameRange     '2.8.1',
+309 silly addNameRange     '2.9.0',
+309 silly addNameRange     '2.9.1',
+309 silly addNameRange     '2.9.2',
+309 silly addNameRange     '2.10.0',
+309 silly addNameRange     '2.11.0',
+309 silly addNameRange     '2.12.0',
+309 silly addNameRange     '2.13.0',
+309 silly addNameRange     '2.14.0',
+309 silly addNameRange     '2.14.1',
+309 silly addNameRange     '2.14.2',
+309 silly addNameRange     '2.16.0',
+309 silly addNameRange     '2.17.0',
+309 silly addNameRange     '2.18.0',
+309 silly addNameRange     '2.18.1',
+309 silly addNameRange     '2.19.0' ] ]
+310 verbose addNamed min-document@2.19.0
+311 silly addNamed semver.valid 2.19.0
+312 silly addNamed semver.validRange 2.19.0
+313 silly cache afterAdd process@0.5.2
+314 verbose afterAdd /Users/ramiroespada/.npm/process/0.5.2/package/package.json not in flight; writing
+315 silly cache afterAdd min-document@2.19.0
+316 verbose afterAdd /Users/ramiroespada/.npm/min-document/2.19.0/package/package.json not in flight; writing
+317 verbose afterAdd /Users/ramiroespada/.npm/min-document/2.19.0/package/package.json written
+318 verbose afterAdd /Users/ramiroespada/.npm/process/0.5.2/package/package.json written
+319 silly install resolved [ { name: 'min-document',
+319 silly install resolved     version: '2.19.0',
+319 silly install resolved     description: 'A minimal DOM implementation',
+319 silly install resolved     keywords: [],
+319 silly install resolved     author: { name: 'Raynos', email: 'raynos2@gmail.com' },
+319 silly install resolved     repository: { type: 'git', url: 'git://github.com/Raynos/min-document.git' },
+319 silly install resolved     main: 'index',
+319 silly install resolved     homepage: 'https://github.com/Raynos/min-document',
+319 silly install resolved     contributors: [ [Object] ],
+319 silly install resolved     bugs:
+319 silly install resolved      { url: 'https://github.com/Raynos/min-document/issues',
+319 silly install resolved        email: 'raynos2@gmail.com' },
+319 silly install resolved     dependencies: { 'dom-walk': '^0.1.0' },
+319 silly install resolved     devDependencies:
+319 silly install resolved      { 'run-browser': 'git://github.com/Raynos/run-browser.git',
+319 silly install resolved        'tap-dot': '^0.2.1',
+319 silly install resolved        'tap-spec': '^0.1.8',
+319 silly install resolved        tape: '^2.12.3' },
+319 silly install resolved     licenses: [ [Object] ],
+319 silly install resolved     scripts:
+319 silly install resolved      { test: 'node ./test/index.js | tap-spec',
+319 silly install resolved        dot: 'node ./test/index.js | tap-dot',
+319 silly install resolved        cover: 'istanbul cover --report none --print detail ./test/index.js',
+319 silly install resolved        'view-cover': 'istanbul report html && google-chrome ./coverage/index.html',
+319 silly install resolved        browser: 'run-browser test/index.js',
+319 silly install resolved        phantom: 'run-browser test/index.js -b | tap-spec' },
+319 silly install resolved     testling: { files: 'test/index.js', browsers: [Object] },
+319 silly install resolved     gitHead: '97449f71bccf778f351dc4c8d9db0ebf6e8b39cb',
+319 silly install resolved     _id: 'min-document@2.19.0',
+319 silly install resolved     _shasum: '7bd282e3f5842ed295bb748cdd9f1ffa2c824685',
+319 silly install resolved     _from: 'min-document@>=2.19.0 <3.0.0',
+319 silly install resolved     _npmVersion: '2.15.9',
+319 silly install resolved     _nodeVersion: '0.10.32',
+319 silly install resolved     _npmUser: { name: 'raynos', email: 'raynos2@gmail.com' },
+319 silly install resolved     dist:
+319 silly install resolved      { shasum: '7bd282e3f5842ed295bb748cdd9f1ffa2c824685',
+319 silly install resolved        tarball: 'https://registry.npmjs.org/min-document/-/min-document-2.19.0.tgz' },
+319 silly install resolved     maintainers: [ [Object], [Object] ],
+319 silly install resolved     _npmOperationalInternal:
+319 silly install resolved      { host: 'packages-16-east.internal.npmjs.com',
+319 silly install resolved        tmp: 'tmp/min-document-2.19.0.tgz_1474498556568_0.5227361361030489' },
+319 silly install resolved     directories: {},
+319 silly install resolved     _resolved: 'https://registry.npmjs.org/min-document/-/min-document-2.19.0.tgz',
+319 silly install resolved     readme: 'ERROR: No README data found!' },
+319 silly install resolved   { author: { name: 'Roman Shtylman', email: 'shtylman@gmail.com' },
+319 silly install resolved     name: 'process',
+319 silly install resolved     description: 'process information for node.js and browsers',
+319 silly install resolved     keywords: [ 'process' ],
+319 silly install resolved     version: '0.5.2',
+319 silly install resolved     repository:
+319 silly install resolved      { type: 'git',
+319 silly install resolved        url: 'git://github.com/shtylman/node-process.git' },
+319 silly install resolved     browser: './browser.js',
+319 silly install resolved     main: './index.js',
+319 silly install resolved     engines: { node: '>= 0.6.0' },
+319 silly install resolved     bugs: { url: 'https://github.com/shtylman/node-process/issues' },
+319 silly install resolved     homepage: 'https://github.com/shtylman/node-process',
+319 silly install resolved     _id: 'process@0.5.2',
+319 silly install resolved     dist:
+319 silly install resolved      { shasum: '1638d8a8e34c2f440a91db95ab9aeb677fc185cf',
+319 silly install resolved        tarball: 'https://registry.npmjs.org/process/-/process-0.5.2.tgz' },
+319 silly install resolved     _from: 'process@>=0.5.1 <0.6.0',
+319 silly install resolved     _npmVersion: '1.3.21',
+319 silly install resolved     _npmUser: { name: 'shtylman', email: 'shtylman@gmail.com' },
+319 silly install resolved     maintainers: [ [Object] ],
+319 silly install resolved     directories: {},
+319 silly install resolved     _shasum: '1638d8a8e34c2f440a91db95ab9aeb677fc185cf',
+319 silly install resolved     _resolved: 'https://registry.npmjs.org/process/-/process-0.5.2.tgz',
+319 silly install resolved     readme: 'ERROR: No README data found!' } ]
+320 info install min-document@2.19.0 into /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+321 info install process@0.5.2 into /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+322 info installOne min-document@2.19.0
+323 verbose installOne of min-document to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global not in flight; installing
+324 info installOne process@0.5.2
+325 verbose installOne of process to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global not in flight; installing
+326 verbose lock using /Users/ramiroespada/.npm/_locks/min-document-69ce3c709bd6660e.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+327 verbose lock using /Users/ramiroespada/.npm/_locks/process-d0bfe96f6be68fea.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/process
+328 silly install write writing min-document 2.19.0 to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+329 silly cache addNamed cb min-document@2.19.0
+330 verbose unbuild node_modules/screen-orientation/node_modules/global/node_modules/min-document
+331 silly install write writing process 0.5.2 to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/process
+332 silly cache addNamed cb process@0.5.2
+333 verbose unbuild node_modules/screen-orientation/node_modules/global/node_modules/process
+334 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+335 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/process
+336 verbose tar unpack /Users/ramiroespada/.npm/min-document/2.19.0/package.tgz
+337 verbose tar unpacking to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+338 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+339 verbose tar unpack /Users/ramiroespada/.npm/process/0.5.2/package.tgz
+340 verbose tar unpacking to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/process
+341 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/process
+342 silly gunzTarPerm modes [ '755', '644' ]
+343 silly gunzTarPerm modes [ '755', '644' ]
+344 silly gunzTarPerm extractEntry package.json
+345 silly gunzTarPerm modified mode [ 'package.json', 436, 420 ]
+346 silly gunzTarPerm extractEntry package.json
+347 silly gunzTarPerm extractEntry .npmignore
+348 silly gunzTarPerm modified mode [ '.npmignore', 436, 420 ]
+349 silly gunzTarPerm extractEntry README.md
+350 silly gunzTarPerm modified mode [ 'README.md', 436, 420 ]
+351 silly gunzTarPerm extractEntry README.md
+352 silly gunzTarPerm extractEntry LICENSE
+353 silly gunzTarPerm extractEntry LICENCE
+354 silly gunzTarPerm modified mode [ 'LICENCE', 436, 420 ]
+355 silly gunzTarPerm extractEntry index.js
+356 silly gunzTarPerm modified mode [ 'index.js', 436, 420 ]
+357 silly gunzTarPerm extractEntry browser.js
+358 silly gunzTarPerm extractEntry index.js
+359 silly gunzTarPerm extractEntry serialize.js
+360 silly gunzTarPerm modified mode [ 'serialize.js', 436, 420 ]
+361 silly gunzTarPerm extractEntry event.js
+362 silly gunzTarPerm modified mode [ 'event.js', 436, 420 ]
+363 silly gunzTarPerm extractEntry document.js
+364 silly gunzTarPerm modified mode [ 'document.js', 436, 420 ]
+365 silly gunzTarPerm extractEntry dom-text.js
+366 silly gunzTarPerm modified mode [ 'dom-text.js', 436, 420 ]
+367 silly gunzTarPerm extractEntry dom-element.js
+368 silly gunzTarPerm modified mode [ 'dom-element.js', 436, 420 ]
+369 silly gunzTarPerm extractEntry dom-fragment.js
+370 silly gunzTarPerm modified mode [ 'dom-fragment.js', 436, 420 ]
+371 silly gunzTarPerm extractEntry dom-comment.js
+372 silly gunzTarPerm modified mode [ 'dom-comment.js', 436, 420 ]
+373 info preinstall process@0.5.2
+374 silly gunzTarPerm extractEntry .jshintrc
+375 silly gunzTarPerm modified mode [ '.jshintrc', 436, 420 ]
+376 silly gunzTarPerm extractEntry event/add-event-listener.js
+377 silly gunzTarPerm modified mode [ 'event/add-event-listener.js', 436, 420 ]
+378 silly install resolved []
+379 verbose about to build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/process
+380 info build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/process
+381 verbose linkStuff [ false,
+381 verbose linkStuff   false,
+381 verbose linkStuff   false,
+381 verbose linkStuff   '/Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules' ]
+382 info linkStuff process@0.5.2
+383 verbose linkBins process@0.5.2
+384 verbose linkMans process@0.5.2
+385 verbose rebuildBundles process@0.5.2
+386 info install process@0.5.2
+387 info postinstall process@0.5.2
+388 silly gunzTarPerm extractEntry event/dispatch-event.js
+389 silly gunzTarPerm modified mode [ 'event/dispatch-event.js', 436, 420 ]
+390 silly gunzTarPerm extractEntry event/remove-event-listener.js
+391 silly gunzTarPerm modified mode [ 'event/remove-event-listener.js', 436, 420 ]
+392 verbose unlock done using /Users/ramiroespada/.npm/_locks/process-d0bfe96f6be68fea.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/process
+393 silly gunzTarPerm extractEntry docs.mli
+394 silly gunzTarPerm modified mode [ 'docs.mli', 436, 420 ]
+395 silly gunzTarPerm extractEntry CONTRIBUTION.md
+396 silly gunzTarPerm modified mode [ 'CONTRIBUTION.md', 436, 420 ]
+397 silly gunzTarPerm extractEntry .travis.yml
+398 silly gunzTarPerm modified mode [ '.travis.yml', 436, 420 ]
+399 silly gunzTarPerm extractEntry .testem.json
+400 silly gunzTarPerm modified mode [ '.testem.json', 436, 420 ]
+401 silly gunzTarPerm extractEntry test/cleanup.js
+402 silly gunzTarPerm modified mode [ 'test/cleanup.js', 436, 420 ]
+403 silly gunzTarPerm extractEntry test/index.js
+404 silly gunzTarPerm modified mode [ 'test/index.js', 436, 420 ]
+405 silly gunzTarPerm extractEntry test/test-document.js
+406 silly gunzTarPerm modified mode [ 'test/test-document.js', 436, 420 ]
+407 silly gunzTarPerm extractEntry test/test-dom-comment.js
+408 silly gunzTarPerm modified mode [ 'test/test-dom-comment.js', 436, 420 ]
+409 silly gunzTarPerm extractEntry test/test-dom-element.js
+410 silly gunzTarPerm modified mode [ 'test/test-dom-element.js', 436, 420 ]
+411 silly gunzTarPerm extractEntry test/static/test-adapter.js
+412 silly gunzTarPerm modified mode [ 'test/static/test-adapter.js', 436, 420 ]
+413 silly gunzTarPerm extractEntry test/static/index.html
+414 silly gunzTarPerm modified mode [ 'test/static/index.html', 436, 420 ]
+415 info preinstall min-document@2.19.0
+416 silly prepareForInstallMany adding dom-walk@^0.1.0 from min-document dependencies
+417 silly cache add args [ 'dom-walk@^0.1.0', null ]
+418 verbose cache add spec dom-walk@^0.1.0
+419 silly cache add parsed spec Result {
+419 silly cache add   raw: 'dom-walk@^0.1.0',
+419 silly cache add   scope: null,
+419 silly cache add   name: 'dom-walk',
+419 silly cache add   rawSpec: '^0.1.0',
+419 silly cache add   spec: '>=0.1.0 <0.2.0',
+419 silly cache add   type: 'range' }
+420 verbose addNamed dom-walk@>=0.1.0 <0.2.0
+421 silly addNamed semver.valid null
+422 silly addNamed semver.validRange >=0.1.0 <0.2.0
+423 silly addNameRange { name: 'dom-walk', range: '>=0.1.0 <0.2.0', hasData: false }
+424 silly mapToRegistry name dom-walk
+425 silly mapToRegistry using default registry
+426 silly mapToRegistry registry https://registry.npmjs.org/
+427 silly mapToRegistry uri https://registry.npmjs.org/dom-walk
+428 verbose addNameRange registry:https://registry.npmjs.org/dom-walk not in flight; fetching
+429 verbose request uri https://registry.npmjs.org/dom-walk
+430 verbose request no auth needed
+431 info attempt registry request try #1 at 12:36:45 PM
+432 verbose etag "2HCP26IWQME6CS6MV5R5A9TRZ"
+433 http request GET https://registry.npmjs.org/dom-walk
+434 http 304 https://registry.npmjs.org/dom-walk
+435 silly get cb [ 304,
+435 silly get   { date: 'Thu, 29 Sep 2016 10:36:45 GMT',
+435 silly get     via: '1.1 varnish',
+435 silly get     'cache-control': 'max-age=300',
+435 silly get     etag: '"2HCP26IWQME6CS6MV5R5A9TRZ"',
+435 silly get     age: '137',
+435 silly get     connection: 'keep-alive',
+435 silly get     'x-served-by': 'cache-gru7123-GRU',
+435 silly get     'x-cache': 'HIT',
+435 silly get     'x-cache-hits': '2',
+435 silly get     'x-timer': 'S1475145405.934232,VS0,VE0',
+435 silly get     vary: 'Accept-Encoding' } ]
+436 verbose etag https://registry.npmjs.org/dom-walk from cache
+437 verbose get saving dom-walk to /Users/ramiroespada/.npm/registry.npmjs.org/dom-walk/.cache.json
+438 silly addNameRange number 2 { name: 'dom-walk', range: '>=0.1.0 <0.2.0', hasData: true }
+439 silly addNameRange versions [ 'dom-walk', [ '0.0.1', '0.1.0', '0.1.1' ] ]
+440 verbose addNamed dom-walk@0.1.1
+441 silly addNamed semver.valid 0.1.1
+442 silly addNamed semver.validRange 0.1.1
+443 silly cache afterAdd dom-walk@0.1.1
+444 verbose afterAdd /Users/ramiroespada/.npm/dom-walk/0.1.1/package/package.json not in flight; writing
+445 verbose afterAdd /Users/ramiroespada/.npm/dom-walk/0.1.1/package/package.json written
+446 silly install resolved [ { name: 'dom-walk',
+446 silly install resolved     version: '0.1.1',
+446 silly install resolved     description: 'iteratively walk a DOM node',
+446 silly install resolved     keywords: [],
+446 silly install resolved     author: { name: 'Raynos', email: 'raynos2@gmail.com' },
+446 silly install resolved     repository: { type: 'git', url: 'git://github.com/Raynos/dom-walk.git' },
+446 silly install resolved     main: 'index',
+446 silly install resolved     homepage: 'https://github.com/Raynos/dom-walk',
+446 silly install resolved     contributors: [ [Object] ],
+446 silly install resolved     bugs:
+446 silly install resolved      { url: 'https://github.com/Raynos/dom-walk/issues',
+446 silly install resolved        email: 'raynos2@gmail.com' },
+446 silly install resolved     dependencies: {},
+446 silly install resolved     devDependencies: { 'browserify-server': '~0.5.6' },
+446 silly install resolved     licenses: [ [Object] ],
+446 silly install resolved     scripts: {},
+446 silly install resolved     _id: 'dom-walk@0.1.1',
+446 silly install resolved     _shasum: '672226dc74c8f799ad35307df936aba11acd6018',
+446 silly install resolved     _from: 'dom-walk@>=0.1.0 <0.2.0',
+446 silly install resolved     _npmVersion: '1.4.10',
+446 silly install resolved     _npmUser: { name: 'raynos', email: 'raynos2@gmail.com' },
+446 silly install resolved     maintainers: [ [Object] ],
+446 silly install resolved     dist:
+446 silly install resolved      { shasum: '672226dc74c8f799ad35307df936aba11acd6018',
+446 silly install resolved        tarball: 'https://registry.npmjs.org/dom-walk/-/dom-walk-0.1.1.tgz' },
+446 silly install resolved     directories: {},
+446 silly install resolved     _resolved: 'https://registry.npmjs.org/dom-walk/-/dom-walk-0.1.1.tgz',
+446 silly install resolved     readme: 'ERROR: No README data found!' } ]
+447 info install dom-walk@0.1.1 into /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+448 info installOne dom-walk@0.1.1
+449 verbose installOne of dom-walk to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document not in flight; installing
+450 verbose lock using /Users/ramiroespada/.npm/_locks/dom-walk-7e6128839f645c72.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+451 silly install write writing dom-walk 0.1.1 to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+452 silly cache addNamed cb dom-walk@0.1.1
+453 verbose unbuild node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+454 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+455 verbose tar unpack /Users/ramiroespada/.npm/dom-walk/0.1.1/package.tgz
+456 verbose tar unpacking to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+457 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+458 silly gunzTarPerm modes [ '755', '644' ]
+459 silly gunzTarPerm extractEntry package.json
+460 silly gunzTarPerm modified mode [ 'package.json', 436, 420 ]
+461 silly gunzTarPerm extractEntry .npmignore
+462 silly gunzTarPerm modified mode [ '.npmignore', 436, 420 ]
+463 silly gunzTarPerm extractEntry README.md
+464 silly gunzTarPerm modified mode [ 'README.md', 436, 420 ]
+465 silly gunzTarPerm extractEntry LICENCE
+466 silly gunzTarPerm modified mode [ 'LICENCE', 436, 420 ]
+467 silly gunzTarPerm extractEntry index.js
+468 silly gunzTarPerm modified mode [ 'index.js', 436, 420 ]
+469 silly gunzTarPerm extractEntry Makefile
+470 silly gunzTarPerm modified mode [ 'Makefile', 436, 420 ]
+471 silly gunzTarPerm extractEntry example/index.js
+472 silly gunzTarPerm modified mode [ 'example/index.js', 436, 420 ]
+473 silly gunzTarPerm extractEntry example/static/bundle.js
+474 silly gunzTarPerm modified mode [ 'example/static/bundle.js', 436, 420 ]
+475 silly gunzTarPerm extractEntry example/static/index.html
+476 silly gunzTarPerm modified mode [ 'example/static/index.html', 436, 420 ]
+477 info preinstall dom-walk@0.1.1
+478 silly install resolved []
+479 verbose about to build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+480 info build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+481 verbose linkStuff [ false,
+481 verbose linkStuff   false,
+481 verbose linkStuff   false,
+481 verbose linkStuff   '/Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules' ]
+482 info linkStuff dom-walk@0.1.1
+483 verbose linkBins dom-walk@0.1.1
+484 verbose linkMans dom-walk@0.1.1
+485 verbose rebuildBundles dom-walk@0.1.1
+486 info install dom-walk@0.1.1
+487 info postinstall dom-walk@0.1.1
+488 verbose unlock done using /Users/ramiroespada/.npm/_locks/dom-walk-7e6128839f645c72.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document/node_modules/dom-walk
+489 verbose about to build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+490 info build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+491 verbose linkStuff [ false,
+491 verbose linkStuff   false,
+491 verbose linkStuff   false,
+491 verbose linkStuff   '/Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules' ]
+492 info linkStuff min-document@2.19.0
+493 verbose linkBins min-document@2.19.0
+494 verbose linkMans min-document@2.19.0
+495 verbose rebuildBundles min-document@2.19.0
+496 verbose rebuildBundles [ 'dom-walk' ]
+497 info install min-document@2.19.0
+498 info postinstall min-document@2.19.0
+499 verbose unlock done using /Users/ramiroespada/.npm/_locks/min-document-69ce3c709bd6660e.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global/node_modules/min-document
+500 verbose about to build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+501 info build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+502 verbose linkStuff [ false,
+502 verbose linkStuff   false,
+502 verbose linkStuff   false,
+502 verbose linkStuff   '/Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules' ]
+503 info linkStuff global@4.3.1
+504 verbose linkBins global@4.3.1
+505 verbose linkMans global@4.3.1
+506 verbose rebuildBundles global@4.3.1
+507 verbose rebuildBundles [ 'min-document', 'process' ]
+508 info install global@4.3.1
+509 info postinstall global@4.3.1
+510 verbose unlock done using /Users/ramiroespada/.npm/_locks/global-e35461bf0bf8e802.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation/node_modules/global
+511 verbose about to build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+512 info build /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+513 verbose linkStuff [ false,
+513 verbose linkStuff   false,
+513 verbose linkStuff   false,
+513 verbose linkStuff   '/Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules' ]
+514 info linkStuff screen-orientation@1.0.3
+515 verbose linkBins screen-orientation@1.0.3
+516 verbose linkMans screen-orientation@1.0.3
+517 verbose rebuildBundles screen-orientation@1.0.3
+518 verbose rebuildBundles [ 'global', 'view-size' ]
+519 info install screen-orientation@1.0.3
+520 info postinstall screen-orientation@1.0.3
+521 verbose unlock done using /Users/ramiroespada/.npm/_locks/screen-orientation-7c8880128c170dcc.lock for /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/screen-orientation
+522 verbose stack Error: Unsupported
+522 verbose stack     at checkPlatform (/usr/local/lib/node_modules/npm/node_modules/npm-install-checks/index.js:47:14)
+522 verbose stack     at Array.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/slide/lib/bind-actor.js:15:8)
+522 verbose stack     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:15:14)
+522 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:18:7
+522 verbose stack     at checkEngine (/usr/local/lib/node_modules/npm/node_modules/npm-install-checks/index.js:26:10)
+522 verbose stack     at Array.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/slide/lib/bind-actor.js:15:8)
+522 verbose stack     at LOOP (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:15:14)
+522 verbose stack     at chain (/usr/local/lib/node_modules/npm/node_modules/slide/lib/chain.js:20:5)
+522 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:949:5
+522 verbose stack     at /usr/local/lib/node_modules/npm/lib/utils/locker.js:40:9
+523 verbose pkgid inotify@1.4.1
+524 verbose cwd /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework
+525 error Darwin 15.6.0
+526 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "screen-orientation" "--save" "dev"
+527 error node v4.2.1
+528 error npm  v2.5.1
+529 error code EBADPLATFORM
+530 error notsup Unsupported
+530 error notsup Not compatible with your operating system or architecture: inotify@1.4.1
+530 error notsup Valid OS:    linux
+530 error notsup Valid Arch:  any
+530 error notsup Actual OS:   darwin
+530 error notsup Actual Arch: x64
+531 verbose exit [ 1, true ]
+532 verbose unbuild node_modules/dev
+533 info preuninstall dev@0.1.3
+534 info uninstall dev@0.1.3
+535 verbose unbuild rmStuff dev@0.1.3 from /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules
+536 verbose gentlyRm verifying that /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework is managed by npm
+537 silly isManaged /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework is not inside /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules
+538 silly isManaged /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework is not inside /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules
+539 silly isManaged /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/.bin is inside /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework
+540 silly gentlyRm /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework is managed by npm
+541 silly gentlyRm /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/.bin/node-dev is under /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework
+542 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/.bin/node-dev up to /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework
+543 info postuninstall dev@0.1.3
+544 verbose gentlyRm vacuuming /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+545 silly gentlyRm purging /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules/dev
+546 silly gentlyRm quitting because other entries in /Users/ramiroespada/Documents/WORK/Molamil/2016/886- B&O Play /codethewave-framework/node_modules

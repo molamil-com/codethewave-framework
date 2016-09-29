@@ -1,0 +1,116 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>RE2</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="./js/pixi.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="sp-framework.js"></script><script>
+
+
+        var background;
+
+        SPF.set({
+
+            at:"back",
+
+
+            init: function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                background = new PIXI.Graphics();
+
+                var c = input.colors[Math.round(Math.random()*( input.colors.length-1))];
+                background.clear();
+                background.beginFill(c, 1);
+                background.drawRect(0,0,w,h);
+                background.endFill();
+
+                input.container.addChild(background);
+
+            },
+
+            resize :function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                var c = input.colors[Math.round(Math.random()*( input.colors.length-1))];
+                background.clear();
+                background.beginFill(c, 1);
+                background.drawRect(0,0,w,h);
+                background.endFill();
+
+
+            }
+
+        });
+
+
+
+        var mid;
+
+        SPF.set({
+
+            at: 'mid', // "fore" "mid" or "back"
+
+
+            init: function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                mid = new PIXI.Graphics();
+
+                mid.clear();
+                mid.beginFill(0x000000, 1);
+                mid.drawRect(0,0,w,h);
+                mid.endFill();
+
+                input.container.addChild(mid);
+
+                mid.visible = false;
+                SPF.midgroundMask(false);
+            },
+
+            render :function(PIXI, input) {
+                console.log("x: "+input.mouseTouchPosition.x+" y: "+input.mouseTouchPosition.y);
+                console.log();
+            },
+
+            resize :function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                mid.clear();
+                mid.beginFill(0x000000, 1);
+                mid.drawRect(0,0,w,h);
+                mid.endFill();
+
+            }
+        });
+
+
+        SPF.set({
+
+            at: 'fore', // "fore" "mid" or "back"
+
+            mouseOver:function(PIXI, input) {
+                mid.visible = true;
+                SPF.midgroundMask(true);
+            },
+
+            mouseOut:function(PIXI, input) {
+                mid.visible = false;
+                SPF.midgroundMask(false);
+            }
+
+        });
+
+
+        SPF.info({debug:false, title:"RE MOUSE ENTERS/EXITS", tip:"", firstName:"Ramiro", lastName:"Espada", email:"re@ramiroespada.com"});
+
+        SPF.start("chorus1");
+
+
+    </script></body></html>
