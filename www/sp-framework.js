@@ -12806,7 +12806,6 @@ module.exports = {
 
 };
 
-
 },{}],47:[function(require,module,exports){
 var $ = require('jquery');
 
@@ -12870,6 +12869,9 @@ function Ui() {
 
         uiContainer = $('#BPSPUI');
         uiNavigation = $('#BPSPUI-navigation');
+
+        uiContainer.css("display","none");
+        uiNavigation.css("display","none");
 
         var o = '<div class="orientation"><div class="message">';
 
@@ -12980,6 +12982,7 @@ function Ui() {
     this.render = function(position){
         playHead.css("left", position+"%");
         playHeadTail.css("left", position+"%");
+
     };
 
     this.resize = function(input){
@@ -13024,6 +13027,9 @@ function Ui() {
             i++;
 
         });
+
+        uiContainer.css("display","block");
+        uiNavigation.css("display","block");
 
     };
 
@@ -13292,7 +13298,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.7;
+    var version = 0.8;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 

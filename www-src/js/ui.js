@@ -61,6 +61,9 @@ function Ui() {
         uiContainer = $('#BPSPUI');
         uiNavigation = $('#BPSPUI-navigation');
 
+        uiContainer.css("display","none");
+        uiNavigation.css("display","none");
+
         var o = '<div class="orientation"><div class="message">';
 
         var iconPath = serverPath + "svg/PS_graphic_phone.svg";
@@ -170,6 +173,7 @@ function Ui() {
     this.render = function(position){
         playHead.css("left", position+"%");
         playHeadTail.css("left", position+"%");
+
     };
 
     this.resize = function(input){
@@ -214,6 +218,9 @@ function Ui() {
             i++;
 
         });
+
+        uiContainer.css("display","block");
+        uiNavigation.css("display","block");
 
     };
 
