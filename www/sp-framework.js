@@ -13071,14 +13071,7 @@ function Video() {
 
     var renderer;
 
-    var videos = [
-
-
-        {file:"chroma01-w480.mp4", width:480, height:540},
-        {file:"chroma01-w960.mp4", width:960, height:1080},
-        {file:"chroma01-w1440.mp4", width:1440, height:1620},
-        {file:"chroma01-w1920.mp4", width:1920, height:2160}
-    ];
+    var videos;
 
     this.init = function(PIXI, dom, container, _renderer, resolution, input, callback) {
 
@@ -13087,19 +13080,24 @@ function Video() {
 
         // CREATE VIDEO ELEMENTS
 
-        var videoPath = serverPath +"video/chroma01-w1920.mp4";
 
-        /*
+        if(document.location.hostname.indexOf("codepen")>1 && navigator.userAgent.search("Firefox") ){
 
-         chroma01-w480.mp4
-         chroma01-w960.mp4
-         chroma01-w1440.mp4
-         chroma01-w1920.mp4
+            videos = [
+                {file:"chroma01-w480.mp4", width:480, height:540},
+                {file:"chroma01-w960.mp4", width:960, height:1080}
+            ];
 
-         */
+        } else {
 
+            videos = [
+                {file:"chroma01-w480.mp4", width:480, height:540},
+                {file:"chroma01-w960.mp4", width:960, height:1080},
+                {file:"chroma01-w1440.mp4", width:1440, height:1620},
+                {file:"chroma01-w1920.mp4", width:1920, height:2160}
+            ];
 
-
+        }
 
         var selectedVideo = videos[0];
 
@@ -13294,7 +13292,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.6;
+    var version = 0.7;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
