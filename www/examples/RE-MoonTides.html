@@ -1,0 +1,194 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>RE Moon Tides</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../js/pixi.min.js"></script><script src="../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../sp-framework.js"></script><script>
+
+
+        var background;
+
+        SPF.set({
+
+            at:"back",
+
+            init: function(PIXI, input) {
+
+                background = new PIXI.Graphics();
+                input.container.addChild(background);
+
+            },
+
+            resize :function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                background.clear();
+                background.beginFill(input.colors[16], 1);
+                background.drawRect(0,0,w,h);
+                background.endFill();
+            }
+
+        });
+
+
+        var particles;
+        var count = -1;
+        var tCount = 0;
+        var isBeat = true;
+
+        var isMouseOver = false;
+
+        function createParticle(PIXI, input, size) {
+
+            var w =  input.width;
+            var h =  input.height;
+
+            count++;
+
+            var textures = [input.patterns.animaltech,input.patterns.bbbbird1, input.patterns.bbbbird2, input.patterns.botanicorganic1, input.patterns.botanicorganic3,input.patterns.handdrawnanimal];
+
+            var t = textures[tCount];
+
+            if(tCount == textures.length-1){
+                tCount = 0;
+            } else {
+                tCount++;
+            }
+
+            var bg = new PIXI.extras.TilingSprite(t, 1, 1);
+
+            input.container.addChild(bg);
+
+            var masker = new PIXI.Graphics();
+            masker.beginFill(0XFFFF00);
+            masker.drawCircle(0, 0, ((w/2)*size));
+            masker.endFill();
+            input.container.addChild(masker);
+
+            masker.cacheAsBitmap = true;
+            bg.mask = masker;
+
+
+
+            bg.width = w*2;
+            bg.height = h*2;
+
+            masker.position.x = Math.random()*w;
+            masker.position.y =  Math.random()*h;
+
+
+            if(isMouseOver){
+                masker.position.x = input.mouseTouchPosition.x;
+                masker.position.y = input.mouseTouchPosition.y;
+            }
+
+
+            var p = {"bg":bg, "masker":masker};
+
+            particles.push(p);
+
+            animateIn(count, input);
+
+
+        };
+
+        function animateIn(i, input){
+
+            isBeat = false;
+
+            TweenMax.to(particles[i].bg, 0, {"alpha":0.8});
+            TweenMax.to(particles[i].masker.scale, 0, {"x":0.1, "y":0.1});
+            TweenMax.to(particles[i].masker.scale, 0.4, {"x":1, "y":1});
+
+            setTimeout(function(){
+
+                isBeat = true;
+
+                particles[i].bg.blendMode = PIXI.BLEND_MODES.ADD;
+
+            }, 200);
+
+            TweenMax.to(particles[i].bg, 2, {"alpha":0 ,delay:0.4});
+
+            setTimeout(function(){
+                input.container.removeChild(particles[i].masker);
+                input.container.removeChild(particles[i].bg);
+            }, 3000);
+
+        }
+
+        SPF.set({
+
+            at: 'fore', // "fore" "mid" or "back"
+
+            mouseOver:function(PIXI, input) {
+                isMouseOver = true;
+            },
+
+            mouseOut:function(PIXI, input) {
+                isMouseOver = false;
+            }
+
+        });
+
+        SPF.set({
+
+            at:"mid",
+
+
+            load: function(PIXI, input) {
+
+                return [input.patterns.animaltech,input.patterns.bbbbird1, input.patterns.bbbbird2, input.patterns.botanicorganic1, input.patterns.botanicorganic3,input.patterns.handdrawnanimal];
+
+            },
+
+            init: function(PIXI, input) {
+
+                particles = new Array();
+
+
+            },
+
+
+            render :function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+
+                    var fs = input.audio.frequencies();
+
+                    var f = 0;
+                    var fAvailable = 0;
+
+                    if(fs) {
+
+                        for (var i = 0; i < fs.length; i++) {
+                            if (fs[i] > 0) {
+                                f += fs[i];
+                                fAvailable++;
+                            }
+                        }
+
+                        f = (f / (255 * fAvailable));
+
+                        if(isBeat)
+                            createParticle(PIXI, input, f);
+
+                    }
+
+
+
+            }
+
+        });
+
+
+        SPF.info({debug:false, title:"RE MOON TIDES", tip:"Move your cursor or finger around to change the position of the graphics", firstName:"Ramiro", lastName:"Espada", email:"re@ramiroespada.com"});
+
+        SPF.start("verse1");
+
+
+
+    </script></body></html>

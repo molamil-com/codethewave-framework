@@ -1,0 +1,115 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Multiple Graphics</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../js/pixi.min.js"></script>
+
+        <script src="../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../sp-framework.js"></script>
+
+    <script>
+
+        var maxCount = 22;
+        var count = 0;
+        var sprites, sprite;
+        var allGraphics;
+
+        function addGraphic(PIXI, input){
+
+
+            sprite = new PIXI.Sprite(allGraphics[Math.round(Math.random()*( allGraphics.length-1))] );
+
+            sprite.anchor.set(0.5);
+
+            sprite.rotation = (Math.random()*90)*4;
+
+            sprite.x = Math.random()*input.width;
+            sprite.y = Math.random()*input.height;
+
+            if(input.container.children[count])
+                input.container.removeChildAt(count);
+
+            input.container.addChildAt(sprite, count);
+
+            if(count >= maxCount) {
+                count = 0
+            } else {
+                count++;
+            };
+
+        };
+
+
+        SPF.set({
+
+            at:"back",
+
+            load: function(PIXI, input) {
+
+                allGraphics = [input.graphics.animaltech,input.graphics.bbbbird1, input.graphics.bbbbird2, input.graphics.bbbbird3, input.graphics.botanicorganic, input.graphics.handdrawnanimal1, input.graphics.handdrawnanimal2, input.graphics.handdrawnanimal3];
+
+                return allGraphics
+
+            },
+
+            init: function(PIXI, input) {
+
+
+            },
+
+            render: function(PIXI, input) {
+
+                 addGraphic(PIXI, input);
+            }
+
+        });
+
+
+
+        SPF.info({
+            debug: false,
+            title: "Multiple Graphics",
+            tip: "",
+            firstName: "Ramiro",
+            lastName: "Espada",
+            email: "re@ramiroespada.com"
+        });
+
+        SPF.start();
+
+    </script>
+
+    </body>
+
+</html>

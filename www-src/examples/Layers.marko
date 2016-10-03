@@ -8,7 +8,7 @@
 
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-        <title>Video Key</title>
+        <title>Test</title>
 
         <meta name="description" content="">
 
@@ -16,15 +16,15 @@
 
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-        <link rel="stylesheet" href="main.css"/>
+        <link rel="stylesheet" href="../main.css"/>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
 
-        <script src="./js/pixi.min.js"></script>
+        <script src="../js/pixi.min.js"></script>
 
-        <script src="./js/TweenMax.min.js"></script>
+        <script src="../js/TweenMax.min.js"></script>
 
     </head>
 
@@ -36,7 +36,7 @@
 
     <![endif]-->
 
-    <script src="sp-framework.js"></script>
+    <script src="../sp-framework.js"></script>
 
     <script>
 
@@ -60,26 +60,25 @@
                 var h =  input.height;
 
                 background.clear();
-                background.beginFill(input.colors[10], 1);
+                background.beginFill(input.colors[6], 1);
                 background.drawRect(0,0,w,h);
                 background.endFill();
             }
 
         });
 
+
         var mid;
 
         SPF.set({
 
-            at: 'mid', // "fore" "mid" or "back"
+            at:"mid",
+
             init: function(PIXI, input) {
 
                 mid = new PIXI.Graphics();
                 input.container.addChild(mid);
 
-            },
-            render: function(PIXI, input) {
-                SPF.midgroundMask(true);
             },
 
             resize :function(PIXI, input) {
@@ -88,16 +87,48 @@
                 var h =  input.height;
 
                 mid.clear();
-                mid.beginFill(input.colors[11], 1);
-                mid.drawRect(0,0,w,h);
+                mid.beginFill(input.colors[2], 1);
+                mid.drawRect(0,0,w/2,h/2);
                 mid.endFill();
+
+                mid.position.set(w/4, h/4);
             }
 
         });
 
+
+        var front;
+
+        SPF.set({
+
+            at:"fore",
+
+            init: function(PIXI, input) {
+
+                front = new PIXI.Graphics();
+                input.container.addChild(front);
+
+            },
+
+            resize :function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                front.clear();
+                front.beginFill(input.colors[13], 1);
+                front.drawRect(0,0,w,100);
+                front.endFill();
+
+                front.position.set(0, h/2);
+            }
+
+        });
+
+
         SPF.info({
-            debug: true,
-            title: "RE No video",
+            debug: false,
+            title: "RE Test",
             tip: "",
             firstName: "Ramiro",
             lastName: "Espada",

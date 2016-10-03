@@ -12800,11 +12800,13 @@ module.exports = {
 
 module.exports = {
 
-     serverPath: "http://scarletpleasure.molamil.com/"
+    // serverPath: "http://scarletpleasure.molamil.com/"
 
-     // serverPath: "./"
+    serverPath: "../"
 
 };
+
+
 
 },{}],47:[function(require,module,exports){
 var $ = require('jquery');
@@ -13113,9 +13115,17 @@ function Video() {
 
             var v = videos[i];
 
-            if(input.width >= v["width"] ){
-                selectedVideo = v;
+            if (input.isTouchDevice) {
+                if(input.width/2 >= v["width"] ){
+                    selectedVideo = v;
+                }
+            } else {
+                if(input.width >= v["width"] ){
+                    selectedVideo = v;
+                }
             }
+
+
 
         }
 
@@ -13169,6 +13179,7 @@ function Video() {
             videoWidth = Math.ceil(videoWidth / 2);
             videoHeight = Math.ceil(videoHeight / 2);
         };
+
 
         $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0,  height:videoHeight/4});
 
@@ -13303,7 +13314,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.010;
+    var version = 0.011;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13514,7 +13525,7 @@ var fps = require('fps');
 
         ticker.on('data', function(fps) {
             input.frameRate = Math.round(fps);
-            // SPF.log("input.frameRate ", input.frameRate );
+            SPF.log("input.frameRate ", input.frameRate );
         });
 
         foreground.visible = false;

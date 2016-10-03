@@ -62,9 +62,17 @@ function Video() {
 
             var v = videos[i];
 
-            if(input.width >= v["width"] ){
-                selectedVideo = v;
+            if (input.isTouchDevice) {
+                if(input.width/2 >= v["width"] ){
+                    selectedVideo = v;
+                }
+            } else {
+                if(input.width >= v["width"] ){
+                    selectedVideo = v;
+                }
             }
+
+
 
         }
 
@@ -118,6 +126,7 @@ function Video() {
             videoWidth = Math.ceil(videoWidth / 2);
             videoHeight = Math.ceil(videoHeight / 2);
         };
+
 
         $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0,  height:videoHeight/4});
 

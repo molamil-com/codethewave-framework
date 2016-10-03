@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.010;
+    var version = 0.011;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -233,7 +233,7 @@ var fps = require('fps');
 
         ticker.on('data', function(fps) {
             input.frameRate = Math.round(fps);
-            // SPF.log("input.frameRate ", input.frameRate );
+            SPF.log("input.frameRate ", input.frameRate );
         });
 
         foreground.visible = false;

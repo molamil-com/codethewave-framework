@@ -1,0 +1,137 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Masking Video</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../js/pixi.min.js"></script>
+
+        <script src="../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../sp-framework.js"></script>
+
+    <script>
+
+        var background;
+
+        var sprite;
+
+        var masker;
+
+        SPF.set({
+
+            at:"back",
+
+            init: function(PIXI, input) {
+                background = new PIXI.Graphics();
+                input.container.addChild(background);
+            },
+
+            resize: function(PIXI, input) {
+
+                var c = input.colors[Math.round(Math.random()*( input.colors.length-1))];
+                background.clear();
+                background.beginFill(c, 1);
+                background.drawRect(0,0,input.width,input.height);
+                background.endFill();
+            }
+
+        });
+
+        SPF.set({
+
+            at:"fore",
+
+            load: function(PIXI, input) {
+
+                return [input.patterns.botanicorganic2,input.maskers.botanicorganic2];
+
+            },
+
+            init: function(PIXI, input) {
+
+                sprite = new PIXI.extras.TilingSprite(input.patterns.botanicorganic2, 1, 1);
+                sprite.anchor.set(0);
+                input.container.addChild(sprite);
+
+                masker = SPF.fullscreenSprite(input.container, input.maskers.botanicorganic2);
+                input.container.addChild(masker);
+
+                sprite.mask = masker;
+            },
+
+            mouseDownTouchStart: function(PIXI, input) {
+                sprite.mask = null;
+            },
+
+            mouseUpTouchEnd: function(PIXI, input) {
+                sprite.mask = masker;
+
+            },
+
+
+            resize: function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                sprite.width = w;
+                sprite.height = h;
+
+                var c = input.colors[Math.round(Math.random()*( input.colors.length-1))];
+                background.clear();
+                background.beginFill(c, 1);
+                background.drawRect(0,0,w,h);
+                background.endFill();
+
+
+            }
+
+        });
+
+
+
+        SPF.info({
+            debug: false,
+            title: "Masking Video",
+            tip: "Click or Tap to reveal the mask",
+            firstName: "Ramiro",
+            lastName: "Espada",
+            email: "re@ramiroespada.com"
+        });
+
+        SPF.start();
+
+    </script>
+
+    </body>
+
+</html>
