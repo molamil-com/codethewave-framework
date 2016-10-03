@@ -173,7 +173,6 @@ function Ui() {
     this.render = function(position){
         playHead.css("left", position+"%");
         playHeadTail.css("left", position+"%");
-
     };
 
     this.resize = function(input){
@@ -219,9 +218,12 @@ function Ui() {
 
         });
 
+    };
+
+    this.display = function(){
+
         uiContainer.css("display","block");
         uiNavigation.css("display","block");
-
     };
 
     Number.prototype.roundTo = function(num) {

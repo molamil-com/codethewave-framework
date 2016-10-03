@@ -264,7 +264,11 @@ Scarlet Pleasure Framework
 
             // beat.vtt - Molamil
 
-            // Ask Kasper for audio plugin + scripts for markers to vtt
+         - input.styling
+
+             // (JSON Object) example: {"id": "none"} {"id": "black"}
+
+             // styling.vtt - Molamil
 
 
 ------------------------------------------------------------

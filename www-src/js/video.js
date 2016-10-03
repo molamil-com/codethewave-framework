@@ -88,6 +88,9 @@ function Video() {
         video += '<track kind="metadata" label="beat" src="' + serverPath + 'tracks/beat.vtt" default>';
         video += '</track>';
 
+        video += '<track kind="metadata" label="styling" src="' + serverPath + 'tracks/styling.vtt" default>';
+        video += '</track>';
+
         video += '</video>';
 
         $(dom).append(video);
@@ -109,7 +112,6 @@ function Video() {
             callback();
         };
 
-
         renderer = _renderer;
 
         if (input.isTouchDevice) {
@@ -117,7 +119,8 @@ function Video() {
             videoHeight = Math.ceil(videoHeight / 2);
         };
 
-        $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: videoWidth, height:videoHeight});
+        $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0,  height:videoHeight/4});
+
 
         // CREATE PIXI TEXTURES
 
@@ -137,7 +140,6 @@ function Video() {
 
         videoRenderTexture = new PIXI.RenderTexture.create(videoWidth, videoHeight*resolution);
         videoMask = new PIXI.Sprite(videoRenderTexture);
-
 
     };
 
@@ -165,10 +167,10 @@ function Video() {
 
         video.pause();
 
-
     };
 
     this.render = function(realTime) {
+
 
         if(videoRenderTexture){
 
@@ -203,6 +205,7 @@ function Video() {
     };
 
     this.resize = function(input){
+
 
         var w =  input.width;
         var h =  input.height;

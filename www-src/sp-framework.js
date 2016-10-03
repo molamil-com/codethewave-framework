@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.8;
+    var version = 0.010;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -100,7 +100,6 @@ var fps = require('fps');
         graphics = require("./js/graphics.js").init(PIXI, input);
         maskers = require("./js/maskers.js").init(PIXI, input);
 
-
         // document.domain = "scarletpleasure.molamil.com";
 
         stage = new PIXI.Container();
@@ -113,7 +112,8 @@ var fps = require('fps');
             antialiasing: false,
             transparent: false,
             backgroundColor: conf.color
-        });
+        }, false);
+
 
         // Create the layers
 
@@ -289,8 +289,10 @@ var fps = require('fps');
 
         isVideoReady = true;
 
-        if(ui != null)
+        if(ui != null){
             ui.getVideoPlayButton().css("display","block");
+            ui.display();
+        }
 
 
         if ('ontouchstart' in document.documentElement) {
@@ -447,6 +449,20 @@ var fps = require('fps');
             SPF.log("input.beat", JSON.stringify(input.beat));
         };
 
+
+        input.styling = null;
+        var stylingTrack = tracks[3]; // styling.vtt;
+        stylingTrack.oncuechange = function (){
+            var cue = this.activeCues[0];
+            if(cue) {
+                var cueData = JSON.parse(cue.text);
+                input.styling = cueData;
+            } else {
+                input.styling = null;
+            }
+            SPF.log("input.styling", JSON.stringify(input.editing));
+        };
+
         //
 
         resize();
@@ -455,9 +471,8 @@ var fps = require('fps');
 
     function resize(){
 
-        input.width = getWindowCoords()[0];
+        input.width =  getWindowCoords()[0];
         input.height = getWindowCoords()[1];
-
 
         stage.hitArea = new PIXI.Rectangle(0, 0,  input.width, input.height);
 
