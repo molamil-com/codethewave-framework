@@ -76,5 +76,5 @@ Choose an example in the [www/examples](www/examples) folder and work from there
 ## Documentation
 
 The framework documentation is available here:
-[https://github.com/molamil-com/codethewave-framework/blob/master/documentation.md](documentation.md)
+[documentation.md](documentation.md)
 
