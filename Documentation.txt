@@ -160,6 +160,10 @@ Scarlet Pleasure Framework
 
             - mouseUpTouchEnd (PIXI, input) (Function)
 
+            - mouseOver (PIXI, input) (Function) only available on Foreground
+
+            - mouseOver (PIXI, input) (Function) only available on Foreground
+
         - info
 
             - debug (Bboolean)

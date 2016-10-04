@@ -8,7 +8,7 @@
 
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-        <title>Masking Video</title>
+        <title>Video Masking</title>
 
         <meta name="description" content="">
 
@@ -55,7 +55,7 @@
                 input.container.addChild(background);
             },
 
-            resize: function(PIXI, input) {
+            render: function(PIXI, input) {
 
                 var c = input.colors[Math.round(Math.random()*( input.colors.length-1))];
                 background.clear();
@@ -68,11 +68,11 @@
 
         SPF.set({
 
-            at:"fore",
+            at:"mid",
 
             load: function(PIXI, input) {
 
-                return [input.patterns.botanicorganic2,input.maskers.botanicorganic2];
+                return [input.patterns.botanicorganic2];
 
             },
 
@@ -82,19 +82,16 @@
                 sprite.anchor.set(0);
                 input.container.addChild(sprite);
 
-                masker = SPF.fullscreenSprite(input.container, input.maskers.botanicorganic2);
-                input.container.addChild(masker);
+                SPF.midgroundMask(true);
 
-                sprite.mask = masker;
             },
 
             mouseDownTouchStart: function(PIXI, input) {
-                sprite.mask = null;
+                SPF.midgroundMask(false);
             },
 
             mouseUpTouchEnd: function(PIXI, input) {
-                sprite.mask = masker;
-
+                SPF.midgroundMask(true);
             },
 
 
@@ -106,6 +103,7 @@
                 sprite.width = w;
                 sprite.height = h;
 
+
             }
 
         });
@@ -114,8 +112,8 @@
 
         SPF.info({
             debug: false,
-            title: "Masking Video",
-            tip: "Click or Tap to reveal the mask",
+            title: "Video Masking ",
+            tip: "Click or Tap to stop the mask",
             firstName: "Ramiro",
             lastName: "Espada",
             email: "re@ramiroespada.com"
