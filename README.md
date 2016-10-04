@@ -70,11 +70,11 @@ Once NPM is done installing start the development server:
 gulp
 ```
 
-Choose an example in the [www/examples](https://github.com/molamil-com/codethewave-framework/tree/master/www/examples) folder and work from there.
+Choose an example in the [www/examples](www/examples) folder and work from there.
 
 
 ## Documentation
 
 The framework documentation is available here:
-[https://github.com/molamil-com/codethewave-framework/blob/master/documentation.md](https://github.com/molamil-com/codethewave-framework/blob/master/documentation.md)
+[https://github.com/molamil-com/codethewave-framework/blob/master/documentation.md](documentation.md)
 
