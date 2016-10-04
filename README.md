@@ -5,33 +5,43 @@
 
 
 # RE Status log
+        
+ ### 04-10-2016
+ 
+ ```
+ 
+     Examples:
+ 
+     http://scarletpleasure.molamil.com/examples/VideoMasking.html
+     http://scarletpleasure.molamil.com/examples/WebAudioAnalyser.html
+     http://scarletpleasure.molamil.com/examples/Cast.html
+     
+ 
+ ```
+ 
+### 03-10-2016
 
+```
 
-    TODO (when the final video and sound is ready):
+    Examples:
+
+    http://scarletpleasure.molamil.com/examples/FullscreenSprite.html
+    http://scarletpleasure.molamil.com/examples/Layers.html
+    http://scarletpleasure.molamil.com/examples/MaskingPattern.html
+    http://scarletpleasure.molamil.com/examples/MaskingVideo.html
+    http://scarletpleasure.molamil.com/examples/MouseTouchPosition.html
+    http://scarletpleasure.molamil.com/examples/MultipleGraphics.html
+    http://scarletpleasure.molamil.com/examples/Orientation.html
+    http://scarletpleasure.molamil.com/examples/RE-Boids.html
+    http://scarletpleasure.molamil.com/examples/RE-MoonTides.html
+    http://scarletpleasure.molamil.com/examples/RE-Wave.html
+    http://scarletpleasure.molamil.com/examples/ScrollTilingSprite.html
+    http://scarletpleasure.molamil.com/examples/TilingSprite.html
+    http://scarletpleasure.molamil.com/examples/VideoKey.html
     
-        - Play selected section from start (for testing): 0.5
-    
-        - Link UI navigation with video.currentTime to play the selected section: 1
-        
-        - Create track: beat.vtt: 4
-        
-        - Create track: cast.vtt: 6
-        
-        - Create track: editing.vtt: 6
-        
-        - Create track: tracking.vtt: 10
-        
-        - Render video optimized including masking layer: 8
-        
-        - Review loading and buffering time: 6
-        
-        - Change mp4 with very low quality mp3 for optimal performance on mobile: 1
-        
-        
-    TODO:
-                    
-        - Change all framework to absolute based on domain/hosting
-               
+
+```
+  
 
 ### 19-09-2016
 

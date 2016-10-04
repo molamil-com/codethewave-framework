@@ -8,7 +8,7 @@
 
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-        <title>Video Masking</title>
+        <title>WebAudioAnalyser</title>
 
         <meta name="description" content="">
 
@@ -40,70 +40,42 @@
 
     <script>
 
-        var background;
 
-        var sprite;
-
-        var masker;
+        var tilingSpriteBack;
 
         SPF.set({
 
-            at:"back",
+            at: 'back', // "fore" "mid" or "back"
+
+            load: function(PIXI, input) {
+                return [input.patterns.botanicorganic2];
+            },
 
             init: function(PIXI, input) {
-                background = new PIXI.Graphics();
-                input.container.addChild(background);
+
+                tilingSpriteBack = new PIXI.extras.TilingSprite(input.patterns.botanicorganic2, 1, 1);
+                tilingSpriteBack.anchor.set(0.5);
+                input.container.addChild(tilingSpriteBack);
+
             },
 
             render: function(PIXI, input) {
 
-                var c = input.colors[Math.round(Math.random()*( input.colors.length-1))];
-                background.clear();
-                background.beginFill(c, 1);
-                background.drawRect(0,0,input.width,input.height);
-                background.endFill();
-            }
+                fs = input.audio.frequencies();
 
-        });
-
-        SPF.set({
-
-            at:"mid",
-
-            load: function(PIXI, input) {
-
-                return [input.patterns.botanicorganic2];
-
+                tilingSpriteBack.rotation -= 0.05+(fs[Math.round(fs.length/2)]/1000);
             },
-
-            init: function(PIXI, input) {
-
-                sprite = new PIXI.extras.TilingSprite(input.patterns.botanicorganic2, 1, 1);
-                sprite.anchor.set(0);
-                input.container.addChild(sprite);
-
-                SPF.midgroundMask(true);
-
-            },
-
-            mouseDownTouchStart: function(PIXI, input) {
-                SPF.midgroundMask(false);
-            },
-
-            mouseUpTouchEnd: function(PIXI, input) {
-                SPF.midgroundMask(true);
-            },
-
 
             resize: function(PIXI, input) {
 
                 var w =  input.width;
                 var h =  input.height;
 
-                sprite.width = w;
-                sprite.height = h;
+                tilingSpriteBack.width = w*2;
+                tilingSpriteBack.height = h*2;
 
-
+                tilingSpriteBack.x = w/2;
+                tilingSpriteBack.y = h/2;
             }
 
         });
@@ -111,14 +83,14 @@
 
         SPF.info({
             debug: false,
-            title: "Video Masking ",
-            tip: "Click or Tap to stop the mask",
+            title: "WebAudioAnalyser",
+            tip: "The frequencies of the input.audio are responsible for the speed of the background rotation.",
             firstName: "Ramiro",
             lastName: "Espada",
             email: "re@ramiroespada.com"
         });
 
-        SPF.start();
+        SPF.start("preChorus1");
 
     </script>
 

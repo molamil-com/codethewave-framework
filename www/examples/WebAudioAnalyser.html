@@ -1,0 +1,59 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>WebAudioAnalyser</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../js/pixi.min.js"></script><script src="../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../sp-framework.js"></script><script>
+
+
+        var tilingSpriteBack;
+
+        SPF.set({
+
+            at: 'back', // "fore" "mid" or "back"
+
+            load: function(PIXI, input) {
+                return [input.patterns.botanicorganic2];
+            },
+
+            init: function(PIXI, input) {
+
+                tilingSpriteBack = new PIXI.extras.TilingSprite(input.patterns.botanicorganic2, 1, 1);
+                tilingSpriteBack.anchor.set(0.5);
+                input.container.addChild(tilingSpriteBack);
+
+            },
+
+            render: function(PIXI, input) {
+
+                fs = input.audio.frequencies();
+
+                tilingSpriteBack.rotation -= 0.05+(fs[Math.round(fs.length/2)]/1000);
+            },
+
+            resize: function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                tilingSpriteBack.width = w*2;
+                tilingSpriteBack.height = h*2;
+
+                tilingSpriteBack.x = w/2;
+                tilingSpriteBack.y = h/2;
+            }
+
+        });
+
+
+        SPF.info({
+            debug: false,
+            title: "WebAudioAnalyser",
+            tip: "The frequencies of the input.audio are responsible for the speed of the background rotation.",
+            firstName: "Ramiro",
+            lastName: "Espada",
+            email: "re@ramiroespada.com"
+        });
+
+        SPF.start("preChorus1");
+
+    </script></body></html>

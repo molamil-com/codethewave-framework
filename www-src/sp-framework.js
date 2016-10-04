@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.011;
+    var version = 0.012;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -408,6 +408,9 @@ var fps = require('fps');
 
         input.editing = null;
         var editingTrack = tracks[0]; // editing.vtt;
+
+        // console.log("editingTrack: ",editingTrack.cues);
+
         editingTrack.oncuechange = function (){
             var cue = this.activeCues[0];
             if(cue) {
@@ -423,7 +426,12 @@ var fps = require('fps');
 
         input.cast = null;
         var castTrack = tracks[1]; // cast.vtt;
+
+        // console.log("castTrack: ",castTrack.cues);
+
         castTrack.oncuechange = function (){
+
+
             var cue = this.activeCues[0];
             if(cue) {
                 var cueData = JSON.parse(cue.text);
@@ -438,6 +446,9 @@ var fps = require('fps');
 
         input.beat = null;
         var beatTrack = tracks[2]; // beat.vtt;
+
+        // console.log("beatTrack: ",beatTrack.cues);
+
         beatTrack.oncuechange = function (){
             var cue = this.activeCues[0];
             if(cue) {
@@ -452,6 +463,9 @@ var fps = require('fps');
 
         input.styling = null;
         var stylingTrack = tracks[3]; // styling.vtt;
+
+        // console.log("stylingTrack: ",stylingTrack.cues);
+
         stylingTrack.oncuechange = function (){
             var cue = this.activeCues[0];
             if(cue) {
