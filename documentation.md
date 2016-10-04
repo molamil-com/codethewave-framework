@@ -84,10 +84,10 @@ Remember to change _at: "back"_ to _at: "mid"_ and _at: "fore"_.
 
 ```
 SPF.info({
-    debug:true, // boolean
-    tip:"Use your mouse to create particles", // description on how to interact with your visual
-    firstName:"Ramiro",
-    lastName:"Espada"
+    debug: true, // boolean
+    tip: "Use your mouse to create particles", // description on how to interact with your visual
+    firstName: "Ramiro",
+    lastName: "Espada"
     section: "s1" // id of the section of the song this visual is preferable prepared for.
 });
 ```
@@ -98,6 +98,105 @@ SPF.info({
 SPF.start();
 ```
 
+## Framework functions
+
+
+### SPF.set({...}) function
+
+Inside SPF.set the following methods and objects are available:
+
+
+#### at (String)
+
+Valid values are "back", "mid" or "fore".
+
+
+#### load(PIXI, input) (Function)
+
+Preloads assets used in the visual.
+
+Returns (Array)
+
+
+#### init(PIXI, input) (Function)
+
+TODO: Write description + example.
+
+
+#### render(PIXI, input) (Function)
+
+TODO: Write description + example.
+
+
+#### resize(PIXI, input) (Function)
+
+TODO: Write description + example.
+
+
+#### mouseDownTouchStart (PIXI, input) (Function)
+
+TODO: Write description + example.
+
+
+#### mouseUpTouchEnd (PIXI, input) (Function)
+
+TODO: Write description + example.
+
+
+#### mouseOver (PIXI, input) (Function) only available on Foreground
+
+TODO: Write description + example.
+
+
+#### mouseOver (PIXI, input) (Function) only available on Foreground
+
+TODO: Write description + example.
+
+
+### SPF.info({...}) function
+
+Inside SPF.info the following methods and objects are available:
+
+#### debug (Bboolean)
+
+Valid values are true and false.
+
+
+#### tip (String)
+
+Description on how to interact with your visual.
+
+
+#### title (String)
+
+The title of your visual.
+
+
+#### firstName (String)
+
+Your first name.
+
+
+#### lastName (String)
+
+Your last name.
+
+
+#### email (String)
+
+Your email address.
+
+
+#### section (String)
+
+Id of the section of the song this visual is preferable prepared for.
+
+Valid values are "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9" and "s10".
+
+
+
+
+
 
 The follow types of graphics are available in the framework:
 
@@ -105,4 +204,3 @@ The follow types of graphics are available in the framework:
 * Graphics: transparent pngs
 * Maskers: fullscreen jpgs to be used as a mask for other layers
 * Colors
-
