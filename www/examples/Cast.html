@@ -13,7 +13,6 @@
             init: function(PIXI, input) {
                 background = new PIXI.Graphics();
                 input.container.addChild(background);
-                input.container.blendMode = PIXI.blendModes.MULTIPLY;
             }
 
         });
@@ -44,11 +43,7 @@
 
             render: function(PIXI, input) {
 
-
-
                 if(input.cast != null){
-
-                    console.log(input.cast.id );
 
                     if(input.cast.id == "singer"){
 

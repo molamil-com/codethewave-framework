@@ -16,6 +16,8 @@
      http://scarletpleasure.molamil.com/examples/WebAudioAnalyser.html
      http://scarletpleasure.molamil.com/examples/Cast.html
      
+      http://scarletpleasure.molamil.com/examples/Editing.html
+     
  
  ```
  
