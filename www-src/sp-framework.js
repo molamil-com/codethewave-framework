@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.012;
+    var version = 0.013;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -91,7 +91,8 @@ var fps = require('fps');
 
     function init() {
 
-        SPF.log("SP FRAMEWORK - ", version);
+        if (window.console && typeof window.console.log == "function")
+            console.log("SP FRAMEWORK - ", version);
 
         input.width = getWindowCoords()[0];
         input.height = getWindowCoords()[1];
@@ -584,12 +585,12 @@ var fps = require('fps');
                 if(video != null){
                     if(fpsPoor){
                         if(f%10 ==0){
-                            video.render(false);
+                            video.render(false, input);
                         } else {
-                            video.render(true);
+                            video.render(true, input);
                         }
                     } else {
-                        video.render(true);
+                        video.render(true, input);
                     };
                 };
 
@@ -600,7 +601,7 @@ var fps = require('fps');
                 };
             } else {
                 if(video)
-                    video.render(true);
+                    video.render(true, input);
             }
 
             if(ui != null)

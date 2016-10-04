@@ -13091,7 +13091,7 @@ function Video() {
         // CREATE VIDEO ELEMENTS
 
 
-        if(document.location.hostname.indexOf("codepen")>1 && navigator.userAgent.search("Firefox") ){
+        if(document.location.hostname.indexOf("codepen") >1 && navigator.userAgent.search("Firefox") ){
 
             videos = [
                 {file:"chroma01-w480.mp4", width:480, height:540},
@@ -13231,7 +13231,7 @@ function Video() {
 
     };
 
-    this.render = function(realTime) {
+    this.render = function(realTime, input) {
 
 
         if(videoRenderTexture){
@@ -13245,6 +13245,16 @@ function Video() {
                 videoTexture.baseTexture.autoUpdate = false;
 
             };
+        }
+
+        if(video != null){
+
+            if(document.location.hostname.indexOf("codepen") >1 && input.height <= 450){
+
+                video.volume = 0;
+            } else {
+                video.volume = 1;
+            }
         }
 
     };
@@ -13268,9 +13278,9 @@ function Video() {
 
     this.resize = function(input){
 
-
         var w =  input.width;
         var h =  input.height;
+
 
         if(videoSpriteMask) {
 
@@ -13314,7 +13324,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.012;
+    var version = 0.013;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13383,7 +13393,8 @@ var fps = require('fps');
 
     function init() {
 
-        SPF.log("SP FRAMEWORK - ", version);
+        if (window.console && typeof window.console.log == "function")
+            console.log("SP FRAMEWORK - ", version);
 
         input.width = getWindowCoords()[0];
         input.height = getWindowCoords()[1];
@@ -13876,12 +13887,12 @@ var fps = require('fps');
                 if(video != null){
                     if(fpsPoor){
                         if(f%10 ==0){
-                            video.render(false);
+                            video.render(false, input);
                         } else {
-                            video.render(true);
+                            video.render(true, input);
                         }
                     } else {
-                        video.render(true);
+                        video.render(true, input);
                     };
                 };
 
@@ -13892,7 +13903,7 @@ var fps = require('fps');
                 };
             } else {
                 if(video)
-                    video.render(true);
+                    video.render(true, input);
             }
 
             if(ui != null)

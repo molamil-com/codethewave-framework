@@ -38,7 +38,7 @@ function Video() {
         // CREATE VIDEO ELEMENTS
 
 
-        if(document.location.hostname.indexOf("codepen")>1 && navigator.userAgent.search("Firefox") ){
+        if(document.location.hostname.indexOf("codepen") >1 && navigator.userAgent.search("Firefox") ){
 
             videos = [
                 {file:"chroma01-w480.mp4", width:480, height:540},
@@ -178,7 +178,7 @@ function Video() {
 
     };
 
-    this.render = function(realTime) {
+    this.render = function(realTime, input) {
 
 
         if(videoRenderTexture){
@@ -192,6 +192,16 @@ function Video() {
                 videoTexture.baseTexture.autoUpdate = false;
 
             };
+        }
+
+        if(video != null){
+
+            if(document.location.hostname.indexOf("codepen") >1 && input.height <= 450){
+
+                video.volume = 0;
+            } else {
+                video.volume = 1;
+            }
         }
 
     };
@@ -215,9 +225,9 @@ function Video() {
 
     this.resize = function(input){
 
-
         var w =  input.width;
         var h =  input.height;
+
 
         if(videoSpriteMask) {
 

@@ -1,4 +1,8 @@
 
+
+         
+         
+         
 # DOCUMENTATION
 
     RE_documentation.txt
@@ -9,13 +13,58 @@
  ### 04-10-2016
  
  ```
+    
+     - Forcing to play only one sound at the time on CodePen when displaying several pens   
+
 
      Examples:
  
-     http://scarletpleasure.molamil.com/examples/VideoMasking.html
-     http://scarletpleasure.molamil.com/examples/WebAudioAnalyser.html
-     http://scarletpleasure.molamil.com/examples/Cast.html
-     http://scarletpleasure.molamil.com/examples/Editing.html
+  
+          http://scarletpleasure.molamil.com/examples/VideoMasking.html
+          http://codepen.io/codethewave/pen/WGXaZq
+          
+          http://scarletpleasure.molamil.com/examples/WebAudioAnalyser.html
+          http://codepen.io/codethewave/pen/ozoavo
+          
+          http://scarletpleasure.molamil.com/examples/Cast.html
+          http://codepen.io/codethewave/pen/ZpaqzW
+          
+          http://scarletpleasure.molamil.com/examples/Editing.html
+          http://codepen.io/codethewave/pen/WGXgVB
+          
+          http://scarletpleasure.molamil.com/examples/Styling.html
+          http://codepen.io/codethewave/pen/ZpargQ
+          
+          http://scarletpleasure.molamil.com/examples/FullscreenSprite.html
+          http://codepen.io/codethewave/pen/PGOdAy
+          
+          http://scarletpleasure.molamil.com/examples/Layers.html
+          http://codepen.io/codethewave/pen/LROJKj
+          
+          http://scarletpleasure.molamil.com/examples/MaskingPattern.html
+          http://codepen.io/codethewave/pen/PGOdvy
+     
+          http://scarletpleasure.molamil.com/examples/MaskingVideo.html
+          http://codepen.io/codethewave/pen/dpkqwz
+          
+          http://scarletpleasure.molamil.com/examples/MouseTouchPosition.html
+          http://codepen.io/codethewave/pen/ozoPQw
+          
+          http://scarletpleasure.molamil.com/examples/MultipleGraphics.html
+          http://codepen.io/codethewave/pen/KgyxBL
+          
+          http://scarletpleasure.molamil.com/examples/Orientation.html
+          http://codepen.io/codethewave/pen/ozoPaw
+          
+          http://scarletpleasure.molamil.com/examples/ScrollTilingSprite.html
+          http://codepen.io/codethewave/pen/XjzPYm
+          
+          http://scarletpleasure.molamil.com/examples/TilingSprite.html
+          http://codepen.io/codethewave/pen/bwYxLm
+          
+          http://scarletpleasure.molamil.com/examples/VideoKey.html
+          http://codepen.io/codethewave/pen/PGOdLd
+     
      
  ```
  

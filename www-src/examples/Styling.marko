@@ -8,7 +8,7 @@
 
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-        <title>Fullscreen Sprite</title>
+        <title>Styling</title>
 
         <meta name="description" content="">
 
@@ -40,44 +40,74 @@
 
     <script>
 
-
-        var sprite;
-
-        var allGraphics;
-
+        var background;
 
         SPF.set({
 
             at:"back",
 
             load: function(PIXI, input) {
+                return [ input.patterns.animaltech];
+            },
 
-                allGraphics = [input.graphics.animaltech,input.graphics.bbbbird1, input.graphics.bbbbird2, input.graphics.bbbbird3, input.graphics.botanicorganic, input.graphics.handdrawnanimal1, input.graphics.handdrawnanimal2, input.graphics.handdrawnanimal3];
 
-                return allGraphics
+            init: function(PIXI, input) {
+                background = new PIXI.extras.TilingSprite(input.patterns.animaltech, 1, 1);
+                background.anchor.set(0);
+                input.container.addChild(background);
+
 
             },
 
-            init: function(PIXI, input) {
+            resize:function(PIXI, input){
+                background.width = input.width;
+                background.height = input.height;
+            },
 
-                sprite = SPF.fullscreenSprite(input.container,  allGraphics[Math.round(Math.random()*( allGraphics.length-1))] );
-                input.container.addChild(sprite);
+            render:function(PIXI, input){
+
+                var colorFilter = new PIXI.filters.ColorMatrixFilter();
+                colorFilter.desaturate();
+
+                var vSprite = input.container.parent.children[2].children[0].children[0];
+
+
+
+                if(input.styling != null){
+
+                    if(input.styling.id == "black"){
+
+                        background.filters = [colorFilter];
+                        vSprite.filters = [colorFilter];
+                    }
+
+                    if(input.styling.id == "color"){
+
+                        background.filters = [];
+                        vSprite.filters = [];
+                    }
+
+
+                } else {
+
+                }
+
+
             }
 
         });
 
 
-
         SPF.info({
             debug: false,
-            title: "Fullscreen Sprite",
+            title: "Styling",
             tip: "",
             firstName: "Ramiro",
             lastName: "Espada",
             email: "re@ramiroespada.com"
         });
 
-        SPF.start();
+        SPF.start("chorus1");
 
     </script>
 
