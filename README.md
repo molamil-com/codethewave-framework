@@ -9,16 +9,14 @@
  ### 04-10-2016
  
  ```
- 
+
      Examples:
  
      http://scarletpleasure.molamil.com/examples/VideoMasking.html
      http://scarletpleasure.molamil.com/examples/WebAudioAnalyser.html
      http://scarletpleasure.molamil.com/examples/Cast.html
+     http://scarletpleasure.molamil.com/examples/Editing.html
      
-      http://scarletpleasure.molamil.com/examples/Editing.html
-     
- 
  ```
  
 ### 03-10-2016
