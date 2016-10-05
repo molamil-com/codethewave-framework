@@ -157,6 +157,7 @@ TODO: Write description + example.
 
 Inside SPF.info the following methods and objects are available:
 
+
 #### debug (Bboolean)
 
 Valid values are true and false.
@@ -194,13 +195,137 @@ Id of the section of the song this visual is preferable prepared for.
 Valid values are "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9" and "s10".
 
 
+### Input Object
 
+The input object provides handy variables for use in your visual.
 
-
-
-The follow types of graphics are available in the framework:
+The follow types of graphics are available in the input object:
 
 * Pattern: tilling jpgs
 * Graphics: transparent pngs
 * Maskers: fullscreen jpgs to be used as a mask for other layers
 * Colors
+
+
+#### input.dom (DOM Object)
+
+TODO: Write description + example.
+
+
+#### input.container (DisplayObject)
+
+TODO: Write description + example.
+
+
+#### input.resolution (Number)
+
+TODO: Write description + example.
+
+
+#### input.width (Number)
+
+TODO: Write description + example.
+
+
+#### input.height (Number)
+
+TODO: Write description + example.
+
+
+#### input.frameRate (Number)
+
+TODO: Write description + example.
+
+
+#### input.patterns (Object of several PIXI.Texture)
+
+* input.patterns.animaltech
+* input.patterns.bbbbird1
+* input.patterns.bbbbird2
+* input.patterns.botanicorganic1
+* input.patterns.botanicorganic2
+* input.patterns.botanicorganic3
+* input.patterns.handdrawnanimal
+
+
+#### input.maskers (Object of several  of PIXI.Texture)
+
+* input.maskers.bbbbird1
+* input.maskers.botanicorganic1
+* input.maskers.botanicorganic2
+* input.maskers.handdrawnanimal1
+* input.maskers.handdrawnanimal2
+* input.maskers.handdrawnanimal3
+* input.maskers.handdrawnanimal4
+
+
+#### input.graphics (Object of several  of PIXI.Texture)
+
+* input.graphics.animaltech
+* input.graphics.bbbbird1
+* input.graphics.bbbbird2
+* input.graphics.bbbbird3
+* input.graphics.botanicorganic
+* input.graphics.handdrawnanimal1
+* input.graphics.handdrawnanimal2
+* input.graphics.handdrawnanimal3
+
+
+#### input.colors (Array of Hexadecimal colors)
+
+TODO: Write description + example.
+
+
+#### input.isTouchDevice (Boolean)
+
+TODO: Write description + example.
+
+
+#### input.orientation (Object) example: { gamma: 0, beta: 0, alpha: 0 }
+
+Only available for touchDevices.
+
+
+#### input.mouseTouchPosition (Object) example: { x: 0, y: 0 }
+
+On Desktop the cursor position is returned, on touchDevice the tapMove position is returned.
+
+
+#### input.audio (WebAudioAnalyser)
+
+Using the web-audio-analyser package, see that for more documentation.
+
+
+#### input.sections (String)
+
+Returns thecurrect section of the music video.
+
+Available values: "intro", "verse1", "preChorus1", "chorus1", "verse2", "preChorus2", "chorus2", "bridge", "chorus3", "outro".
+
+
+#### input.currentSection (Object) example: { "id": "section1", starts: "0", ends: "10" }
+
+TODO: Write description + example.
+
+
+#### input.editing (JSON Object) examples: { "id": "fullBand" } { "id": "closeUp" }
+
+TODO: Write description + example (editing.vtt).
+
+
+#### input.cast (JSON Object) examples: { "id": "singer" } { "id": "drummer" } { "id": "bass" } { "id": "all" }
+
+TODO: Write description + example (cast.vtt).
+
+
+#### input.beat (JSON Object) examples: { "id": "onBeat" } { "id": "offBeat" }
+
+TODO: Write description + example (beat.vtt).
+
+
+#### input.styling (JSON Object) examples: { "id": "none" } { "id": "black" }
+
+TODO: Write description + example (styling.vtt).
+
+
+
