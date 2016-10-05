@@ -1,0 +1,125 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>RE Threejs</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../js/pixi.min.js"></script></head><body><canvas id="reThreejs" style="display: none"></canvas><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../sp-framework.js"></script><script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.11/require.min.js"></script><script>
+
+
+        require.config({
+            baseUrl: 'http://scarletpleasure.molamil.com/node_modules/',
+            packages: [
+                {
+                    name: 'three',
+                    main: 'build/three.min.js'
+                }
+
+            ]
+        });
+
+        require(
+                ['three'],
+
+                function(THREE) {
+
+                    var reThreejsCanvas = document.getElementById("reThreejs");
+
+
+                    // THREEJS
+
+                    var scene = new THREE.Scene();
+
+                    var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+                    camera.position.z = 500;
+                    scene.add(camera);
+
+                    var geometry = new THREE.CubeGeometry(100, 100, 100);
+                    var material = new THREE.MeshNormalMaterial();
+
+                    var mesh = new THREE.Mesh(geometry, material);
+                    scene.add(mesh);
+
+
+
+                    var renderer = new THREE.WebGLRenderer({"canvas":reThreejsCanvas});
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+                    // PIXI
+
+                    var sprite;
+
+                    var s, fs;
+
+                    function createSprite(PIXI, input){
+
+
+                        if(sprite != null){
+                            input.container.removeChild(sprite);
+                            sprite = null;
+                        }
+
+                        sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(reThreejsCanvas, PIXI.SCALE_MODES.DEFAULT));
+                        sprite.anchor.set(0);
+                        input.container.addChild(sprite);
+
+                        sprite.width = input.width;
+                        sprite.height = input.height;
+                    }
+
+                    SPF.set({
+
+                        at:"back",
+
+                        load: function(PIXI, input) {
+                            return [input.patterns.botanicorganic2];
+                        },
+
+                        init: function(PIXI, input) {
+
+                            createSprite(PIXI, input);
+                        },
+
+                        render:function(PIXI, input){
+
+                            //
+                            mesh.rotation.x += 0.07;
+                            mesh.rotation.y += 0.02;
+                            renderer.render(scene, camera);
+                            //
+
+
+                            if(input.audio != null){
+                                fs = input.audio.frequencies();
+                                s = 1 + (fs[0]/100);
+                                mesh.scale.set( s,s,s);
+                            }
+
+                            if(sprite != null)
+                                sprite.texture.update();
+
+                        },
+
+                        resize: function(PIXI, input) {
+
+                            var w =  input.width;
+                            var h =  input.height;
+
+                            camera.aspect = w / h;
+                            camera.updateProjectionMatrix();
+                            renderer.setSize( w, h);
+
+                            createSprite(PIXI, input);
+
+                        }
+
+                    });
+
+                    SPF.info({debug:false, title:"RE Threejs", tip:"", firstName:"Ramiro", lastName:"Espada", email:"re@ramiroespada.com"});
+
+                    SPF.start();
+
+              }
+
+        );
+
+    </script></body></html>

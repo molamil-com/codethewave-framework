@@ -16,6 +16,12 @@
  ```
     
     - Improved Video texture if screen with is bigger than screen height (so it video will always fill screen)
+    
+    - Threejs example:
+    
+    
+        http://scarletpleasure.molamil.com/examples/RE-Threejs.html
+        http://codepen.io/codethewave/pen/PGEGEE
      
  ```
 
