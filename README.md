@@ -9,6 +9,16 @@
 
 
 # RE Status log
+
+
+### 05-10-2016
+ 
+ ```
+    
+    - Improved Video texture if screen with is bigger than screen height (so it video will always fill screen)
+     
+ ```
+
         
  ### 04-10-2016
  

@@ -13278,8 +13278,10 @@ function Video() {
 
     this.resize = function(input){
 
+
         var w =  input.width;
         var h =  input.height;
+
 
 
         if(videoSpriteMask) {
@@ -13289,8 +13291,19 @@ function Video() {
             mainContainer.width = ((w * ( h / w)) * (2));
             mainContainer.height = (h * 2) * input.resolution;
 
+
+            if( mainContainer.width < w){
+
+                var ratio = w/h;
+
+                mainContainer.width = w;
+
+                mainContainer.height = h*ratio;
+
+            };
+
             mainContainer.position.x = ((w) / 2) - (mainContainer.width / 2);
-            mainContainer.position.y = 0;
+            mainContainer.position.y = ((h) / 2) - (mainContainer.height / 4);
 
         };
     };
@@ -13324,7 +13337,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.013;
+    var version = 0.014;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
