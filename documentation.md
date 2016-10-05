@@ -328,4 +328,22 @@ TODO: Write description + example (beat.vtt).
 TODO: Write description + example (styling.vtt).
 
 
+### Helpers
+
+TODO: Explain what helpers is.
+
+
+#### midgroundMask (Boolean)
+
+TODO: Write description + example.
+
+Original note I'm not 100% sure what means: // if current instance is set at = "mid" this layer will be masked the video
+
+
+#### fullscreenSprite (PIXI.Texture)
+
+returns (PIXI.Sprite).
+
+TODO: Write description of what you would use the PIXI.Sprite for.
+
 
