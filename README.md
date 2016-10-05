@@ -38,10 +38,22 @@ The recommended method is to work directly on CodePen. You don't have to setup a
 
 There are several example Pens that you can fork and use as a starting point for your work:
 
-* [TODO: Name this example](http://codepen.io/ramiroespada/pen/WGEmgg)
-* [TODO: Name this example](http://codepen.io/ramiroespada/pen/WGEmgg)
-* [TODO: Name this example](http://codepen.io/ramiroespada/pen/WGEmgg)
-* [TODO: Name this example](http://codepen.io/ramiroespada/pen/WGEmgg)
+* [VideoMasking](http://codepen.io/codethewave/pen/WGXaZq)
+* [WebAudioAnalyser](http://codepen.io/codethewave/pen/ozoavo)
+* [Cast](http://codepen.io/codethewave/pen/ZpaqzW)
+* [Editing](http://codepen.io/codethewave/pen/WGXgVB)
+* [Styling](http://codepen.io/codethewave/pen/ZpargQ)
+* [FullscreenSprite](http://codepen.io/codethewave/pen/PGOdAy)
+* [Layers](http://codepen.io/codethewave/pen/LROJKj)
+* [MaskingPattern](http://codepen.io/codethewave/pen/PGOdvy)
+* [MaskingVideo](http://codepen.io/codethewave/pen/dpkqwz)
+* [MouseTouchPosition](http://codepen.io/codethewave/pen/ozoPQw)
+* [MultipleGraphics](http://codepen.io/codethewave/pen/KgyxBL)
+* [Orientation](http://codepen.io/codethewave/pen/ozoPaw)
+* [ScrollTilingSprite](http://codepen.io/codethewave/pen/XjzPYm)
+* [TilingSprite](http://codepen.io/codethewave/pen/bwYxLm)
+* [VideoKey](http://codepen.io/codethewave/pen/PGOdLd)
+* [Threejs](http://codepen.io/codethewave/pen/PGEGEE)
 
 Just click the "Fork" button in the top right corner and you are up and running.
 
