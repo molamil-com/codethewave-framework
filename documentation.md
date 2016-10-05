@@ -5,6 +5,14 @@ SPFramework is a small framework to help digital artists to collaborate in the c
 Library is located at http://scarletpleasure.molamil.com/sp-framework.js
 
 
+## Table of Contents
+
+* [How it works](#markdown-header-how-it-works)
+* [A few rules to follow to improve your chances of having your graphics selected](#markdown-header-a-few-rules-to follow-to-improve-your-chances-of-having-your-graphics-selected)
+* [How to create a visual](#markdown-header-how-to-create-a-visual)
+* [Framework functions](#markdown-header-framework-functions)
+
+
 ## How it works
 
 You can create graphics for 3 layers of that will be merged together with the video as follows:
@@ -29,7 +37,7 @@ We are using PIXI as the main engine for drawing graphics into canvas but if you
 * Visuals reacting to user input are held in high regard so each experience is unique.
 
 
-## How to create a visual:
+## How to create a visual
 
 ### 1. Include the library (sp-framework.js)
 
