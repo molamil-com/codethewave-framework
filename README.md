@@ -32,7 +32,7 @@
     
     - input.currentSection
         
-   
+    - Touch to stat fixed, but we have to review how the video is drawn in very small resolutions
      
  ```
  

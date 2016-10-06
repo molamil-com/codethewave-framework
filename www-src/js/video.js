@@ -82,7 +82,7 @@ function Video() {
 
         // SPF.log("videoPath", videoPath);
 
-        video = '<video crossOrigin="anonymous" id="BPSPVideo" autoplay loop webkit-playsinline playsinline >';
+        video = '<video crossOrigin="anonymous" id="BPSPVideo" loop webkit-playsinline playsinline >';
 
         video += '<source src="' + videoPath + '" type="video/mp4" > ';
 
@@ -108,14 +108,13 @@ function Video() {
 
         video.setAttribute('crossOrigin', 'anonymous');
 
-        video.oncanplay = function() {
 
+        video.oncanplay = function() {
             callback();
         };
 
         // FOR SAFARI
         video.oncanplaythrough = function() {
-
             callback();
         };
 
@@ -146,12 +145,12 @@ function Video() {
         videoContainer = new PIXI.Container();
         videoContainer.addChild(videoSpriteMask);
 
-        videoRenderTexture = new PIXI.RenderTexture.create(videoWidth, videoHeight*resolution);
-        videoMask = new PIXI.Sprite(videoRenderTexture);
-
     };
 
     this.create = function(PIXI, dom, container, _renderer, resolution, input){
+
+        videoRenderTexture = new PIXI.RenderTexture.create(videoWidth, videoHeight*input.resolution);
+        videoMask = new PIXI.Sprite(videoRenderTexture);
 
         video.setAttribute('webkit-playsinline', 'webkit-playsinline');
         video.setAttribute('playsinline', 'playsinline');

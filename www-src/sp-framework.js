@@ -91,6 +91,8 @@ var fps = require('fps');
 
     function init() {
 
+
+
         if (window.console && typeof window.console.log == "function")
             console.log("SP FRAMEWORK - ", version);
 
@@ -107,7 +109,9 @@ var fps = require('fps');
 
         domContainer = conf.container || document.body;
 
-        resolution = window.devicePixelRatio;
+        resolution = Math.floor(window.devicePixelRatio);
+
+        console.log(resolution);
 
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
@@ -175,6 +179,7 @@ var fps = require('fps');
 
         input.dom = domContainer;
 
+
         input.frameRate = 25;
 
         //
@@ -220,13 +225,15 @@ var fps = require('fps');
 
         video.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
 
+
+
             if(!isVideoReady){
                 videoReady();
             }
 
         });
 
-        video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+
 
         resize();
 
@@ -298,34 +305,6 @@ var fps = require('fps');
             ui.display();
         }
 
-
-        if ('ontouchstart' in document.documentElement) {
-
-            domContainer.addEventListener("touchstart", function touchStart(){
-
-                domContainer.removeEventListener("touchstart", touchStart, false);
-
-                canPlay();
-
-                $("#BPSPVideo").css({ "display": "none"});
-
-
-            }, false);
-
-        } else {
-
-
-            canPlay();
-
-        };
-
-    };
-
-    function canPlay(){
-
-
-        var audioContext = createAudioContext();
-
         // GET POSITION FROM SELECTED SECTION OF THE SONG
         var currentTime = 0;
 
@@ -338,9 +317,39 @@ var fps = require('fps');
                 }
             }
         };
+        //
 
-        playVideoAt(currentTime);
-        video.getVideoSource().play();
+
+        if ( input.isTouchDevice ) {
+
+            input.dom.addEventListener("touchstart", function touchDeviceStart(){
+
+                input.dom.removeEventListener("touchstart", touchDeviceStart, false);
+
+                video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+                playVideoAt(currentTime);
+                video.getVideoSource().play();
+                canPlay();
+
+                $("#BPSPVideo").css({ "display": "none"});
+
+            }, false);
+
+
+        } else {
+
+            video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+            playVideoAt(currentTime);
+            video.getVideoSource().play();
+            canPlay();
+
+        };
+
+    };
+
+    function canPlay(){
+
+        var audioContext = createAudioContext();
 
         if(ui != null)
             ui.getVideoPlayButton().css("display","none");
@@ -356,8 +365,7 @@ var fps = require('fps');
 
         }, audioContext);
 
-
-    };
+    }
 
     function initAudio(audioContext, shouldBuffer) {
 
@@ -539,19 +547,22 @@ var fps = require('fps');
 
     function updateSection(){
 
-        var currentTime = Math.round(video.getVideoSource().currentTime)*1000;
+        if(video != null){
 
-        for(var i=0; i<sections.length; i++){
-            var section = sections[i];
+            var currentTime = Math.round(video.getVideoSource().currentTime)*1000;
 
-            if((section.starts) < currentTime){
-                input.currentSection = section;
+            for(var i=0; i<sections.length; i++){
+                var section = sections[i];
+
+                if((section.starts) < currentTime){
+                    input.currentSection = section;
+                }
             }
+
+            if(input.currentSection)
+                 SPF.log(" input.currentSection",  input.currentSection.id);
+
         }
-
-        if(input.currentSection)
-             SPF.log(" input.currentSection",  input.currentSection.id);
-
     };
 
     function animate() {
