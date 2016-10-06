@@ -114,6 +114,9 @@ SPF.start();
 Inside SPF.set the following properties and functions are available:
 
 
+====
+
+
 #### Property: at (String)
 
 This property determines in which layer your script will run. The valid values are:
@@ -131,6 +134,9 @@ SPF.set({
 ```
 
 
+====
+
+
 #### Function: load(PIXI, input)
 
 This function preloads assets for use in the visual. By specifying the needed assets load-time is optimized compared to loading all available assets.
@@ -146,6 +152,9 @@ SPF.set({
     }
 });
 ```
+
+
+====
 
 
 #### Function: init(PIXI, input)
