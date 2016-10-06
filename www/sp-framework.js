@@ -13337,7 +13337,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.014;
+    var version = 0.015;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13576,7 +13576,6 @@ var fps = require('fps');
         //
 
 
-
         for(var i=0; i<sections.length; i++){
 
             var s = sections[i];
@@ -13591,7 +13590,7 @@ var fps = require('fps');
 
             });
 
-        }
+        };
 
 
     };
@@ -13853,6 +13852,23 @@ var fps = require('fps');
 
     };
 
+    function updateSection(){
+
+        var currentTime = Math.round(video.getVideoSource().currentTime)*1000;
+
+        for(var i=0; i<sections.length; i++){
+            var section = sections[i];
+
+            if((section.starts) < currentTime){
+                input.currentSection = section;
+            }
+        }
+
+        if(input.currentSection)
+             SPF.log(" input.currentSection",  input.currentSection.id);
+
+    };
+
     function animate() {
 
         if(ticker){
@@ -13860,6 +13876,8 @@ var fps = require('fps');
         }
 
         if (active) {
+
+            updateSection();
 
             if(!input.isTouchDevice){
                 input.mouseTouchPosition =  renderer.plugins.interaction.mouse.global;
