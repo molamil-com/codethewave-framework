@@ -146,9 +146,12 @@ This function should always return an array.
 ##### Example
 
 ```javascript
+var allGraphics;
+
 SPF.set({
     load: function(PIXI, input) {
-        return [input.graphics.animaltech,input.graphics.bbbbird1, input.graphics.bbbbird2, input.graphics.bbbbird3, input.graphics.botanicorganic, input.graphics.handdrawnanimal1, input.graphics.handdrawnanimal2, input.graphics.handdrawnanimal3];
+        allGraphics = [input.graphics.animaltech,input.graphics.bbbbird1, input.graphics.bbbbird2, input.graphics.bbbbird3, input.graphics.botanicorganic, input.graphics.handdrawnanimal1, input.graphics.handdrawnanimal2, input.graphics.handdrawnanimal3];
+        return allGraphics;
     }
 });
 ```
@@ -159,7 +162,23 @@ SPF.set({
 
 #### Function: init(PIXI, input)
 
-TODO: Write description + example.
+This function is called once when your visual is ready to execute. This is where you setup your graphics in PIXI and add them to the input.container.
+
+##### Example
+
+```javascript
+var sprite;
+
+SPF.set({
+    init: function(PIXI, input) {
+        sprite = SPF.fullscreenSprite(input.container, allGraphics[Math.round(Math.random() * (allGraphics.length - 1))]);
+        input.container.addChild(sprite);
+    }
+});
+```
+
+
+====
 
 
 #### Function: render(PIXI, input)
@@ -167,14 +186,23 @@ TODO: Write description + example.
 TODO: Write description + example.
 
 
+====
+
+
 #### Function: resize(PIXI, input)
 
 TODO: Write description + example.
 
 
+====
+
+
 #### Function: mouseDownTouchStart (PIXI, input)
 
 TODO: Write description + example.
+
+
+====
 
 
 #### Function: mouseUpTouchEnd (PIXI, input)
@@ -197,7 +225,10 @@ TODO: Write description + example.
 
 ### SPF.info({...})
 
-Inside SPF.info the following methods and objects are available:
+Inside SPF.info the following properties are available:
+
+
+====
 
 
 #### Property: debug (Boolean)
@@ -205,9 +236,15 @@ Inside SPF.info the following methods and objects are available:
 Valid values are true and false.
 
 
+====
+
+
 #### Property: tip (String)
 
 Description on how to interact with your visual.
+
+
+====
 
 
 #### Property: title (String)
@@ -215,9 +252,15 @@ Description on how to interact with your visual.
 The title of your visual.
 
 
+====
+
+
 #### Property: firstName (String)
 
 Your first name.
+
+
+====
 
 
 #### Property: lastName (String)
@@ -225,9 +268,15 @@ Your first name.
 Your last name.
 
 
+====
+
+
 #### Property: email (String)
 
 Your email address.
+
+
+====
 
 
 #### Property: section (String)
@@ -252,9 +301,15 @@ The follow types of graphics are available in the input object:
 * Colors
 
 
+====
+
+
 #### input.dom (DOM Object)
 
 TODO: Write description + example.
+
+
+====
 
 
 #### input.container (DisplayObject)
@@ -262,9 +317,15 @@ TODO: Write description + example.
 TODO: Write description + example.
 
 
+====
+
+
 #### input.resolution (Number)
 
 TODO: Write description + example.
+
+
+====
 
 
 #### input.width (Number)
@@ -272,14 +333,23 @@ TODO: Write description + example.
 TODO: Write description + example.
 
 
+====
+
+
 #### input.height (Number)
 
 TODO: Write description + example.
 
 
+====
+
+
 #### input.frameRate (Number)
 
 TODO: Write description + example.
+
+
+====
 
 
 #### input.patterns (Object of several PIXI.Texture)
@@ -293,6 +363,9 @@ TODO: Write description + example.
 * input.patterns.handdrawnanimal
 
 
+====
+
+
 #### input.maskers (Object of several  of PIXI.Texture)
 
 * input.maskers.bbbbird1
@@ -302,6 +375,9 @@ TODO: Write description + example.
 * input.maskers.handdrawnanimal2
 * input.maskers.handdrawnanimal3
 * input.maskers.handdrawnanimal4
+
+
+====
 
 
 #### input.graphics (Object of several  of PIXI.Texture)
@@ -316,9 +392,15 @@ TODO: Write description + example.
 * input.graphics.handdrawnanimal3
 
 
+====
+
+
 #### input.colors (Array of Hexadecimal colors)
 
 TODO: Write description + example.
+
+
+====
 
 
 #### input.isTouchDevice (Boolean)
@@ -326,9 +408,15 @@ TODO: Write description + example.
 TODO: Write description + example.
 
 
+====
+
+
 #### input.orientation (Object) example: { gamma: 0, beta: 0, alpha: 0 }
 
 Only available for touchDevices.
+
+
+====
 
 
 #### input.mouseTouchPosition (Object) example: { x: 0, y: 0 }
@@ -336,9 +424,15 @@ Only available for touchDevices.
 On Desktop the cursor position is returned, on touchDevice the tapMove position is returned.
 
 
+====
+
+
 #### input.audio (WebAudioAnalyser)
 
 Using the web-audio-analyser package, see that for more documentation.
+
+
+====
 
 
 #### input.sections (String)
@@ -348,9 +442,15 @@ Returns thecurrect section of the music video.
 Available values: "intro", "verse1", "preChorus1", "chorus1", "verse2", "preChorus2", "chorus2", "bridge", "chorus3", "outro".
 
 
+====
+
+
 #### input.currentSection (Object) example: { "id": "section1", starts: "0", ends: "10" }
 
 TODO: Write description + example.
+
+
+====
 
 
 #### input.editing (JSON Object) examples: { "id": "fullBand" } { "id": "closeUp" }
@@ -358,9 +458,15 @@ TODO: Write description + example.
 TODO: Write description + example (editing.vtt).
 
 
+====
+
+
 #### input.cast (JSON Object) examples: { "id": "singer" } { "id": "drummer" } { "id": "bass" } { "id": "all" }
 
 TODO: Write description + example (cast.vtt).
+
+
+====
 
 
 #### input.beat (JSON Object) examples: { "id": "onBeat" } { "id": "offBeat" }
@@ -368,14 +474,23 @@ TODO: Write description + example (cast.vtt).
 TODO: Write description + example (beat.vtt).
 
 
+====
+
+
 #### input.styling (JSON Object) examples: { "id": "none" } { "id": "black" }
 
 TODO: Write description + example (styling.vtt).
 
 
+====
+
+
 ### Helpers
 
 TODO: Explain what helpers is.
+
+
+====
 
 
 #### midgroundMask (Boolean)
@@ -385,10 +500,14 @@ TODO: Write description + example.
 Original note I'm not 100% sure what means: // if current instance is set at = "mid" this layer will be masked the video
 
 
+====
+
+
 #### fullscreenSprite (PIXI.Texture)
 
 returns (PIXI.Sprite).
 
 TODO: Write description of what you would use the PIXI.Sprite for.
+
 
 
