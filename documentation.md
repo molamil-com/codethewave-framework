@@ -111,12 +111,24 @@ SPF.start();
 
 ### SPF.set({...}) function
 
-Inside SPF.set the following methods and objects are available:
+Inside SPF.set the following properties and functions are available:
 
 
 #### at (String)
 
-Valid values are "back", "mid" or "fore".
+This property determines in which layer your script will run. The valid values are:
+
+* back
+* mid
+* fore
+
+##### Example
+
+```javascript
+SPF.set({
+    at: "back"
+});
+```
 
 
 #### load(PIXI, input) (Function)
