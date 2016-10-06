@@ -236,7 +236,7 @@ SPF.set({
 
 ### SPF.info({...})
 
-Inside SPF.info the following properties are available.
+Inside SPF.info the following properties are available:
 
 <dl>
   <dt>debug (Boolean)</dt>
@@ -274,6 +274,21 @@ SPF.info({
     section: "s4"
 });
 ```
+
+====
+
+
+### Input Object
+
+The input object provides handy variables for use in your visual.
+
+The follow types of graphics are available in the input object:
+
+* Pattern: tilling jpgs
+* Graphics: transparent pngs
+* Maskers: fullscreen jpgs to be used as a mask for other layers
+* Colors
+
 
 ====
 
@@ -482,6 +497,7 @@ Original note I'm not 100% sure what means: // if current instance is set at = "
 returns (PIXI.Sprite).
 
 TODO: Write description of what you would use the PIXI.Sprite for.
+
 
 
 
