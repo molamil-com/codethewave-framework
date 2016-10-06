@@ -7,10 +7,45 @@ Library is located at http://scarletpleasure.molamil.com/sp-framework.js
 
 ## Table of Contents
 
-* [How it works](#markdown-header-how-it-works)
-* [A few rules to follow to improve your chances of having your graphics selected](#markdown-header-a-few-rules-to follow-to-improve-your-chances-of-having-your-graphics-selected)
-* [How to create a visual](#markdown-header-how-to-create-a-visual)
-* [Framework functions](#markdown-header-framework-functions)
+* [How it works](#how-it-works)
+* [A few rules to follow to improve your chances of having your graphics selected](#a-few-rules-to follow-to-improve-your-chances-of-having-your-graphics-selected)
+* [How to create a visual](#how-to-create-a-visual)
+* [Framework functions](#framework-functions)
+    * [SPF.set({...})](#spfset)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+    * [SPF.info({...})](#spfinfo)
+    * [Input Object](#input-object)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
+    * [Helpers](#helpers)
+        * [xxxxx](#xxxxxxx)
+        * [xxxxx](#xxxxxxx)
 
 
 ## How it works
@@ -39,7 +74,9 @@ We are using PIXI as the main engine for drawing graphics into canvas but if you
 
 ## How to create a visual
 
+
 ### 1. Include the library (sp-framework.js)
+
 
 ### 2. Create a background layer:
 
@@ -107,6 +144,8 @@ SPF.start();
 ```
 
 ## Framework functions
+
+All example code for functions and properties below are all from a single example. You can see the full example here: TODO: Insert link to full example.
 
 
 ### SPF.set({...})
@@ -293,7 +332,9 @@ The follow types of graphics are available in the input object:
 ====
 
 
-#### input.dom (DOM Object)
+#### input.dom
+
+Returns a DOM Object.
 
 TODO: Write description + example.
 
@@ -301,7 +342,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.container (DisplayObject)
+#### input.container
+
+Returns a DisplayObject.
 
 TODO: Write description + example.
 
@@ -309,7 +352,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.resolution (Number)
+#### input.resolution
+
+Returns an Integer (The same as window.devicePixelRatio)
 
 TODO: Write description + example.
 
@@ -317,7 +362,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.width (Number)
+#### input.width
+
+Returns an Integer.
 
 TODO: Write description + example.
 
@@ -325,7 +372,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.height (Number)
+#### input.height
+
+Returns an Integer.
 
 TODO: Write description + example.
 
@@ -333,7 +382,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.frameRate (Number)
+#### input.frameRate
+
+Returns an Integer.
 
 TODO: Write description + example.
 
@@ -341,7 +392,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.patterns (Object of several PIXI.Texture)
+#### input.patterns
+
+Returns an object with one or more PIXI.Texture instances.
 
 * input.patterns.animaltech
 * input.patterns.bbbbird1
@@ -355,7 +408,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.maskers (Object of several  of PIXI.Texture)
+#### input.maskers
+
+Returns an object with one or more PIXI.Texture instances.
 
 * input.maskers.bbbbird1
 * input.maskers.botanicorganic1
@@ -369,7 +424,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.graphics (Object of several  of PIXI.Texture)
+#### input.graphics
+
+Returns an object with one or more PIXI.Texture instances.
 
 * input.graphics.animaltech
 * input.graphics.bbbbird1
@@ -384,7 +441,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.colors (Array of Hexadecimal colors)
+#### input.colors
+
+Returns an Array of recommended Hexadecimal colors.
 
 TODO: Write description + example.
 
@@ -392,7 +451,9 @@ TODO: Write description + example.
 ====
 
 
-#### input.isTouchDevice (Boolean)
+#### input.isTouchDevice
+
+Returns a Boolean value.
 
 TODO: Write description + example.
 
@@ -400,7 +461,11 @@ TODO: Write description + example.
 ====
 
 
-#### input.orientation (Object) example: { gamma: 0, beta: 0, alpha: 0 }
+#### input.orientation
+
+Returns an Object.
+
+example: { gamma: 0, beta: 0, alpha: 0 }
 
 Only available for touchDevices.
 
@@ -408,7 +473,11 @@ Only available for touchDevices.
 ====
 
 
-#### input.mouseTouchPosition (Object) example: { x: 0, y: 0 }
+#### input.mouseTouchPosition
+
+Returns an Object.
+
+example: { x: 0, y: 0 }
 
 On Desktop the cursor position is returned, on touchDevice the tapMove position is returned.
 
@@ -416,17 +485,19 @@ On Desktop the cursor position is returned, on touchDevice the tapMove position 
 ====
 
 
-#### input.audio (WebAudioAnalyser)
+#### input.audio
 
-Using the web-audio-analyser package, see that for more documentation.
+Returns a WebAudioAnalyser instance.
+
+Using the web-audio-analyser package, see [https://github.com/hughsk/web-audio-analyser](https://github.com/hughsk/web-audio-analyser) for documentation.
 
 
 ====
 
 
-#### input.sections (String)
+#### input.sections
 
-Returns thecurrect section of the music video.
+Returns a String representing the current section of the music video.
 
 Available values: "intro", "verse1", "preChorus1", "chorus1", "verse2", "preChorus2", "chorus2", "bridge", "chorus3", "outro".
 
@@ -434,41 +505,59 @@ Available values: "intro", "verse1", "preChorus1", "chorus1", "verse2", "preChor
 ====
 
 
-#### input.currentSection (Object) example: { "id": "section1", starts: "0", ends: "10" }
+#### input.currentSection
+
+Returns an Object.
 
 TODO: Write description + example.
 
+example: { "id": "section1", starts: "0", ends: "10" }
+
 
 ====
 
 
-#### input.editing (JSON Object) examples: { "id": "fullBand" } { "id": "closeUp" }
+#### input.editing
+
+Returns an Object.
 
 TODO: Write description + example (editing.vtt).
 
+examples: { "id": "fullBand" } { "id": "closeUp" }
 
 ====
 
 
-#### input.cast (JSON Object) examples: { "id": "singer" } { "id": "drummer" } { "id": "bass" } { "id": "all" }
+#### input.cast
+
+Returns an Object.
 
 TODO: Write description + example (cast.vtt).
 
+examples: { "id": "singer" } { "id": "drummer" } { "id": "bass" } { "id": "all" }
 
 ====
 
 
-#### input.beat (JSON Object) examples: { "id": "onBeat" } { "id": "offBeat" }
+#### input.beat
+
+Returns an Object.
 
 TODO: Write description + example (beat.vtt).
 
+examples: { "id": "onBeat" } { "id": "offBeat" }
+
 
 ====
 
 
-#### input.styling (JSON Object) examples: { "id": "none" } { "id": "black" }
+#### input.styling
+
+Returns an Object.
 
 TODO: Write description + example (styling.vtt).
+
+examples: { "id": "none" } { "id": "black" }
 
 
 ====
@@ -482,7 +571,9 @@ TODO: Explain what helpers is.
 ====
 
 
-#### midgroundMask (Boolean)
+#### midgroundMask
+
+Returns a Boolean.
 
 TODO: Write description + example.
 
@@ -492,9 +583,9 @@ Original note I'm not 100% sure what means: // if current instance is set at = "
 ====
 
 
-#### fullscreenSprite (PIXI.Texture)
+#### fullscreenSprite
 
-returns (PIXI.Sprite).
+Returns a PIXI.Sprite.
 
 TODO: Write description of what you would use the PIXI.Sprite for.
 
