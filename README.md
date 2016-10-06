@@ -66,7 +66,7 @@ If you prefer working locally that is also an option. Just remember that your co
 
 First clone the repository:
 
-```
+```shell
 git@github.com:molamil-com/codethewave-framework.git
 ```
 
