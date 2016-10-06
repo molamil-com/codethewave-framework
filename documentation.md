@@ -43,7 +43,7 @@ We are using PIXI as the main engine for drawing graphics into canvas but if you
 
 ### 2. Create a background layer:
 
-```
+```javascript
 SPF.set({
     at:"back"
 });
