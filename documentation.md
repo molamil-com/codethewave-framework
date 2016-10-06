@@ -236,68 +236,7 @@ SPF.set({
 
 ### SPF.info({...})
 
-Inside SPF.info the following properties are available:
-
-====
-
-
-#### Property: debug (Boolean)
-
-Valid values are true and false.
-
-====
-
-
-#### Property: tip (String)
-
-Description on how to interact with your visual.
-
-====
-
-
-#### Property: title (String)
-
-The title of your visual.
-
-
-====
-
-
-#### Property: firstName (String)
-
-Your first name.
-
-
-====
-
-
-#### Property: lastName (String)
-
-Your last name.
-
-
-====
-
-
-#### Property: email (String)
-
-Your email address.
-
-
-====
-
-
-#### Property: section (String)
-
-Id of the section of the song this visual is preferable prepared for.
-
-Valid values are "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9" and "s10".
-
-
-====
-
-
-#### Full example for SPF.info({...})
+Inside SPF.info the following properties are available.
 
 ```javascript
 SPF.info({
@@ -310,6 +249,59 @@ SPF.info({
     section: "s4"
 });
 ```
+
+====
+
+
+#### Property: debug (Boolean)
+
+Valid values are "true" and "false".
+
+====
+
+
+#### Property: tip (String)
+
+Add a description on how to interact with your visual.
+
+====
+
+
+#### Property: title (String)
+
+The title of your visual.
+
+====
+
+
+#### Property: firstName (String)
+
+Your first name.
+
+====
+
+
+#### Property: lastName (String)
+
+Your last name.
+
+====
+
+
+#### Property: email (String)
+
+Your email address.
+
+====
+
+
+#### Property: section (String)
+
+Id of the section of the song this visual is preferable prepared for.
+
+Valid values are "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9" and "s10".
+
+====
 
 
 ### Input Object
