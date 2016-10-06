@@ -238,6 +238,31 @@ SPF.set({
 
 Inside SPF.info the following properties are available.
 
+<dl>
+  <dt>debug (Boolean)</dt>
+  <dd>Valid values are "true" and "false".</dd>
+ 
+  <dt>tip (String)</dt>
+  <dd>Add a description on how to interact with your visual.</dd>
+
+  <dt>title (String)</dt>
+  <dd>The title of your visual.</dd>
+
+  <dt>firstName (String)</dt>
+  <dd>Your first name.</dd>
+
+  <dt>lastName (String)</dt>
+  <dd>Your last name.</dd>
+
+  <dt>email (String)</dt>
+  <dd>Your email address.</dd>
+
+  <dt>section (String)</dt>
+  <dd>Id of the section of the song this visual is preferable prepared for. Valid values are "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9" and "s10".</dd>
+</dl>
+
+#### Example
+
 ```javascript
 SPF.info({
     debug: false,
@@ -249,80 +274,6 @@ SPF.info({
     section: "s4"
 });
 ```
-
-====
-
-<dl>
-  <dt>Definition list</dt>
-  <dd>Is something people use sometimes.</dd>
-
-  <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
-</dl>
-
-
-#### Property: debug (Boolean)
-
-Valid values are "true" and "false".
-
-====
-
-
-#### Property: tip (String)
-
-Add a description on how to interact with your visual.
-
-====
-
-
-#### Property: title (String)
-
-The title of your visual.
-
-====
-
-
-#### Property: firstName (String)
-
-Your first name.
-
-====
-
-
-#### Property: lastName (String)
-
-Your last name.
-
-====
-
-
-#### Property: email (String)
-
-Your email address.
-
-====
-
-
-#### Property: section (String)
-
-Id of the section of the song this visual is preferable prepared for.
-
-Valid values are "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9" and "s10".
-
-====
-
-
-### Input Object
-
-The input object provides handy variables for use in your visual.
-
-The follow types of graphics are available in the input object:
-
-* Pattern: tilling jpgs
-* Graphics: transparent pngs
-* Maskers: fullscreen jpgs to be used as a mask for other layers
-* Colors
-
 
 ====
 
