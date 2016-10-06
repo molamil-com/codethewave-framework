@@ -8,7 +8,7 @@ Library is located at http://scarletpleasure.molamil.com/sp-framework.js
 ## Table of Contents
 
 * [How it works](#how-it-works)
-* [A few rules to follow to improve your chances of having your graphics selected](#a-few-rules-to follow-to-improve-your-chances-of-having-your-graphics-selected)
+* [A few rules to follow to improve your chances of having your graphics selected](#a-few-rules-to-follow-to-improve-your-chances-of-having-your-graphics-selected)
 * [How to create a visual](#how-to-create-a-visual)
 * [Framework functions](#framework-functions)
     * [SPF.set({...})](#spfset)
