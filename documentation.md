@@ -145,17 +145,12 @@ This function should always return an array.
 
 ##### Example
 
-```javascript
-var allGraphics;
+TODO: Add example code.
 
+```javascript
 SPF.set({
-    load: function(PIXI, input) {
-        allGraphics = [input.graphics.animaltech,input.graphics.bbbbird1, input.graphics.bbbbird2, input.graphics.bbbbird3, input.graphics.botanicorganic, input.graphics.handdrawnanimal1, input.graphics.handdrawnanimal2, input.graphics.handdrawnanimal3];
-        return allGraphics;
-    }
 });
 ```
-
 
 ====
 
@@ -166,59 +161,95 @@ This function is called once when your visual is ready to execute. This is where
 
 ##### Example
 
-```javascript
-var sprite;
+TODO: Add example code.
 
+```javascript
 SPF.set({
-    init: function(PIXI, input) {
-        sprite = SPF.fullscreenSprite(input.container, allGraphics[Math.round(Math.random() * (allGraphics.length - 1))]);
-        input.container.addChild(sprite);
-    }
 });
 ```
-
 
 ====
 
 
 #### Function: render(PIXI, input)
 
-TODO: Write description + example.
+This function is called everytime your graphics is drawn. This is where you manipulate the graphics you setup in the init function.
 
+##### Example
+
+TODO: Add example code.
+
+```javascript
+SPF.set({
+});
+```
 
 ====
 
 
 #### Function: resize(PIXI, input)
 
-TODO: Write description + example.
+This function is called everytime the browser window is resized.
 
+TODO: Add example code.
+
+```javascript
+SPF.set({
+});
+```
 
 ====
 
 
 #### Function: mouseDownTouchStart (PIXI, input)
 
-TODO: Write description + example.
+This function is called on mouseDown events on desktop browsers and touchStart events on mobile browsers.
 
+TODO: Add example code.
+
+```javascript
+SPF.set({
+});
+```
 
 ====
 
 
 #### Function: mouseUpTouchEnd (PIXI, input)
 
-TODO: Write description + example.
+This function is called on mouseUp events on desktop browsers and touchEnd events on mobile browsers.
+
+TODO: Add example code.
+
+```javascript
+SPF.set({
+});
+```
+
+====
+
+#### Function: mouseOver (PIXI, input)
+
+This function is called on mouseOver events on desktop browsers. This functionality is only available on the Foreground layer.
+
+TODO: Add example code.
+
+```javascript
+SPF.set({
+});
+```
 
 
-#### Function: mouseOver (PIXI, input) only available on Foreground
+#### Function: mouseOut (PIXI, input)
 
-TODO: Write description + example.
+This function is called on mouseOut events on desktop browsers. This functionality is only available on the Foreground layer.
 
+TODO: Add example code.
 
-#### Function: mouseOver (PIXI, input) only available on Foreground
-
-TODO: Write description + example.
-
+```javascript
+SPF.set({
+});
+```
 
 ====
 
@@ -227,7 +258,6 @@ TODO: Write description + example.
 
 Inside SPF.info the following properties are available:
 
-
 ====
 
 
@@ -235,14 +265,12 @@ Inside SPF.info the following properties are available:
 
 Valid values are true and false.
 
-
 ====
 
 
 #### Property: tip (String)
 
 Description on how to interact with your visual.
-
 
 ====
 
@@ -287,6 +315,21 @@ Valid values are "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9" and "s10".
 
 
 ====
+
+
+#### Full example for SPF.info({...})
+
+```javascript
+SPF.info({
+    debug: false,
+    tip: "Move your move around to generate nice effects.",
+    title: "Mouse movement example",
+    firstName: "Ramiro",
+    lastName: "Espada",
+    email: "re@ramiroespada.com",
+    section: "s4"
+});
+```
 
 
 ### Input Object
