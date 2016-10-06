@@ -125,14 +125,11 @@ This property determines in which layer your script will run. The valid values a
 * mid
 * fore
 
-##### Example
-
 ```javascript
 SPF.set({
     at: "back"
 });
 ```
-
 
 ====
 
@@ -142,10 +139,6 @@ SPF.set({
 This function preloads assets for use in the visual. By specifying the needed assets load-time is optimized compared to loading all available assets.
 
 This function should always return an array.
-
-##### Example
-
-TODO: Add example code.
 
 ```javascript
 SPF.set({
@@ -159,10 +152,6 @@ SPF.set({
 
 This function is called once when your visual is ready to execute. This is where you setup your graphics in PIXI and add them to the input.container.
 
-##### Example
-
-TODO: Add example code.
-
 ```javascript
 SPF.set({
 });
@@ -174,10 +163,6 @@ SPF.set({
 #### Function: render(PIXI, input)
 
 This function is called everytime your graphics is drawn. This is where you manipulate the graphics you setup in the init function.
-
-##### Example
-
-TODO: Add example code.
 
 ```javascript
 SPF.set({
@@ -191,8 +176,6 @@ SPF.set({
 
 This function is called everytime the browser window is resized.
 
-TODO: Add example code.
-
 ```javascript
 SPF.set({
 });
@@ -204,8 +187,6 @@ SPF.set({
 #### Function: mouseDownTouchStart (PIXI, input)
 
 This function is called on mouseDown events on desktop browsers and touchStart events on mobile browsers.
-
-TODO: Add example code.
 
 ```javascript
 SPF.set({
@@ -219,8 +200,6 @@ SPF.set({
 
 This function is called on mouseUp events on desktop browsers and touchEnd events on mobile browsers.
 
-TODO: Add example code.
-
 ```javascript
 SPF.set({
 });
@@ -228,16 +207,17 @@ SPF.set({
 
 ====
 
+
 #### Function: mouseOver (PIXI, input)
 
 This function is called on mouseOver events on desktop browsers. This functionality is only available on the Foreground layer.
-
-TODO: Add example code.
 
 ```javascript
 SPF.set({
 });
 ```
+
+====
 
 
 #### Function: mouseOut (PIXI, input)
