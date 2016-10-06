@@ -1,7 +1,19 @@
 
 
-         
-         
+                             
+    input.resolution
+
+    input.frameRate
+
+    input.isTouchDevice
+ 
+    input.cast
+ 
+    input.styling
+
+    input.editing
+
+    
          
 # DOCUMENTATION
 
@@ -25,6 +37,20 @@
      
  ```
 
+ ### 06-10-2016
+ 
+ ```
+    
+    - Prepare an example that contains all that's available using the framework
+    
+    http://scarletpleasure.molamil.com/
+    
+    - 
+        
+   
+     
+ ```
+ 
         
  ### 04-10-2016
  

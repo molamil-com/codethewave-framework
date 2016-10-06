@@ -1,0 +1,331 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>All</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../js/pixi.min.js"></script>
+
+        <script src="../js/popcorn.js"></script>
+
+        <script src="../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../sp-framework.js"></script>
+
+    <script>
+
+        var tilingSpriteBack2;
+        var tilingSpriteBack;
+        var tilingSpriteBackMask;
+
+        SPF.set({
+
+            at: 'back', // "fore" "mid" or "back"
+
+            load: function(PIXI, input) {
+                return [input.patterns.botanicorganic2, input.patterns.botanicorganic1, input.maskers.botanicorganic2];
+            },
+
+            init: function(PIXI, input) {
+
+                tilingSpriteBack2 = new PIXI.extras.TilingSprite(input.patterns.botanicorganic1, 1, 1);
+                tilingSpriteBack2.anchor.set(0);
+                 input.container.addChild(tilingSpriteBack2);
+
+
+                tilingSpriteBack = new PIXI.extras.TilingSprite(input.patterns.botanicorganic2, 1, 1);
+                tilingSpriteBack.anchor.set(0);
+                input.container.addChild(tilingSpriteBack);
+
+
+                tilingSpriteBackMask = SPF.fullscreenSprite(input.container, input.maskers.botanicorganic2);
+                tilingSpriteBack.mask = tilingSpriteBackMask;
+            },
+
+            render: function(PIXI, input) {
+
+                // Only rotate tilingSpriteBackMask if frameRate is not poor.
+
+                if(input.frameRate >30){
+                    tilingSpriteBackMask.rotation += 0.1;
+                }
+
+                //
+
+
+                //  Change the size of the background based on the camera editing
+
+
+                if(input.editing != null){
+
+
+                    if(input.editing.id =="close"){
+
+                        tilingSpriteBack2.scale.set(4);
+                        tilingSpriteBack.scale.set(4);
+
+                    } else if(input.editing.id == "medium"){
+
+                        tilingSpriteBack2.scale.set(3);
+                        tilingSpriteBack.scale.set(3);
+
+                    } else if(input.editing.id == "full"){
+
+                        tilingSpriteBack2.scale.set(2);
+                        tilingSpriteBack.scale.set(2);
+
+                    }
+
+                } else {
+                    tilingSpriteBack2.scale.set(1);
+                    tilingSpriteBack.scale.set(1);
+                }
+            },
+
+            resize: function(PIXI, input) {
+
+
+
+                var w =  input.width;
+                var h =  input.height;
+
+                tilingSpriteBack.width = w*2;
+                tilingSpriteBack.height = h*2;
+
+
+                tilingSpriteBack2.width = w*2;
+                tilingSpriteBack2.height = h*2;
+
+
+            }
+
+        });
+
+
+        var tilingSpriteMid;
+
+        SPF.set({
+
+            at: 'mid', // "fore" "mid" or "back"
+
+            load: function(PIXI, input) {
+                return [input.patterns.handdrawnanimal];
+            },
+
+            init: function(PIXI, input) {
+                tilingSpriteMid = new PIXI.extras.TilingSprite(input.patterns.handdrawnanimal, 1, 1);
+                tilingSpriteMid.anchor.set(0);
+                input.container.addChild(tilingSpriteMid);
+                tilingSpriteMid.visible = false;
+                SPF.midgroundMask(false);
+
+                TweenMax.to(tilingSpriteMid,0, {alpha:0});
+
+
+            },
+
+            mouseDownTouchStart:function(PIXI, input){
+
+                tilingSpriteMid.visible = true;
+
+                TweenMax.to(tilingSpriteMid, 0.5, {alpha:1});
+
+                SPF.midgroundMask(true);
+            },
+
+            mouseUpTouchEnd:function(PIXI, input){
+
+                TweenMax.to(tilingSpriteMid, 0.5, {alpha:0, onComplete:function(){
+                    tilingSpriteMid.visible = false;
+                    SPF.midgroundMask(false);
+
+                }});
+            },
+
+            resize: function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                tilingSpriteMid.scale.set(0.5);
+                tilingSpriteMid.width = w*2;
+                tilingSpriteMid.height = h*2;
+            }
+
+        });
+
+
+        var foreContainer, foreLeft, foreRight;
+        var foreCircleContainer;
+        var mf, f, fs;
+        var text;
+
+        SPF.set({
+
+            at: 'fore', // "fore" "mid" or "back"
+
+            load: function(PIXI, input) {
+                return [input.graphics.bbbbird1];
+            },
+
+            init: function(PIXI, input) {
+
+                foreContainer = new PIXI.Container();
+
+                foreLeft = new PIXI.Sprite(input.graphics.animaltech);
+                foreRight = new PIXI.Sprite(input.graphics.animaltech);
+
+                foreLeft.anchor.set(0.5);
+                foreRight.anchor.set(0.5);
+
+                foreContainer.addChild(foreLeft);
+                foreContainer.addChild(foreRight);
+
+                input.container.addChild(foreContainer);
+
+                foreCircleContainer  = new PIXI.Container();
+                foreContainer.scale.set(0);
+
+                var graphics = new PIXI.Graphics();
+                graphics.beginFill(input.colors[2]);
+                graphics.drawCircle(0, 0, 20);
+                graphics.endFill();
+
+
+                //  Only add circle graphic to test tilt if is a touchDevice
+                if(input.isTouchDevice){
+                    foreCircleContainer.addChild(graphics);
+                }
+
+                input.container.addChild(foreCircleContainer);
+
+                foreContainer.visible = false;
+
+                text = new PIXI.Text('SCARLET PLEASURE', {fontFamily : 'Arial Black', fontSize: 100, fill :input.colors[14], align : 'center'});
+                text.anchor.set(0.5);
+
+                input.container.addChild(text);
+            },
+
+            render:function(PIXI, input){
+
+                if(input.cast != null){
+
+                    if(input.cast.id == "singer"){
+                        text.text = "EMIL GOLL";
+                    } else if(input.cast.id == "bass"){
+                        text.text = "ALEXANDER MALONE";
+                    } else if(input.cast.id == "drums"){
+                        text.text = "JOACHIM DENCKER";
+                    } else if(input.cast.id == "all"){
+                        text.text = "SCARLET PLEASURE";
+                    } else {
+                        text.text = "";
+                    }
+
+                }
+
+
+
+                if(input.mouseTouchPosition.x == 0 && input.mouseTouchPosition.y == 0){
+                    foreContainer.x = input.width/2;
+                    foreContainer.y = input.height/2;
+                } else {
+                    foreContainer.x = input.mouseTouchPosition.x;
+                    foreContainer.y = input.mouseTouchPosition.y;
+                };
+
+                if(input.audio){
+
+
+                   fs =  input.audio.frequencies();
+
+                    foreContainer.scale.set(0.2-(fs[0])/300);
+
+                    SPF.log("frequencies",  fs[0]);
+
+
+                };
+
+                foreCircleContainer.x = input.width/2;
+                foreCircleContainer.y = input.height/2;
+
+                foreCircleContainer.x -= input.orientation.beta*10;
+                foreCircleContainer.y -= input.orientation.gamma*10;
+
+            },
+
+            resize: function(PIXI, input) {
+
+                text.position.set(input.width/2, input.height/2);
+                text.style.fontSize = input.width/22;
+
+                foreContainer.x = input.width/2;
+                foreContainer.y = input.height/2;
+
+                // Use input.resolution to define the size of the graphics
+
+                foreLeft.scale.x = input.resolution;
+                foreLeft.scale.y = input.resolution;
+
+                foreRight.scale.x = -input.resolution;
+                foreRight.scale.y = input.resolution;
+            },
+
+            mouseOver: function(PIXI, input) {
+                foreContainer.visible = true;
+            },
+
+            mouseOut: function(PIXI, input) {
+                foreContainer.visible = false;
+            },
+
+            mouseDownTouchStart: function(PIXI, input) {
+                foreContainer.visible = true;
+            },
+
+            mouseUpTouchEnd: function(PIXI, input) {
+                foreContainer.visible = false;
+            }
+
+        });
+
+        SPF.info({debug:true, title:"Test Title", tip:"Describe here how to interact with your visual.", firstName:"John", lastName:"Doe", email:"johndoe@gmail.com"});
+
+        SPF.start("chorus1"); // available: "intro", "verse1", "preChorus1", "chorus1", "verse2", "preChorus2", "chorus2", "bridge", "chorus3", "outro"
+
+
+    </script>
+
+
+    </body>
+
+</html>

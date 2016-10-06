@@ -166,7 +166,7 @@ Scarlet Pleasure Framework
 
         - info
 
-            - debug (Bboolean)
+            - debug (Boolean)
 
             - tip (String)
 

@@ -78,10 +78,9 @@ function Video() {
 
         var videoPath = serverPath+"video/"+selectedVideo["file"];
 
+        // SPF.log("selectedVideo", JSON.stringify(selectedVideo));
 
-
-        SPF.log("selectedVideo", JSON.stringify(selectedVideo));
-        SPF.log("videoPath", videoPath);
+        // SPF.log("videoPath", videoPath);
 
         video = '<video crossOrigin="anonymous" id="BPSPVideo" autoplay loop webkit-playsinline playsinline >';
 
@@ -245,12 +244,13 @@ function Video() {
 
                 mainContainer.width = w;
 
-                mainContainer.height = h*ratio;
+                mainContainer.height = (h*input.resolution)*ratio;
 
             };
 
             mainContainer.position.x = ((w) / 2) - (mainContainer.width / 2);
-            mainContainer.position.y = ((h) / 2) - (mainContainer.height / 4);
+
+            mainContainer.position.y = ((h*input.resolution) / 2)- (mainContainer.height / 4);
 
         };
     };

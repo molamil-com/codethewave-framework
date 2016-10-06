@@ -135,6 +135,8 @@ var fps = require('fps');
 
         //
 
+        input.sections = sections;
+
         input.resolution = resolution;
 
         input.isTouchDevice = isTouchDevice();
@@ -258,6 +260,8 @@ var fps = require('fps');
 
         //
 
+
+
         for(var i=0; i<sections.length; i++){
 
             var s = sections[i];
@@ -343,8 +347,6 @@ var fps = require('fps');
             ui.getVideoPlayButton().css("display","none");
 
         foreground.visible = true;
-
-        SPF.log("VIDEO PLAY","");
 
         input.audioContext = audioContext;
 
