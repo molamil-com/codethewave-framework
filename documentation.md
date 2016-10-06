@@ -51,7 +51,7 @@ SPF.set({
 
 ### 3. Preload the assets you want to use in your visual:
 
-```
+```javascript
 SPF.set({
     at: "back",
     load: function(PIXI, input) {
@@ -64,7 +64,7 @@ SPF.set({
 
 Set the methods you need to use to create your magic:
 
-```
+```javascript
 SPF.set({
     at: "back",
     load: function(PIXI, input) {
@@ -90,7 +90,7 @@ Remember to change _at: "back"_ to _at: "mid"_ and _at: "fore"_.
 ### 6. Add information about your visual:
 
 
-```
+```javascript
 SPF.info({
     debug: true, // boolean
     tip: "Use your mouse to create particles", // description on how to interact with your visual
@@ -102,7 +102,7 @@ SPF.info({
 
 ### 7. Start the framework to test it all together!
 
-```
+```javascript
 SPF.start();
 ```
 
