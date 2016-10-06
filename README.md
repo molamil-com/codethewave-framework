@@ -1,19 +1,4 @@
 
-
-                             
-    input.resolution
-
-    input.frameRate
-
-    input.isTouchDevice
- 
-    input.cast
- 
-    input.styling
-
-    input.editing
-
-    
          
 # DOCUMENTATION
 
