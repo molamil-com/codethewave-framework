@@ -109,12 +109,12 @@ SPF.start();
 ## Framework functions
 
 
-### SPF.set({...}) function
+### SPF.set({...})
 
 Inside SPF.set the following properties and functions are available:
 
 
-#### at (String)
+#### Property: at (String)
 
 This property determines in which layer your script will run. The valid values are:
 
@@ -131,88 +131,104 @@ SPF.set({
 ```
 
 
-#### load(PIXI, input) (Function)
+#### Function: load(PIXI, input)
 
-Preloads assets used in the visual.
+This function preloads assets for use in the visual. By specifying the needed assets load-time is optimized compared to loading all available assets.
 
-Returns (Array)
+This function should always return an array.
 
+##### Example
 
-#### init(PIXI, input) (Function)
-
-TODO: Write description + example.
-
-
-#### render(PIXI, input) (Function)
-
-TODO: Write description + example.
-
-
-#### resize(PIXI, input) (Function)
-
-TODO: Write description + example.
+```javascript
+SPF.set({
+    load: function(PIXI, input) {
+        return [input.graphics.animaltech,input.graphics.bbbbird1, input.graphics.bbbbird2, input.graphics.bbbbird3, input.graphics.botanicorganic, input.graphics.handdrawnanimal1, input.graphics.handdrawnanimal2, input.graphics.handdrawnanimal3];
+    }
+});
+```
 
 
-#### mouseDownTouchStart (PIXI, input) (Function)
+#### Function: init(PIXI, input)
 
 TODO: Write description + example.
 
 
-#### mouseUpTouchEnd (PIXI, input) (Function)
+#### Function: render(PIXI, input)
 
 TODO: Write description + example.
 
 
-#### mouseOver (PIXI, input) (Function) only available on Foreground
+#### Function: resize(PIXI, input)
 
 TODO: Write description + example.
 
 
-#### mouseOver (PIXI, input) (Function) only available on Foreground
+#### Function: mouseDownTouchStart (PIXI, input)
 
 TODO: Write description + example.
 
 
-### SPF.info({...}) function
+#### Function: mouseUpTouchEnd (PIXI, input)
+
+TODO: Write description + example.
+
+
+#### Function: mouseOver (PIXI, input) only available on Foreground
+
+TODO: Write description + example.
+
+
+#### Function: mouseOver (PIXI, input) only available on Foreground
+
+TODO: Write description + example.
+
+
+====
+
+
+### SPF.info({...})
 
 Inside SPF.info the following methods and objects are available:
 
 
-#### debug (Bboolean)
+#### Property: debug (Boolean)
 
 Valid values are true and false.
 
 
-#### tip (String)
+#### Property: tip (String)
 
 Description on how to interact with your visual.
 
 
-#### title (String)
+#### Property: title (String)
 
 The title of your visual.
 
 
-#### firstName (String)
+#### Property: firstName (String)
 
 Your first name.
 
 
-#### lastName (String)
+#### Property: lastName (String)
 
 Your last name.
 
 
-#### email (String)
+#### Property: email (String)
 
 Your email address.
 
 
-#### section (String)
+#### Property: section (String)
 
 Id of the section of the song this visual is preferable prepared for.
 
 Valid values are "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9" and "s10".
+
+
+====
 
 
 ### Input Object
