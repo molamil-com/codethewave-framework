@@ -277,6 +277,16 @@ This function is called everytime the browser window is resized.
 
 ```javascript
 SPF.set({
+    resize: function(PIXI, input) {
+        var w =  input.width;
+        var h =  input.height;
+
+        tilingSpriteBack.width = w*2;
+        tilingSpriteBack.height = h*2;
+
+        tilingSpriteBack2.width = w*2;
+        tilingSpriteBack2.height = h*2;
+    }
 });
 ```
 
@@ -289,6 +299,11 @@ This function is called on mouseDown events on desktop browsers and touchStart e
 
 ```javascript
 SPF.set({
+    mouseDownTouchStart: function(PIXI, input) {
+        tilingSpriteMid.visible = true;
+        TweenMax.to(tilingSpriteMid, 0.5, { alpha: 1 });
+        SPF.midgroundMask(true);
+    }
 });
 ```
 
@@ -301,6 +316,12 @@ This function is called on mouseUp events on desktop browsers and touchEnd event
 
 ```javascript
 SPF.set({
+    mouseUpTouchEnd: function(PIXI, input){
+        TweenMax.to(tilingSpriteMid, 0.5, { alpha: 0, onComplete: function() {
+            tilingSpriteMid.visible = false;
+            SPF.midgroundMask(false);
+        }});
+    }
 });
 ```
 
@@ -313,6 +334,9 @@ This function is called on mouseOver events on desktop browsers. This functional
 
 ```javascript
 SPF.set({
+    mouseOver: function(PIXI, input) {
+        foreContainer.visible = true;
+    }
 });
 ```
 
@@ -323,10 +347,11 @@ SPF.set({
 
 This function is called on mouseOut events on desktop browsers. This functionality is only available on the Foreground layer.
 
-TODO: Add example code.
-
 ```javascript
 SPF.set({
+    mouseOut: function(PIXI, input) {
+        foreContainer.visible = false;
+    }
 });
 ```
 
@@ -387,16 +412,6 @@ The follow types of graphics are available in the input object:
 * Graphics: transparent pngs
 * Maskers: fullscreen jpgs to be used as a mask for other layers
 * Colors
-
-
-====
-
-
-#### input.dom
-
-Returns a DOM Object.
-
-TODO: Write description + example.
 
 
 ====
@@ -550,28 +565,6 @@ On Desktop the cursor position is returned, on touchDevice the tapMove position 
 Returns a WebAudioAnalyser instance.
 
 Using the web-audio-analyser package, see [https://github.com/hughsk/web-audio-analyser](https://github.com/hughsk/web-audio-analyser) for documentation.
-
-
-====
-
-
-#### input.sections
-
-Returns a String representing the current section of the music video.
-
-Available values: "intro", "verse1", "preChorus1", "chorus1", "verse2", "preChorus2", "chorus2", "bridge", "chorus3", "outro".
-
-
-====
-
-
-#### input.currentSection
-
-Returns an Object.
-
-TODO: Write description + example.
-
-example: { "id": "section1", starts: "0", ends: "10" }
 
 
 ====
