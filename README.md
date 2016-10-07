@@ -38,6 +38,7 @@ The recommended method is to work directly on CodePen. You don't have to setup a
 
 There are several example Pens that you can fork and use as a starting point for your work:
 
+* [Example using all available functions](http://codepen.io/codethewave/pen/EgQavq)
 * [VideoMasking](http://codepen.io/codethewave/pen/WGXaZq)
 * [WebAudioAnalyser](http://codepen.io/codethewave/pen/ozoavo)
 * [Cast](http://codepen.io/codethewave/pen/ZpaqzW)
@@ -53,7 +54,6 @@ There are several example Pens that you can fork and use as a starting point for
 * [ScrollTilingSprite](http://codepen.io/codethewave/pen/XjzPYm)
 * [TilingSprite](http://codepen.io/codethewave/pen/bwYxLm)
 * [VideoKey](http://codepen.io/codethewave/pen/PGOdLd)
-* [Threejs](http://codepen.io/codethewave/pen/PGEGEE)
 
 Just click the "Fork" button in the top right corner and you are up and running.
 
