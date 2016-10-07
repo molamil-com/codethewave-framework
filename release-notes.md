@@ -1,31 +1,113 @@
-# RE Status log
+
+### 05-10-2016
+ 
+ ```
+    
+    - Improved Video texture if screen with is bigger than screen height (so it video will always fill screen)
+    
+    - Threejs example:
+    
+    
+        http://scarletpleasure.molamil.com/examples/RE-Threejs.html
+        http://codepen.io/codethewave/pen/PGEGEE
+     
+ ```
+
+ ### 06-10-2016
+ 
+ ```
+    
+    - Prepare an example that contains all that's available using the framework
+    
+    http://scarletpleasure.molamil.com/
+    
+    - input.currentSection
+        
+    - Touch to stat fixed, but we have to review how the video is drawn in very small resolutions
+     
+ ```
+ 
+        
+ ### 04-10-2016
+ 
+ ```
+    
+     - Forcing to play only one sound at the time on CodePen when displaying several pens   
 
 
-    TODO (when the final video and sound is ready):
-    
-        - Play selected section from start (for testing): 0.5
-    
-        - Link UI navigation with video.currentTime to play the selected section: 1
-        
-        - Create track: beat.vtt: 4
-        
-        - Create track: cast.vtt: 6
-        
-        - Create track: editing.vtt: 6
-        
-        - Create track: tracking.vtt: 10
-        
-        - Render video optimized including masking layer: 8
-        
-        - Review loading and buffering time: 6
-        
-        - Change mp4 with very low quality mp3 for optimal performance on mobile: 1
-        
-        
-    TODO:
-                    
-        - Change all framework to absolute based on domain/hosting
-               
+     Examples:
+ 
+  
+          http://scarletpleasure.molamil.com/examples/VideoMasking.html
+          http://codepen.io/codethewave/pen/WGXaZq
+          
+          http://scarletpleasure.molamil.com/examples/WebAudioAnalyser.html
+          http://codepen.io/codethewave/pen/ozoavo
+          
+          http://scarletpleasure.molamil.com/examples/Cast.html
+          http://codepen.io/codethewave/pen/ZpaqzW
+          
+          http://scarletpleasure.molamil.com/examples/Editing.html
+          http://codepen.io/codethewave/pen/WGXgVB
+          
+          http://scarletpleasure.molamil.com/examples/Styling.html
+          http://codepen.io/codethewave/pen/ZpargQ
+          
+          http://scarletpleasure.molamil.com/examples/FullscreenSprite.html
+          http://codepen.io/codethewave/pen/PGOdAy
+          
+          http://scarletpleasure.molamil.com/examples/Layers.html
+          http://codepen.io/codethewave/pen/LROJKj
+          
+          http://scarletpleasure.molamil.com/examples/MaskingPattern.html
+          http://codepen.io/codethewave/pen/PGOdvy
+     
+          http://scarletpleasure.molamil.com/examples/MaskingVideo.html
+          http://codepen.io/codethewave/pen/dpkqwz
+          
+          http://scarletpleasure.molamil.com/examples/MouseTouchPosition.html
+          http://codepen.io/codethewave/pen/ozoPQw
+          
+          http://scarletpleasure.molamil.com/examples/MultipleGraphics.html
+          http://codepen.io/codethewave/pen/KgyxBL
+          
+          http://scarletpleasure.molamil.com/examples/Orientation.html
+          http://codepen.io/codethewave/pen/ozoPaw
+          
+          http://scarletpleasure.molamil.com/examples/ScrollTilingSprite.html
+          http://codepen.io/codethewave/pen/XjzPYm
+          
+          http://scarletpleasure.molamil.com/examples/TilingSprite.html
+          http://codepen.io/codethewave/pen/bwYxLm
+          
+          http://scarletpleasure.molamil.com/examples/VideoKey.html
+          http://codepen.io/codethewave/pen/PGOdLd
+     
+     
+ ```
+ 
+### 03-10-2016
+
+```
+
+    Examples:
+
+    http://scarletpleasure.molamil.com/examples/FullscreenSprite.html
+    http://scarletpleasure.molamil.com/examples/Layers.html
+    http://scarletpleasure.molamil.com/examples/MaskingPattern.html
+    http://scarletpleasure.molamil.com/examples/MaskingVideo.html
+    http://scarletpleasure.molamil.com/examples/MouseTouchPosition.html
+    http://scarletpleasure.molamil.com/examples/MultipleGraphics.html
+    http://scarletpleasure.molamil.com/examples/Orientation.html
+    http://scarletpleasure.molamil.com/examples/RE-Boids.html
+    http://scarletpleasure.molamil.com/examples/RE-MoonTides.html
+    http://scarletpleasure.molamil.com/examples/RE-Wave.html
+    http://scarletpleasure.molamil.com/examples/ScrollTilingSprite.html
+    http://scarletpleasure.molamil.com/examples/TilingSprite.html
+    http://scarletpleasure.molamil.com/examples/VideoKey.html
+
+```
+
 
 ### 19-09-2016
 
