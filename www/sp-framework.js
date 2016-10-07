@@ -12523,7 +12523,8 @@ module.exports = function(key, value, color){
     if(typeof(keys[key]) == 'undefined'){
         var r = document.createElement('p');
         r.style.color = color;
-        r.style.fontSize = "9px";
+        r.style.fontSize = "8px";
+        r.style.lineHeight = "8px";
         el.appendChild(r);
         keys[key] = r;
     }
@@ -12800,7 +12801,7 @@ module.exports = {
 
 module.exports = {
 
-     serverPath: "http://scarletpleasure.molamil.com/"
+    serverPath: "http://scarletpleasure.molamil.com/"
 
    // serverPath: "../"
 
@@ -13109,6 +13110,7 @@ function Video() {
 
         }
 
+
         var selectedVideo = videos[0];
 
         for(var i=0;i<videos.length;i++){
@@ -13131,13 +13133,16 @@ function Video() {
 
         var videoPath = serverPath+"video/"+selectedVideo["file"];
 
-        // SPF.log("selectedVideo", JSON.stringify(selectedVideo));
+        /*
+        console.log("videos: ", videos);
+        console.log("input.width",input.width);
+        console.log("selectedVideo", JSON.stringify(selectedVideo));
+        console.log("videoPath", videoPath);
+        */
 
-        // SPF.log("videoPath", videoPath);
+        video = '<video crossOrigin="anonymous" id="BPSPVideo" controls autobuffer loop autoplay webkit-playsinline playsinline >';
 
-        video = '<video crossOrigin="anonymous" id="BPSPVideo" loop webkit-playsinline playsinline >';
-
-        video += '<source src="' + videoPath + '" type="video/mp4" > ';
+        video += '<source src="' + videoPath + '" > ';
 
         video += '<track kind="metadata" label="editing" src="' + serverPath + 'tracks/editing.vtt" default>';
         video += '</track>';
@@ -13155,12 +13160,17 @@ function Video() {
 
         $(dom).append(video);
 
-        $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: 400});
+        if(input.isTouchDevice){
+            if(input.isTouchDevice[0] == "android"){
+                $("#BPSPVideo").css({"position": "absolute", "display": "block", top: 0, left: 0, width: "100%", height:"100%"});
+            };
+        } else {
+            $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
+        };
 
         video = document.getElementById('BPSPVideo');
 
         video.setAttribute('crossOrigin', 'anonymous');
-
 
         video.oncanplay = function() {
             callback();
@@ -13177,10 +13187,6 @@ function Video() {
             videoWidth = Math.ceil(videoWidth / 2);
             videoHeight = Math.ceil(videoHeight / 2);
         };
-
-
-        $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0,  height:videoHeight/4});
-
 
         // CREATE PIXI TEXTURES
 
@@ -13230,7 +13236,6 @@ function Video() {
     };
 
     this.render = function(realTime, input) {
-
 
         if(videoRenderTexture){
 
@@ -13336,7 +13341,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.015;
+    var version = 0.016;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13538,16 +13543,15 @@ var fps = require('fps');
         video = new createVideo();
 
         video.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
-
-
-
             if(!isVideoReady){
                 videoReady();
             }
 
         });
 
-
+        if(!input.isTouchDevice){
+            video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+        };
 
         resize();
 
@@ -13611,6 +13615,7 @@ var fps = require('fps');
 
     function videoReady(){
 
+        $("#BPSPVideo").css({ "display": "none"});
 
         isVideoReady = true;
 
@@ -13634,34 +13639,40 @@ var fps = require('fps');
         //
 
 
-        if ( input.isTouchDevice ) {
+        if ( input.isTouchDevice && input.isTouchDevice[0] != "android") {
 
-            input.dom.addEventListener("touchstart", function touchDeviceStart(){
+            input.dom.addEventListener("touchstart", function touchDeviceStart() {
 
                 input.dom.removeEventListener("touchstart", touchDeviceStart, false);
 
                 video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+
                 playVideoAt(currentTime);
                 video.getVideoSource().play();
-                canPlay();
 
-                $("#BPSPVideo").css({ "display": "none"});
+                canPlay();
 
             }, false);
 
+        } else if(input.isTouchDevice && input.isTouchDevice[0] == "android") {
+
+            video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+            canPlay();
 
         } else {
 
-            video.create(PIXI, domContainer, videoground, renderer, resolution, input);
             playVideoAt(currentTime);
             video.getVideoSource().play();
             canPlay();
 
         };
 
+
+
     };
 
     function canPlay(){
+
 
         var audioContext = createAudioContext();
 
@@ -13672,18 +13683,25 @@ var fps = require('fps');
 
         input.audioContext = audioContext;
 
-        detectMediaSource(function (supportsMediaElement) {
+        if(input.isTouchDevice) {
+            if (input.isTouchDevice[0] == "android") {
+                initAudio(audioContext, null);
+            }
+        } else {
+            detectMediaSource(function (supportsMediaElement) {
 
-            var shouldBuffer =! supportsMediaElement;
-            initAudio(audioContext, shouldBuffer);
+                var shouldBuffer =! supportsMediaElement;
+                initAudio(audioContext, shouldBuffer);
 
-        }, audioContext);
+            }, audioContext);
 
+
+        }
     }
 
     function initAudio(audioContext, shouldBuffer) {
 
-        if ( isTouchDevice()) {
+        if (input.isTouchDevice && input.isTouchDevice[0] != "android") {
 
             audio = createPlayer(serverPath + "audio/TheWaveInstrumental.mp3", {
                 crossOrigin: "anonymous",
@@ -14068,7 +14086,8 @@ var fps = require('fps');
 
         maskMidground = value;
 
-        if(video == null || video.getVideoSource() == null){
+
+        if(video == null || video.getVideoSource() == null || video.getVideoMask() == null || midground == null){
             setTimeout(function(){
                 midgroundMask(maskMidground);
             },1000);
@@ -14076,22 +14095,30 @@ var fps = require('fps');
         }
 
 
+
         if(maskMidground){
             if(midground.zIndex != 1){
-                midground.mask = video.getVideoMask();
-                midground.zIndex = 1;
-                domContainer.updateLayersOrder();
+
+                if(midground.mask == null){
+                    midground.mask = video.getVideoMask();
+                    midground.zIndex = 1;
+                    domContainer.updateLayersOrder();
+                }
+
             }
         } else {
-            if(midground.zIndex == 1){
-                midground.mask = false;
-                midground.zIndex = 3;
-                domContainer.updateLayersOrder();
 
-                video.getVideoSprite().mask = video.getVideoMask();
+            if(midground.zIndex == 1){
+
+                if(midground.mask != null){
+                    midground.mask = false;
+                    midground.zIndex = 3;
+                    domContainer.updateLayersOrder();
+                    video.getVideoSprite().mask = video.getVideoMask();
+                }
+
             }
         };
-
 
     };
 
@@ -14277,6 +14304,7 @@ var fps = require('fps');
         deviceAgent.match(/bada/i)
 
         );
+
 
         return isTouchDevice;
     }

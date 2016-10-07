@@ -56,6 +56,7 @@ function Video() {
 
         }
 
+
         var selectedVideo = videos[0];
 
         for(var i=0;i<videos.length;i++){
@@ -78,13 +79,16 @@ function Video() {
 
         var videoPath = serverPath+"video/"+selectedVideo["file"];
 
-        // SPF.log("selectedVideo", JSON.stringify(selectedVideo));
+        /*
+        console.log("videos: ", videos);
+        console.log("input.width",input.width);
+        console.log("selectedVideo", JSON.stringify(selectedVideo));
+        console.log("videoPath", videoPath);
+        */
 
-        // SPF.log("videoPath", videoPath);
+        video = '<video crossOrigin="anonymous" id="BPSPVideo" controls autobuffer loop autoplay webkit-playsinline playsinline >';
 
-        video = '<video crossOrigin="anonymous" id="BPSPVideo" loop webkit-playsinline playsinline >';
-
-        video += '<source src="' + videoPath + '" type="video/mp4" > ';
+        video += '<source src="' + videoPath + '" > ';
 
         video += '<track kind="metadata" label="editing" src="' + serverPath + 'tracks/editing.vtt" default>';
         video += '</track>';
@@ -102,12 +106,17 @@ function Video() {
 
         $(dom).append(video);
 
-        $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: 400});
+        if(input.isTouchDevice){
+            if(input.isTouchDevice[0] == "android"){
+                $("#BPSPVideo").css({"position": "absolute", "display": "block", top: 0, left: 0, width: "100%", height:"100%"});
+            };
+        } else {
+            $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
+        };
 
         video = document.getElementById('BPSPVideo');
 
         video.setAttribute('crossOrigin', 'anonymous');
-
 
         video.oncanplay = function() {
             callback();
@@ -124,10 +133,6 @@ function Video() {
             videoWidth = Math.ceil(videoWidth / 2);
             videoHeight = Math.ceil(videoHeight / 2);
         };
-
-
-        $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0,  height:videoHeight/4});
-
 
         // CREATE PIXI TEXTURES
 
@@ -177,7 +182,6 @@ function Video() {
     };
 
     this.render = function(realTime, input) {
-
 
         if(videoRenderTexture){
 

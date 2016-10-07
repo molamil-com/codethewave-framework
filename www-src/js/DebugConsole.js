@@ -33,7 +33,8 @@ module.exports = function(key, value, color){
     if(typeof(keys[key]) == 'undefined'){
         var r = document.createElement('p');
         r.style.color = color;
-        r.style.fontSize = "9px";
+        r.style.fontSize = "8px";
+        r.style.lineHeight = "8px";
         el.appendChild(r);
         keys[key] = r;
     }

@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.015;
+    var version = 0.016;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -224,16 +224,15 @@ var fps = require('fps');
         video = new createVideo();
 
         video.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
-
-
-
             if(!isVideoReady){
                 videoReady();
             }
 
         });
 
-
+        if(!input.isTouchDevice){
+            video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+        };
 
         resize();
 
@@ -297,6 +296,7 @@ var fps = require('fps');
 
     function videoReady(){
 
+        $("#BPSPVideo").css({ "display": "none"});
 
         isVideoReady = true;
 
@@ -320,34 +320,40 @@ var fps = require('fps');
         //
 
 
-        if ( input.isTouchDevice ) {
+        if ( input.isTouchDevice && input.isTouchDevice[0] != "android") {
 
-            input.dom.addEventListener("touchstart", function touchDeviceStart(){
+            input.dom.addEventListener("touchstart", function touchDeviceStart() {
 
                 input.dom.removeEventListener("touchstart", touchDeviceStart, false);
 
                 video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+
                 playVideoAt(currentTime);
                 video.getVideoSource().play();
-                canPlay();
 
-                $("#BPSPVideo").css({ "display": "none"});
+                canPlay();
 
             }, false);
 
+        } else if(input.isTouchDevice && input.isTouchDevice[0] == "android") {
+
+            video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+            canPlay();
 
         } else {
 
-            video.create(PIXI, domContainer, videoground, renderer, resolution, input);
             playVideoAt(currentTime);
             video.getVideoSource().play();
             canPlay();
 
         };
 
+
+
     };
 
     function canPlay(){
+
 
         var audioContext = createAudioContext();
 
@@ -358,18 +364,25 @@ var fps = require('fps');
 
         input.audioContext = audioContext;
 
-        detectMediaSource(function (supportsMediaElement) {
+        if(input.isTouchDevice) {
+            if (input.isTouchDevice[0] == "android") {
+                initAudio(audioContext, null);
+            }
+        } else {
+            detectMediaSource(function (supportsMediaElement) {
 
-            var shouldBuffer =! supportsMediaElement;
-            initAudio(audioContext, shouldBuffer);
+                var shouldBuffer =! supportsMediaElement;
+                initAudio(audioContext, shouldBuffer);
 
-        }, audioContext);
+            }, audioContext);
 
+
+        }
     }
 
     function initAudio(audioContext, shouldBuffer) {
 
-        if ( isTouchDevice()) {
+        if (input.isTouchDevice && input.isTouchDevice[0] != "android") {
 
             audio = createPlayer(serverPath + "audio/TheWaveInstrumental.mp3", {
                 crossOrigin: "anonymous",
@@ -754,7 +767,8 @@ var fps = require('fps');
 
         maskMidground = value;
 
-        if(video == null || video.getVideoSource() == null){
+
+        if(video == null || video.getVideoSource() == null || video.getVideoMask() == null || midground == null){
             setTimeout(function(){
                 midgroundMask(maskMidground);
             },1000);
@@ -762,22 +776,30 @@ var fps = require('fps');
         }
 
 
+
         if(maskMidground){
             if(midground.zIndex != 1){
-                midground.mask = video.getVideoMask();
-                midground.zIndex = 1;
-                domContainer.updateLayersOrder();
+
+                if(midground.mask == null){
+                    midground.mask = video.getVideoMask();
+                    midground.zIndex = 1;
+                    domContainer.updateLayersOrder();
+                }
+
             }
         } else {
-            if(midground.zIndex == 1){
-                midground.mask = false;
-                midground.zIndex = 3;
-                domContainer.updateLayersOrder();
 
-                video.getVideoSprite().mask = video.getVideoMask();
+            if(midground.zIndex == 1){
+
+                if(midground.mask != null){
+                    midground.mask = false;
+                    midground.zIndex = 3;
+                    domContainer.updateLayersOrder();
+                    video.getVideoSprite().mask = video.getVideoMask();
+                }
+
             }
         };
-
 
     };
 
@@ -963,6 +985,7 @@ var fps = require('fps');
         deviceAgent.match(/bada/i)
 
         );
+
 
         return isTouchDevice;
     }
