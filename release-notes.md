@@ -5,6 +5,8 @@
     
     - Fix for Android Chrome!
     
+    - Forcing resolution to be 1 or 2 to prevent mapping errors with video
+    
      
  ```
  
