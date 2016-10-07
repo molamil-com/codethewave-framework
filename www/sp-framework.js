@@ -13341,7 +13341,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.016;
+    var version = 0.017;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13430,7 +13430,8 @@ var fps = require('fps');
 
         resolution = Math.floor(window.devicePixelRatio);
 
-        console.log(resolution);
+        if(resolution >2)
+            resolution = 2;
 
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
