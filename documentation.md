@@ -145,8 +145,26 @@ SPF.start();
 
 ## Framework functions
 
-All example code for functions and properties below are all from a single example. You can see the full example here: TODO: Insert link to full example.
+All example code for functions and properties below are all from a single example. You can see the full example here: [http://codepen.io/codethewave/pen/EgQavq](http://codepen.io/codethewave/pen/EgQavq) to see the below examples in context.
 
+The following variables are defined in the global scope for example code below:
+
+```javascript
+
+// Background layer
+var tilingSpriteBack2;
+var tilingSpriteBack;
+var tilingSpriteBackMask;
+
+// Middle layer
+var tilingSpriteMid;
+
+// Foreground layer
+var foreContainer, foreLeft, foreRight;
+var foreCircleContainer;
+var mf, f, fs;
+var text;
+```
 
 ### SPF.set({...})
 
@@ -181,6 +199,9 @@ This function should always return an array.
 
 ```javascript
 SPF.set({
+    load: function(PIXI, input) {
+        return [input.patterns.botanicorganic2, input.patterns.botanicorganic1, input.maskers.botanicorganic2];
+    }
 });
 ```
 
@@ -193,6 +214,18 @@ This function is called once when your visual is ready to execute. This is where
 
 ```javascript
 SPF.set({
+    init: function(PIXI, input) {
+        tilingSpriteBack2 = new PIXI.extras.TilingSprite(input.patterns.botanicorganic1, 1, 1);
+        tilingSpriteBack2.anchor.set(0);
+        input.container.addChild(tilingSpriteBack2);
+
+        tilingSpriteBack = new PIXI.extras.TilingSprite(input.patterns.botanicorganic2, 1, 1);
+        tilingSpriteBack.anchor.set(0);
+        input.container.addChild(tilingSpriteBack);
+
+        tilingSpriteBackMask = SPF.fullscreenSprite(input.container, input.maskers.botanicorganic2);
+        tilingSpriteBack.mask = tilingSpriteBackMask;
+    }
 });
 ```
 
@@ -205,6 +238,33 @@ This function is called everytime your graphics is drawn. This is where you mani
 
 ```javascript
 SPF.set({
+    render: function(PIXI, input) {
+        
+        // Only rotate tilingSpriteBackMask if frameRate is not poor.
+        if(input.frameRate >30){
+            tilingSpriteBackMask.rotation += 0.1;
+        }
+
+        //  Change the size of the background based on the camera editing
+        if(input.editing != null){
+            if (input.editing.id == "close") {
+                tilingSpriteBack2.scale.set(4);
+                tilingSpriteBack.scale.set(4);
+            }
+            else if (input.editing.id == "medium") {
+                tilingSpriteBack2.scale.set(3);
+                tilingSpriteBack.scale.set(3);
+            }
+            else if (input.editing.id == "full") {
+                tilingSpriteBack2.scale.set(2);
+                tilingSpriteBack.scale.set(2);
+            }
+        }
+        else {
+            tilingSpriteBack2.scale.set(1);
+            tilingSpriteBack.scale.set(1);
+        }
+    }
 });
 ```
 
