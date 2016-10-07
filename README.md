@@ -1,436 +1,92 @@
+# Code The Wave Framework
 
-         
-# DOCUMENTATION
+[CodeTheWave.com](http://www.codethewave.com) is an interactive platform that lets everyone create their own music video for the song "The Wave" by the band [Scarlet Pleasure](http://www.scarletpleasure.dk).
 
-    RE_documentation.txt
+This is the JavaScript framework used to produce the graphics which users can choose between on [CodeTheWave.com](http://www.codethewave.com).
 
-
-# RE Status log
-
-
-### 05-10-2016
- 
- ```
-    
-    - Improved Video texture if screen with is bigger than screen height (so it video will always fill screen)
-    
-    - Threejs example:
-    
-    
-        http://scarletpleasure.molamil.com/examples/RE-Threejs.html
-        http://codepen.io/codethewave/pen/PGEGEE
-     
- ```
-
- ### 06-10-2016
- 
- ```
-    
-    - Prepare an example that contains all that's available using the framework
-    
-    http://scarletpleasure.molamil.com/
-    
-    - input.currentSection
-        
-    - Touch to stat fixed, but we have to review how the video is drawn in very small resolutions
-     
- ```
- 
-        
- ### 04-10-2016
- 
- ```
-    
-     - Forcing to play only one sound at the time on CodePen when displaying several pens   
+A jury will select the best contributions to be included on [CodeTheWave.com](http://www.codethewave.com) but even if your contribution isn't selected you can still share your contribution yourself.
 
 
-     Examples:
- 
-  
-          http://scarletpleasure.molamil.com/examples/VideoMasking.html
-          http://codepen.io/codethewave/pen/WGXaZq
-          
-          http://scarletpleasure.molamil.com/examples/WebAudioAnalyser.html
-          http://codepen.io/codethewave/pen/ozoavo
-          
-          http://scarletpleasure.molamil.com/examples/Cast.html
-          http://codepen.io/codethewave/pen/ZpaqzW
-          
-          http://scarletpleasure.molamil.com/examples/Editing.html
-          http://codepen.io/codethewave/pen/WGXgVB
-          
-          http://scarletpleasure.molamil.com/examples/Styling.html
-          http://codepen.io/codethewave/pen/ZpargQ
-          
-          http://scarletpleasure.molamil.com/examples/FullscreenSprite.html
-          http://codepen.io/codethewave/pen/PGOdAy
-          
-          http://scarletpleasure.molamil.com/examples/Layers.html
-          http://codepen.io/codethewave/pen/LROJKj
-          
-          http://scarletpleasure.molamil.com/examples/MaskingPattern.html
-          http://codepen.io/codethewave/pen/PGOdvy
-     
-          http://scarletpleasure.molamil.com/examples/MaskingVideo.html
-          http://codepen.io/codethewave/pen/dpkqwz
-          
-          http://scarletpleasure.molamil.com/examples/MouseTouchPosition.html
-          http://codepen.io/codethewave/pen/ozoPQw
-          
-          http://scarletpleasure.molamil.com/examples/MultipleGraphics.html
-          http://codepen.io/codethewave/pen/KgyxBL
-          
-          http://scarletpleasure.molamil.com/examples/Orientation.html
-          http://codepen.io/codethewave/pen/ozoPaw
-          
-          http://scarletpleasure.molamil.com/examples/ScrollTilingSprite.html
-          http://codepen.io/codethewave/pen/XjzPYm
-          
-          http://scarletpleasure.molamil.com/examples/TilingSprite.html
-          http://codepen.io/codethewave/pen/bwYxLm
-          
-          http://scarletpleasure.molamil.com/examples/VideoKey.html
-          http://codepen.io/codethewave/pen/PGOdLd
-     
-     
- ```
- 
-### 03-10-2016
+## What it looks like
+
+You can see an example running on [CodePen](http://codepen.io/ramiroespada/pen/AXYEra) - Please use Google Chrome as other browsers have CORS issues with the video when running on CodePen.
+
+The music video is divided into 10 different parts:
+
+1. Intro
+2. Verse 1
+3. Pre chorus
+4. Chorus
+5. Verse 2
+6. Pre chorus
+7. Chorus
+8. Bridge
+9. Chorus
+10. Outro
+
+When creating a personal music video on [CodeTheWave.com](http://www.codethewave.com) the user will select a different script for each part. A unique url is then generated for each combination of graphics/sections and the user can share their video.
+
+
+## Getting started
+
+You can work with the framework in two different ways: Directly on CodePen (Recommended) or locally by cloning this repository. Note: If you work locally you have to copy your code to CodePen when done so we can find it and include it on [CodeTheWave.com](http://www.codethewave.com). 
+
+
+### Working directly on CodePen
+
+The recommended method is to work directly on CodePen. You don't have to setup a development environment or copy-paste your code online when done.
+
+There are several example Pens that you can fork and use as a starting point for your work:
+
+* [Example using all available functions](http://codepen.io/codethewave/pen/EgQavq)
+* [VideoMasking](http://codepen.io/codethewave/pen/WGXaZq)
+* [WebAudioAnalyser](http://codepen.io/codethewave/pen/ozoavo)
+* [Cast](http://codepen.io/codethewave/pen/ZpaqzW)
+* [Editing](http://codepen.io/codethewave/pen/WGXgVB)
+* [Styling](http://codepen.io/codethewave/pen/ZpargQ)
+* [FullscreenSprite](http://codepen.io/codethewave/pen/PGOdAy)
+* [Layers](http://codepen.io/codethewave/pen/LROJKj)
+* [MaskingPattern](http://codepen.io/codethewave/pen/PGOdvy)
+* [MaskingVideo](http://codepen.io/codethewave/pen/dpkqwz)
+* [MouseTouchPosition](http://codepen.io/codethewave/pen/ozoPQw)
+* [MultipleGraphics](http://codepen.io/codethewave/pen/KgyxBL)
+* [Orientation](http://codepen.io/codethewave/pen/ozoPaw)
+* [ScrollTilingSprite](http://codepen.io/codethewave/pen/XjzPYm)
+* [TilingSprite](http://codepen.io/codethewave/pen/bwYxLm)
+* [VideoKey](http://codepen.io/codethewave/pen/PGOdLd)
+
+Just click the "Fork" button in the top right corner and you are up and running.
+
+_Important: Please develop using Google Chrome as other browsers have CORS issues with the video when running on CodePen. This will not be an issue for the users in the end, only during development._
+
+
+### Setting up local development
+
+If you prefer working locally that is also an option. Just remember that your code needs to go on CodePen when you are done so we are able to find it.
+
+First clone the repository:
 
 ```
-
-    Examples:
-
-    http://scarletpleasure.molamil.com/examples/FullscreenSprite.html
-    http://scarletpleasure.molamil.com/examples/Layers.html
-    http://scarletpleasure.molamil.com/examples/MaskingPattern.html
-    http://scarletpleasure.molamil.com/examples/MaskingVideo.html
-    http://scarletpleasure.molamil.com/examples/MouseTouchPosition.html
-    http://scarletpleasure.molamil.com/examples/MultipleGraphics.html
-    http://scarletpleasure.molamil.com/examples/Orientation.html
-    http://scarletpleasure.molamil.com/examples/RE-Boids.html
-    http://scarletpleasure.molamil.com/examples/RE-MoonTides.html
-    http://scarletpleasure.molamil.com/examples/RE-Wave.html
-    http://scarletpleasure.molamil.com/examples/ScrollTilingSprite.html
-    http://scarletpleasure.molamil.com/examples/TilingSprite.html
-    http://scarletpleasure.molamil.com/examples/VideoKey.html
-    
-
-```
-  
-
-### 19-09-2016
-
+git@github.com:molamil-com/codethewave-framework.git
 ```
 
-  - DEV briefing 
-  
-  - Adding sections starts
+Go inside the folder and run:
 
 ```
-
-### 07-09-2016
-
+npm install
 ```
 
-  - Change test video with The Wave Instrumental
+Once NPM is done installing start the development server:
 
 ```
-      
-
-### 06-09-2016
-
+gulp
 ```
 
-    - Change UI web-fonts
-
-```
-
-### 02-09-2016
-
-```
-
-    - Test IOS10 on iPhone
-
-```
-       
-### 01-09-2016
-
-```
-
-    - Mobile Audio input performance improvement.
-    
-    - Fix values when sounds loops.
-    
-    - Add GA tracking.
-    
-    - Testing latest changes in CodePen: 
-    
-        http://codepen.io/ramiroespada/full/mAdyZJ/
-    
-    - Create prototype page (outside CodePen framework environment) to test switching visuals in the same video:
-    
-        http://work.molamil.com/trouble/spxboplay/sp-framework/08/frontend-prototype.html
- 
-```
-
-### 31-08-2016
-
-```
-
-    - Mobile: is not possible to get audioAnalyser data from video: https://stackoverflow.com/questions/36800909/convert-mediaelementaudiosourcenode-to-audiobuffersourcenode
- 
-    - Audio input working on mobile!! if we can't get the audio data from the video we create an audio instance. 
-      
- 
-```
-
-### 30-08-2016
-
-```
-   
-    - Create input.sections
-   
-    - Build CodePen Brand UI
-    
-    - UI: artist initials
-     
-    - UI: playHead 
-   
-    - UI: frame
-    
-    - UI: sections navigation
-    
-    - UI: tip
-    
-    - UI: title
-    
-    - Meeting/Work session with Trouble: fixing and improving UI details
-    
-    - Add disclaimer: portrait mode not available please rotate to landscape
-    
-    - UI: play button
-
-   
-```
-           
-### 29-08-2016
-
-```
-    
-     - Still trying to fix audio on IOS10
-     
-     - Create input.sections (in progress)
-    
-     - Build CodePen Brand UX (in progress)
-     
-    
-```
-
-### 26-08-2016
-
-```
-    
-     - Still trying to fix audio on IOS10
-    
-     - Migration changes to PIXI v4!
-          
-     - Planing meeting
-     
-     - Video Stop Motion solution if frameRate is under 20
-    
-     - Status meeting
-    
-```
+Choose an example in the [www/examples](www/examples) folder and work from there.
 
 
-### 25-08-2016
+## Documentation
 
-```
-    
-     - Prepare all mock-up vtt files
-     
-     - Create vtt system to send tracking from video to input
-    
-     - Trying to fix  input.audio WebAudioAnalyser frequencies always zeros on IOS
-      
-    
-```
+The framework documentation is available here:
+[documentation.md](documentation.md)
 
-### 24-08-2016
-
-```
-    
-    - Implement all maskers
-    
-    - Frameworks better documentation and explanation at: RE-documentation.txt
-    
-    - mouseDownTouchStart
-    
-    - mouseUpTouchEnd
-    
-    - input.mousePosition (both desktop and touchDevices
-    
-    - Test TweenMax with PIXI
-    
-    - input.orientation
-    
-    - Add input.colors
-     
-    
-```
-
-      
-### 23-08-2016
-
-```
-   
-    - Fix issue with loader not working with multiple instances.
-   
-    - Testing textures
-    
-    - Fix for issue with inline video on IOS10
-   
-    - Fix masking GPU issue on IOS10
-    
-    - Tested VTT on IOS
-    
-    - Implement all textures
-    
-    - Implement all graphics
-    
-    - Implement test maskers
-    
-``` 
-    
-### 22-08-2016
-
-```
-   
-    - Fix issue with video resize on NON retina devices!
-    
-    - Trouble meeting to define Frameworks (Jakob and Marcus)
-    
-    - Blue print: organizing TO-DOS framework and website
-    
-    - Change foreground to be on top always.
-    
-    - Change midground to be able to be masked by the video.
-
-``` 
-
-
-### 19-08-2016
-
-```
-   
-    - Video Mask used to mask foreground!
-    
-    - Getting audio data from video without duplicated instance!
-    
-    - Video scaling on resize to always fit screen
-    
-    - Multiple layers of visuals in a single test page.
-    
-    - Test getting multiple WebVTT data
-    
-    - Staus input: Top filters, tilt input, codePen helper
-       
-``` 
-
-
-### 18-08-2016
-
-```
-   
-    - Planing meeting.
-    
-    - Using WebVTT for tracking, audio, cuts and other video events.
-    
-    
-``` 
-
-
-### 17-08-2016
-
-```
-  
-    - Fix video not loading masked double video.
-    
-    - Shooting + notes (see RE-shooting-notes.txt)
-    
-    - Test tracking (best type of data)
-    
-
-``` 
-
-
-### 12-08-2016
-
-```
-    - Video testing IOS 10: Cross Origin issues (I'll need help with CORS)
-    
-    - Video works when in the same server, but if we want to serve it as framework it needs to work cross-domains.
-    
-    - Video and Video mask working full color.
-    
-    - Sync video and video-mask so they play always the same frame.
-    
-    - Test to remove double video ghost in some browsers/computers.
-
-
-``` 
-
-
-### 11-08-2016
-
-```
-    - Implement audio library working on iPad (getByteFrequencyData)
-    
-    - Full color video testing
-
-    - Adding input.with and input.height on init()
-
-``` 
-
-    
-### 10-08-2016
-
-```
-
-    - SP framework kick start
-
-    - Early test on IOS 10
-    
-    - Refactor Assets for loading 
-    
-    - Create on Resize functionality
-      
-      
-```
-
-
-
-    
-### required libraries
-
-    require('ios-safe-audio-context');
- 
-    require('detect-media-element-source');
- 
-    require('web-audio-player');
- 
-    require('web-audio-analyser');
- 
-    require('iphone-inline-video');
-    
-    require('fps');
-    
-    require('jquery-stage');
-    
-    require('universal-ga');
-    
-    require('screen-orientation');
-    
-   
- 
