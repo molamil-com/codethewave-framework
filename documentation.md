@@ -419,10 +419,9 @@ The follow types of graphics are available in the input object:
 
 #### input.container
 
-Returns a DisplayObject.
+Returns a [PIXI.Container](https://pixijs.github.io/docs/PIXI.Container.html).
 
-TODO: Write description + example.
-
+This is the container object you add your visual objects to.
 
 ====
 
@@ -431,45 +430,33 @@ TODO: Write description + example.
 
 Returns an Integer (The same as window.devicePixelRatio)
 
-TODO: Write description + example.
-
-
 ====
 
 
 #### input.width
 
-Returns an Integer.
-
-TODO: Write description + example.
-
+Returns the width of your visual as an  Integer.
 
 ====
 
 
 #### input.height
 
-Returns an Integer.
-
-TODO: Write description + example.
-
+Returns the height of your visual as an Integer.
 
 ====
 
 
 #### input.frameRate
 
-Returns an Integer.
-
-TODO: Write description + example.
-
+Returns the current framerate as an Integer.
 
 ====
 
 
 #### input.patterns
 
-Returns an object with one or more PIXI.Texture instances.
+Returns an object with one or more PIXI.Texture instances. The available patterns are:
 
 * input.patterns.animaltech
 * input.patterns.bbbbird1
@@ -485,7 +472,7 @@ Returns an object with one or more PIXI.Texture instances.
 
 #### input.maskers
 
-Returns an object with one or more PIXI.Texture instances.
+Returns an object with one or more PIXI.Texture instances. The available maskers are:
 
 * input.maskers.bbbbird1
 * input.maskers.botanicorganic1
@@ -501,7 +488,7 @@ Returns an object with one or more PIXI.Texture instances.
 
 #### input.graphics
 
-Returns an object with one or more PIXI.Texture instances.
+Returns an object with one or more PIXI.Texture instances. The available graphics are:
 
 * input.graphics.animaltech
 * input.graphics.bbbbird1
@@ -518,44 +505,55 @@ Returns an object with one or more PIXI.Texture instances.
 
 #### input.colors
 
-Returns an Array of recommended Hexadecimal colors.
+Returns an Array of recommended Hexadecimal colors. The recommended colors are (in order of array position):
 
-TODO: Write description + example.
-
+* C9953B
+* ABC5C6
+* F880D7
+* 04003D
+* 080473
+* 84FC8B
+* 3C084A
+* 5F1432
+* 684DD2
+* C5BEFC
+* 84B8CB
+* 4A6995
+* ED8010
+* FBC42B
+* FA8474
+* FC4B56
+* F70050
+* FA9DBE
 
 ====
 
 
 #### input.isTouchDevice
 
-Returns a Boolean value.
-
-TODO: Write description + example.
-
+Returns true if the device is a touch device, falst otherwise.
 
 ====
 
 
 #### input.orientation
 
-Returns an Object.
+Returns an Object with a _gamma_, _beta_ and _alpha_ property. This is only available on touch devices.
 
-example: { gamma: 0, beta: 0, alpha: 0 }
-
-Only available for touchDevices.
-
+```javascript
+{ gamma: 0, beta: 0, alpha: 0 }
+```
 
 ====
 
 
 #### input.mouseTouchPosition
 
-Returns an Object.
+Returns an Object with a _x_ and _y_ property. On Desktop the cursor position is returned, on touchDevice the tapMove position is returned.
 
-example: { x: 0, y: 0 }
-
-On Desktop the cursor position is returned, on touchDevice the tapMove position is returned.
-
+```javascript
+{ x: 0, y: 0 }
+```
 
 ====
 
@@ -566,82 +564,147 @@ Returns a WebAudioAnalyser instance.
 
 Using the web-audio-analyser package, see [https://github.com/hughsk/web-audio-analyser](https://github.com/hughsk/web-audio-analyser) for documentation.
 
-
 ====
 
 
 #### input.editing
 
-Returns an Object.
+Returns an Object stating the editing style of the current part of the video. The returned object looks like this:
 
-TODO: Write description + example (editing.vtt).
+```javascript
+{ "id": "close" }
+```
 
-examples: { "id": "fullBand" } { "id": "closeUp" }
+The _id_ value can be one of the following:
+
+<dl>
+  <dt>none</dt>
+  <dd>There is no video footage.</dd>
+  
+  <dt>full</dt>
+  <dd>The full body of the band is visible.</dd>
+  
+  <dt>medium</dt>
+  <dd>The band is visible from the hips up to the head.</dd>
+  
+  <dt>close</dt>
+  <dd>The band is in a close up.</dd>
+</dl>
 
 ====
 
 
 #### input.cast
 
-Returns an Object.
+Returns an Object stating which member(s) of the band is in the current part of the video.
 
-TODO: Write description + example (cast.vtt).
+```javascript
+{ "id": "singer" }
+```
 
-examples: { "id": "singer" } { "id": "drummer" } { "id": "bass" } { "id": "all" }
+The _id_ value can be one of the following:
+
+<dl>
+  <dt>none</dt>
+  <dd>No band members are present.</dd>
+
+  <dt>all</dt>
+  <dd>All band members are present.</dd>
+
+  <dt>singer</dt>
+  <dd>The singer is present.</dd>
+
+  <dt>bass</dt>
+  <dd>The bass player is present.</dd>
+
+  <dt>drums</dt>
+  <dd>The drumme is present.</dd>
+</dl>
 
 ====
 
 
 #### input.beat
 
-Returns an Object.
+Returns an Object stating if the music is currently onBeat or offBeat.
 
-TODO: Write description + example (beat.vtt).
+```javascript
+{ "id": "singer" }
+```
 
-examples: { "id": "onBeat" } { "id": "offBeat" }
+The _id_ value can be one of the following:
 
+<dl>
+  <dt>onBeat</dt>
+  <dd>The sound is on beat.</dd>
+
+  <dt>offBeat</dt>
+  <dd>The sound is off beat.</dd>
+</dl>
+```
 
 ====
 
 
 #### input.styling
 
-Returns an Object.
+Returns an Object stating what color of clothes the band is wearing.
 
-TODO: Write description + example (styling.vtt).
+```javascript
+{ "id": "black" }
+```
 
-examples: { "id": "none" } { "id": "black" }
+The _id_ value can be one of the following:
 
+<dl>
+  <dt>none</dt>
+  <dd>No band members are present.</dd>
+
+  <dt>black</dt>
+  <dd>Band members are wearing black.</dd>
+
+  <dt>color</dt>
+  <dd>Band members are wearing colors.</dd>
+</dl>
+```
 
 ====
 
 
 ### Helpers
 
-TODO: Explain what helpers is.
-
-
-====
-
 
 #### midgroundMask
 
-Returns a Boolean.
+This function can be used to set the video as a mask on the middle layer.
 
-TODO: Write description + example.
+To use the video as a mask:
 
-Original note I'm not 100% sure what means: // if current instance is set at = "mid" this layer will be masked the video
+```javascript
+SPF.midgroundMask(true);
+```
 
+To get the middle layer back to normal:
+
+```javascript
+SPF.midgroundMask(false);
+```
 
 ====
 
 
 #### fullscreenSprite
 
-Returns a PIXI.Sprite.
+Returns a PIXI.Sprite object which is the full size of your visual.
 
-TODO: Write description of what you would use the PIXI.Sprite for.
-
+```javascript
+SPF.set({
+    init: function(PIXI, input) {
+        tilingSpriteBackMask = SPF.fullscreenSprite(input.container, input.maskers.botanicorganic2);
+        tilingSpriteBack.mask = tilingSpriteBackMask;
+    }
+});
+```
 
 
 
