@@ -15,7 +15,8 @@ module.exports = (function(){
         "prod": "www",
         "static":"www-static",
         "bundlescripts": [
-            "sp-framework.js"
+            "sp-framework.js",
+            "RE-milight.js"
         ],
         "retinaSprites":true,
         "fontName":"font-icons",
@@ -35,7 +36,6 @@ module.exports = (function(){
     /// data for markojs. Can be a string(which will be required each build), a function(which will be invoked) or an object.
     // string is preferable as it we will be able to require an uncached version each time it is needed.
     build.data = "/build-data.json"
-
 
 
 
