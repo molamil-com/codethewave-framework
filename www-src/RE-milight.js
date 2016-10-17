@@ -1,24 +1,24 @@
 
 var $ = require('jquery');
 
-
 (function(exports) {
 
     var background;
-
     var sprite;
-
-    var masker;
-
     var flag;
 
+
+    /*
 
     var Milight = require('milight');
 
     var milight = new Milight({
         host: "192.168.0.24",
-        broadcast: false
+        broadcast: true
     });
+    milight.on();
+
+    */
 
 
     SPF.set({
@@ -29,7 +29,7 @@ var $ = require('jquery');
             background = new PIXI.Graphics();
             input.container.addChild(background);
 
-            milight.on();
+
 
         },
 
