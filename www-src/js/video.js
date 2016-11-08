@@ -222,7 +222,7 @@ function Video() {
     };
 
     this.getPositionPercentage = function(){
-        return  Math.round((100/video.duration)*video.currentTime);
+        return   Math.round((100/video.duration)*video.currentTime);
     };
 
     this.resize = function(input){

@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.016;
+    var version = 0.017;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -91,8 +91,6 @@ var fps = require('fps');
 
     function init() {
 
-
-
         if (window.console && typeof window.console.log == "function")
             console.log("SP FRAMEWORK - ", version);
 
@@ -110,8 +108,6 @@ var fps = require('fps');
         domContainer = conf.container || document.body;
 
         resolution = Math.floor(window.devicePixelRatio);
-
-        console.log(resolution);
 
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
@@ -179,7 +175,6 @@ var fps = require('fps');
 
         input.dom = domContainer;
 
-
         input.frameRate = 25;
 
         //
@@ -209,7 +204,17 @@ var fps = require('fps');
 
     };
 
-    function startFrontend(){
+    function startFrontend(view){
+
+
+        domContainer.removeChild(renderer.view);
+
+        renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
+            antialiasing: false,
+            transparent: false,
+            backgroundColor: conf.color,
+            view:view
+        }, false);
 
         isSite = true;
         startUI();
@@ -218,8 +223,11 @@ var fps = require('fps');
 
     function startUI(){
 
-        ui = new createUI();
-        ui.init(domContainer, title, firstName, lastName, tip);
+
+        if(!isSite){
+            ui = new createUI();
+            ui.init(domContainer, title, firstName, lastName, tip);
+        }
 
         video = new createVideo();
 
@@ -283,6 +291,17 @@ var fps = require('fps');
 
         };
 
+
+    };
+
+    function playSection(id){
+
+        for(var i=0; i<sections.length; i++){
+            var s = sections[i];
+            if(s["id"] == id){
+                playVideoAt(s["starts"]);
+            };
+        };
 
     };
 
@@ -572,8 +591,13 @@ var fps = require('fps');
                 }
             }
 
-            if(input.currentSection)
-                 SPF.log(" input.currentSection",  input.currentSection.id);
+            if(input.currentSection){
+                SPF.log(" input.currentSection",  input.currentSection.id);
+
+                if(isSite)
+                    $("body").attr("data-current-section", ""+input.currentSection.id);
+            }
+
 
         }
     };
@@ -650,6 +674,16 @@ var fps = require('fps');
 
             if(ui != null)
                 ui.render(video.getPositionPercentage());
+
+
+            if(isSite){
+
+                $("body").attr("data-video-duration", ""+video.getVideoSource().duration);
+                $("body").attr("data-video-time", ""+video.getVideoSource().currentTime);
+                $("body").attr("data-video-percentage", ""+video.getPositionPercentage());
+
+            };
+
 
 
             if(audio)
@@ -756,9 +790,11 @@ var fps = require('fps');
         if(Boolean(conf.debug))
             $("#SPFDebug").css("display","block");
 
+        /*
         if(isSite == true){
             ui.update(domContainer, title, firstName, lastName, tip, conf.number);
         };
+        */
 
     };
 
@@ -774,7 +810,6 @@ var fps = require('fps');
             },1000);
             return;
         }
-
 
 
         if(maskMidground){
@@ -997,6 +1032,7 @@ var fps = require('fps');
         set: set,
         info:info,
         start:start,
+        playSection:playSection,
         startFrontend:startFrontend,
         getVideoSprite:getVideoSprite,
         mouseDownTouchStart:mouseDownTouchStart,
