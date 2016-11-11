@@ -13538,6 +13538,8 @@ var fps = require('fps');
         isSite = true;
         startUI();
 
+
+
     };
 
     function startUI(){
@@ -14121,7 +14123,6 @@ var fps = require('fps');
 
 
         maskMidground = value;
-
 
         if(video == null || video.getVideoSource() == null || video.getVideoMask() == null || midground == null){
             setTimeout(function(){

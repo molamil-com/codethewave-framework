@@ -56,7 +56,7 @@
 
             SPF.set({
 
-                at: 'back', // "fore" "mid" or "back"
+                at: 'mid', // "fore" "mid" or "back"
 
                 load: function(PIXI, input) {
                     return [input.patterns.botanicorganic1];
@@ -68,9 +68,15 @@
                     tilingSpriteBack.anchor.set(0.5);
                     input.container.addChild(tilingSpriteBack);
 
+                    SPF.midgroundMask(true);
+
+
                 },
 
                 render: function(PIXI, input) {
+
+
+                    SPF.midgroundMask(true);
 
                     fs = input.audio.frequencies();
 
@@ -91,7 +97,9 @@
 
             });
 
-            SPF.set({at: 'mid'});
+            SPF.set({at: 'back'
+
+            });
 
             SPF.set({at: 'fore'});
 
