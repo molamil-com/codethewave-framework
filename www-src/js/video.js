@@ -208,7 +208,6 @@ function Video() {
 
     };
 
-
     this.getVideoSprite = function(){
         return videoSprite;
     };

@@ -42,11 +42,23 @@
 
     <canvas id="SPFCanvas"></canvas>
 
+
+    <button id="s1" style="z-index: 100; position:absolute; bottom:70%; left:60px" onclick="javascript:SPF.playSection('bridge')">Section:  bridge</button>
+
+    <button id="s2" style="z-index: 100; position:absolute; bottom:70%; left:260px" onclick="javascript:SPF.playSection('outro')">Section: outro</button>
+
+    <button id="b1" style="z-index: 100; position:absolute; bottom:50%; left:60px" onclick="javascript:visual1()">VISUAL I</button>
+
+    <button id="b2" style="z-index: 100; position:absolute; bottom:50%; left:150px"  onclick="javascript:visual2()">VISUAL II</button>
+
+    <button id="b2" style="z-index: 100; position:absolute; bottom:50%; left:247px"  onclick="javascript:visual3()">VISUAL III</button>
+
     <script>
 
-        visual1();
-
-        SPF.startFrontend(document.getElementById("SPFCanvas"));
+        SPF.load(function(){
+            visual1();
+            SPF.startFrontend(document.getElementById("SPFCanvas"));
+        });
 
         var fs;
 
@@ -309,16 +321,6 @@
         }
 
     </script>
-
-    <button id="s1" style="z-index: 100; position:absolute; bottom:70%; left:60px" onclick="javascript:SPF.playSection('bridge')">Section:  bridge</button>
-
-    <button id="s2" style="z-index: 100; position:absolute; bottom:70%; left:260px" onclick="javascript:SPF.playSection('outro')">Section: outro</button>
-
-    <button id="b1" style="z-index: 100; position:absolute; bottom:50%; left:60px" onclick="javascript:visual1()">VISUAL I</button>
-
-    <button id="b2" style="z-index: 100; position:absolute; bottom:50%; left:150px"  onclick="javascript:visual2()">VISUAL II</button>
-
-    <button id="b2" style="z-index: 100; position:absolute; bottom:50%; left:247px"  onclick="javascript:visual3()">VISUAL III</button>
 
     </body>
 

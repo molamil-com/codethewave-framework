@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.017;
+    var version = 0.018;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -201,6 +201,64 @@ var fps = require('fps');
         active = true;
 
 
+
+    };
+
+    function load(loaded){
+
+
+        // Preloading all graphics
+
+        var textures = [
+
+            input.patterns.animaltech,
+            input.patterns.bbbbird1,
+            input.patterns.bbbbird2,
+            input.patterns.botanicorganic1,
+            input.patterns.botanicorganic2,
+            input.patterns.botanicorganic3,
+            input.patterns.handdrawnanimal,
+
+            input.maskers.bbbbird1,
+            input.maskers.botanicorganic1,
+            input.maskers.botanicorganic2,
+            input.maskers.handdrawnanimal1,
+            input.maskers.handdrawnanimal2,
+            input.maskers.handdrawnanimal3,
+            input.maskers.handdrawnanimal4,
+
+            input.graphics.animaltech,
+            input.graphics.bbbbird1,
+            input.graphics.bbbbird2,
+            input.graphics.bbbbird3,
+            input.graphics.botanicorganic,
+            input.graphics.handdrawnanimal1,
+            input.graphics.handdrawnanimal2,
+            input.graphics.handdrawnanimal3
+
+        ];
+
+        var loader = new PIXI.loaders.Loader();
+
+        for(var i=0; i < textures.length; i++){
+            loader.add("texture-"+i, textures[i].baseTexture.imageUrl);
+        }
+
+        loader.once('complete',function(){
+            if (typeof loaded == 'function') {
+                loaded();
+            }
+        });
+
+        //
+        // Preloading video
+        //
+
+        var loadingVideo = new createVideo();
+        loadingVideo.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
+            $("#BPSPVideo").remove();
+            loader.load();
+        });
 
     };
 
@@ -1031,6 +1089,7 @@ var fps = require('fps');
 
     exports.SPF = {
         set: set,
+        load:load,
         info:info,
         start:start,
         playSection:playSection,
