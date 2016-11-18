@@ -30,12 +30,14 @@ function Video() {
 
     var videos;
 
-    this.init = function(PIXI, dom, container, _renderer, resolution, input, callback) {
+    this.init = function(PIXI, dom, container, _renderer, resolution, input, callback, muted) {
 
         //
         // SPF.log("serverPath video", serverPath);
 
         // CREATE VIDEO ELEMENTS
+
+
 
 
         if(document.location.hostname.indexOf("codepen") >1 && navigator.userAgent.search("Firefox") ){
@@ -118,7 +120,7 @@ function Video() {
 
         if(video != null){
 
-            if(document.location.pathname.indexOf("/fullcpgrid/") > 1) {
+            if(document.location.pathname.indexOf("/fullcpgrid/") > 1 || muted) {
                 video.volume = 0;
             } else {
                 video.volume = 1;

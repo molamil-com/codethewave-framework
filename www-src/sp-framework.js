@@ -270,7 +270,7 @@ var fps = require('fps');
 
             },2000);
 
-        });
+        }, true);
 
 
         /*
@@ -320,7 +320,7 @@ var fps = require('fps');
                 videoReady();
             }
 
-        });
+        },false);
 
         if(!input.isTouchDevice){
             video.create(PIXI, domContainer, videoground, renderer, resolution, input);
