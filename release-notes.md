@@ -1,4 +1,16 @@
 
+
+### ISSUES:
+
+    - Change documentation with new sections
+    
+    - Change documentation with new markers (beat and pulse)
+    
+    - Change documentation: add link to PIXI: http://pixijs.github.io/docs/
+    
+    - Change documentation: We will remove any visuals that contain errors on its code, so make sure your visual works and adapts to different screen sizes.
+
+
 ### 07-10-2016
  
  ```

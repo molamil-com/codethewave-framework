@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.018;
+    var version = 0.021;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -70,8 +70,10 @@ var fps = require('fps');
         },
 
         active = false,
+        siteActive = false,
         stage,
         domContainer,
+        domCover,
         resolution,
         renderer,
         background,
@@ -109,6 +111,9 @@ var fps = require('fps');
 
         resolution = Math.floor(window.devicePixelRatio);
 
+        if(resolution >1)
+            resolution = 2;
+
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
             transparent: false,
@@ -139,7 +144,7 @@ var fps = require('fps');
 
         input.resolution = resolution;
 
-        input.isTouchDevice = isTouchDevice();
+        input.isTouchDevice =  isTouchDevice();
 
         input.mouseTouchPosition = {x:0,y:0};
 
@@ -256,16 +261,35 @@ var fps = require('fps');
 
         var loadingVideo = new createVideo();
         loadingVideo.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
-            $("#BPSPVideo").remove();
-            loader.load();
+
+
+            setTimeout(function(){
+
+                $("#BPSPVideo").remove();
+                loader.load();
+
+            },2000);
+
         });
+
+
+        /*
+        if(input.isTouchDevice) {
+            loadingVideo.getVideoSource().addEventListener('loadeddata', function () {
+                $("#BPSPVideo").remove();
+                loader.load();
+            }, false);
+        }
+        */
 
     };
 
-    function startFrontend(view){
+    function startFrontend(view, cover){
 
 
         domContainer.removeChild(renderer.view);
+
+        domCover = cover;
 
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
@@ -375,6 +399,7 @@ var fps = require('fps');
 
     function videoReady(){
 
+
         $("#BPSPVideo").css({ "display": "none"});
 
         isVideoReady = true;
@@ -396,43 +421,77 @@ var fps = require('fps');
                 }
             }
         };
-        //
 
 
-        if ( input.isTouchDevice && input.isTouchDevice[0] != "android") {
+        if(isSite) {
 
-            input.dom.addEventListener("touchstart", function touchDeviceStart() {
+            setTimeout(function () {
+                pause();
+            }, 150);
 
-                input.dom.removeEventListener("touchstart", touchDeviceStart, false);
+            domCover.addEventListener("click", function touchDeviceStart() {
 
-                video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+                domCover.removeEventListener("click", touchDeviceStart, false);
+
+                if (input.isTouchDevice){
+                    video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+                }
 
                 playVideoAt(currentTime);
-                video.getVideoSource().play();
-
+                play();
                 canPlay();
 
             }, false);
 
-        } else if(input.isTouchDevice && input.isTouchDevice[0] == "android") {
-
-            video.create(PIXI, domContainer, videoground, renderer, resolution, input);
-            canPlay();
-
         } else {
 
-            playVideoAt(currentTime);
-            video.getVideoSource().play();
-            canPlay();
 
-        };
+            if (input.isTouchDevice && input.isTouchDevice[0] != "android") {
+
+                input.dom.addEventListener("touchstart", function touchDeviceStart() {
+
+                    input.dom.removeEventListener("touchstart", touchDeviceStart, false);
+
+                    video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+
+                    playVideoAt(currentTime);
+
+                    video.getVideoSource().play();
+
+                    canPlay();
+
+                }, false);
+
+            } else if (input.isTouchDevice && input.isTouchDevice[0] == "android") {
+
+                video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+                canPlay();
+
+            } else {
+                playVideoAt(currentTime);
+                video.getVideoSource().play();
+                canPlay();
+            };
+
+        }
 
 
 
     };
 
+    function pause(){
+        siteActive = false;
+        video.getVideoSource().pause();
+    };
+
+    function play(){
+        video.getVideoSource().play();
+        siteActive = true;
+    }
+
     function canPlay(){
 
+        siteActive = true;
 
         var audioContext = createAudioContext();
 
@@ -446,8 +505,11 @@ var fps = require('fps');
         if(input.isTouchDevice) {
             if (input.isTouchDevice[0] == "android") {
                 initAudio(audioContext, null);
+            } else {
+                startTracks();
             }
         } else {
+
             detectMediaSource(function (supportsMediaElement) {
 
                 var shouldBuffer =! supportsMediaElement;
@@ -467,7 +529,7 @@ var fps = require('fps');
                 crossOrigin: "anonymous",
                 context: audioContext,
                 buffer: shouldBuffer,
-                loop:true
+                loop: true
             });
 
             audioUtil = createAnalyser(audio.node, audio.context, {
@@ -491,7 +553,7 @@ var fps = require('fps');
 
             audioUtil = createAnalyser(gainNode, audioContext, {
                 stereo: true,
-                audible:true
+                audible: true
             });
 
             analyser = audioUtil.analyser;
@@ -499,6 +561,13 @@ var fps = require('fps');
             input.audio = audioUtil;
 
         };
+
+        startTracks();
+
+
+    };
+
+    function startTracks(){
 
         //
         // START LISTENING TRACKS!
@@ -511,6 +580,8 @@ var fps = require('fps');
         input.editing = null;
         var editingTrack = tracks[0]; // editing.vtt;
 
+
+
         // console.log("editingTrack: ",editingTrack.cues);
 
         editingTrack.oncuechange = function (){
@@ -521,6 +592,10 @@ var fps = require('fps');
             } else {
                 input.editing = null;
             }
+
+            if(isSite)
+                $("body").attr("data-video-editing", ""+input.editing.id);
+
             SPF.log("input.editing", JSON.stringify(input.editing));
         };
 
@@ -664,6 +739,12 @@ var fps = require('fps');
 
     function animate() {
 
+
+        if(isSite && !siteActive){
+            requestAnimationFrame(animate);
+            return;
+        }
+
         if(ticker){
             ticker.tick();
         }
@@ -746,9 +827,12 @@ var fps = require('fps');
 
 
 
-            if(audio)
-                if(video)
+            if(audio){
+                if(video){
                     audio.currentTime = video.getVideoSource().currentTime;
+                    audio.volume = video.getVideoSource().volume;
+                }
+            }
 
             renderer.render(stage);
 
@@ -1080,8 +1164,24 @@ var fps = require('fps');
 
         );
 
+        var iDevices = [
+            'iPad Simulator',
+            'iPhone Simulator',
+            'iPod Simulator',
+            'iPad',
+            'iPhone',
+            'iPod'
+        ];
 
-        return isTouchDevice;
+        if (!!navigator.platform) {
+            while (iDevices.length) {
+                if (navigator.platform === iDevices.pop()){
+                    isTouchDevice = "ios";
+                }
+            }
+        }
+
+        return  isTouchDevice;
     }
 
     // -- EXPORTS
@@ -1092,6 +1192,8 @@ var fps = require('fps');
         load:load,
         info:info,
         start:start,
+        play:play,
+        pause:pause,
         playSection:playSection,
         startFrontend:startFrontend,
         getVideoSprite:getVideoSprite,

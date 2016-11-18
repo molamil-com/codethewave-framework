@@ -73,8 +73,6 @@ function Video() {
                 }
             }
 
-
-
         }
 
         var videoPath = serverPath+"video/"+selectedVideo["file"];
@@ -85,6 +83,7 @@ function Video() {
         console.log("selectedVideo", JSON.stringify(selectedVideo));
         console.log("videoPath", videoPath);
         */
+
 
         video = '<video crossOrigin="anonymous" id="BPSPVideo" controls autobuffer loop autoplay webkit-playsinline playsinline >';
 
@@ -109,14 +108,22 @@ function Video() {
         if(input.isTouchDevice){
             if(input.isTouchDevice[0] == "android"){
                 $("#BPSPVideo").css({"position": "absolute", "display": "block", top: 0, left: 0, width: "100%", height:"100%"});
-            };
+            }
         } else {
             $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
-        };
-
+        }
         video = document.getElementById('BPSPVideo');
 
         video.setAttribute('crossOrigin', 'anonymous');
+
+        if(video != null){
+
+            if(document.location.pathname.indexOf("/fullcpgrid/") > 1) {
+                video.volume = 0;
+            } else {
+                video.volume = 1;
+            }
+        }
 
         video.oncanplay = function() {
             callback();
@@ -132,8 +139,7 @@ function Video() {
         if (input.isTouchDevice) {
             videoWidth = Math.ceil(videoWidth / 2);
             videoHeight = Math.ceil(videoHeight / 2);
-        };
-
+        }
         // CREATE PIXI TEXTURES
 
         mainContainer = new PIXI.Container();
@@ -193,18 +199,9 @@ function Video() {
                 videoTexture.baseTexture.update();
                 videoTexture.baseTexture.autoUpdate = false;
 
-            };
-        }
-
-        if(video != null){
-
-            if(document.location.hostname.indexOf("codepen") >1 && input.height <= 450){
-
-                video.volume = 0;
-            } else {
-                video.volume = 1;
             }
         }
+
 
     };
 
@@ -248,13 +245,12 @@ function Video() {
 
                 mainContainer.height = (h*input.resolution)*ratio;
 
-            };
-
+            }
             mainContainer.position.x = ((w) / 2) - (mainContainer.width / 2);
 
             mainContainer.position.y = ((h*input.resolution) / 2)- (mainContainer.height / 4);
 
-        };
+        }
     };
 
 }
