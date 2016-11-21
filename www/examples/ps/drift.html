@@ -1,0 +1,123 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>Drift</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../../js/pixi.min.js"></script><script src="../../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../../sp-framework.js"></script><script>
+
+        var background;
+        var rtWidth = -1;
+        var rtHeight = -1;
+        var renderTexture;
+        var rtSprite = null;
+        var renderer = null;
+
+        /*
+        function updateRenderTexture(PIXI, input)
+        {
+            if(input.width == undefined || input.height == undefined) { return; }
+            if(input.width == 0 || input.height == 0) { return; }
+            if(input.width == rtWidth || input.height == rtHeight) { return; }
+
+            rtWidth = input.width;
+            rtHeight = input.height;
+            
+            console.log("updateRenderTexture "+rtWidth+", "+rtHeight);
+            
+            renderer = PIXI.autoDetectRenderer(rtWidth, rtHeight,{backgroundColor : 0xff0000});
+            //var devTexture = PIXI.Texture.fromImage('http://i.imgur.com/2yYayZk.png'); //TODO: Load from framework
+            
+            //var brt = new PIXI.BaseRenderTexture(rtWidth, rtHeight, PIXI.SCALE_MODES.LINEAR, 1);
+            //renderTexture = new PIXI.RenderTexture(brt) ;
+            renderTexture = PIXI.RenderTexture.create(300, 300);
+
+            if(null == rtSprite)
+            {
+                console.log("yup");
+                //rtSprite = new PIXI.Sprite(rt);
+                rtSprite = new PIXI.Sprite(renderTexture);
+                input.container.addChild(rtSprite);
+                //rtSprite.x = 100;
+                //rtSprite.y = 100;
+            }
+
+            renderer.render(background, renderTexture);
+        }
+        */
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                
+                //var displacementTexture = PIXI.Texture.fromImage('http://i.imgur.com/2yYayZk.png'); //TODO: Load from framework
+                //displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+
+                background = new PIXI.Sprite(input.patterns.handdrawnanimal);//new PIXI.extras.TilingSprite(input.patterns.handdrawnanimal, 1, 1);
+                //background.anchor.set(0);
+                input.container.addChild(background);
+
+                renderer = PIXI.autoDetectRenderer(300, 300, {backgroundColor : 0xff0000});
+                renderTexture = PIXI.RenderTexture.create(300, 300);
+                
+                rtSprite = new PIXI.Sprite(renderTexture);
+                rtSprite.x = 400;
+                rtSprite.y = 400;
+                input.container.addChild(rtSprite);
+            },
+
+            render:function(PIXI, input)
+            {
+                //renderer.render(background, renderTexture);
+                /*
+                if (null != renderer)
+                {
+                    renderer.render(background, renderTexture);
+                }
+
+                if (null != rtSprite)
+                {
+                    console.log(rtSprite);
+                }
+                */
+
+                if (null != renderer)
+                {
+                    renderer.render(background, renderTexture);
+                }
+            },
+
+            resize: function(PIXI, input) 
+            {
+
+                if(input.width == undefined || input.height == undefined) { return; }
+                if(input.width == 0 || input.height == 0) { return; }
+                //renderer = PIXI.autoDetectRenderer(input.width, input.height,{backgroundColor : 0xff0000});
+                
+                renderer.render(background, renderTexture);
+                //console.log("resize "+input.width+", "+input.height);
+
+                //background.width = input.width;
+                //background.height = input.height;
+
+                //updateRenderTexture(PIXI, input);
+            }
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Pixel Drift",
+            tip: "PIXI RenderTexture and custom filter for pixel drift effect",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script></body></html>

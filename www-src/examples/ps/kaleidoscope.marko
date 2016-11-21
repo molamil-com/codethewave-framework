@@ -1,0 +1,125 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Kaleidoscope</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+
+    <script>
+
+        var frag = [
+            "precision mediump float;",
+            "uniform float width;",
+            "uniform float height;",
+            "uniform sampler2D uSampler;",
+            "void main(void) {",
+            "   vec2 p = vec2(gl_FragCoord.x/width, gl_FragCoord.y/height);",
+            "   vec4 color = texture2D(uSampler, p);",
+            "   gl_FragColor = color;",
+            "}",
+        ].join("\n")
+
+        var background;
+        var filter;
+        var uniforms;
+        var repeat = 6.0;
+        var offset = 0.0;
+        var roll = 0.0;
+        var DEG2RAD = Math.PI / 180.0;
+                            
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                background = new PIXI.Sprite(input.patterns.animaltech);
+                input.container.addChild(background);
+
+                //background = SPF.fullscreenSprite(input.container, input.patterns.animaltech);
+
+                uniforms = {
+                    "width": {
+                        type:"f",
+                        value: input.width
+                    },
+                    "height": {
+                        type:"f",
+                        value: input.height
+                    }
+                };
+
+                filter = new PIXI.Filter(null,frag,uniforms);
+                background.filters = [filter];
+            },
+
+            render:function(PIXI, input)
+            {
+                //filter.uniforms.width = input.width;
+                //filter.uniforms.height = input.height;
+            },
+
+            resize: function(PIXI, input) 
+            {
+                //background.width = input.width;
+                //background.height = input.height;
+
+                filter.uniforms.width = input.width;
+                filter.uniforms.height = input.height;
+            }
+
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Custom Filter (Kaleidoscope)",
+            tip: "PIXI's Custom filters used to create Kaleidoscope Effect",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script>
+
+    </body>
+
+</html>
