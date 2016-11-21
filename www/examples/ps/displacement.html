@@ -1,0 +1,82 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>Displacement</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../../js/pixi.min.js"></script><script src="../../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../../sp-framework.js"></script><script>
+
+        /* DISPLACEMENT */
+        var background;
+        var displacementFilter;
+        var displacementSprite;
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [input.patterns.handdrawnanimal]; //handdrawnanimal
+            },
+
+            init: function(PIXI, input) 
+            {
+                background = new PIXI.extras.TilingSprite(input.patterns.handdrawnanimal, 1, 1);
+                background.anchor.set(0);
+                input.container.addChild(background);
+
+                var displacementTexture = PIXI.Texture.fromImage('http://i.imgur.com/2yYayZk.png'); //TODO: Load from framework
+                displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                //displacementSprite = new PIXI.extras.TilingSprite(displacementTexture, 1, 1);
+                displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
+                //displacementSprite.anchor.set(0);
+
+                displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+                
+                input.container.addChild(displacementSprite);
+                background.filters = [displacementFilter];
+
+                var scale = 150;
+                displacementFilter.scale.x = scale;
+                displacementFilter.scale.y = scale;
+                displacementFilter.resolution = 1; //Lower values are faster, higher better quality
+
+            },
+
+            render:function(PIXI, input)
+            {
+                //background.tilePosition.x -= 1;
+                //background.tilePosition.y += 1;
+
+                //offset not working? Animate by moving sprite, which is stupid since it might move offscreen. USe tiling sprite
+                //displacementFilter.offset.x += 2;
+                //displacementFilter.offset.y += 2;
+
+                displacementSprite.x += 2;
+                displacementSprite.y += 0.5;
+                
+                //displacementSprite.tilePosition.x -= 2;
+                //displacementSprite.tilePosition.y += 1;
+            },
+
+            resize: function(PIXI, input) 
+            {
+                background.width = input.width;
+                background.height = input.height;
+
+                displacementSprite.width = input.width;
+                displacementSprite.height = input.height;
+            }
+
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Displacement Filter",
+            tip: "PIXI's displacement filter",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script></body></html>
