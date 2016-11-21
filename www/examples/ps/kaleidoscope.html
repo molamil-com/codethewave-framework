@@ -8,11 +8,28 @@
             "precision mediump float;",
             "uniform float width;",
             "uniform float height;",
+            "uniform float sections;",
+            "uniform float time;",
             "uniform sampler2D uSampler;",
             "void main(void) {",
-            "   vec2 p = vec2(gl_FragCoord.x/width, gl_FragCoord.y/height);",
-            "   vec4 color = texture2D(uSampler, p);",
-            "   gl_FragColor = color;",
+            "   float PI = 3.141592658;",//Move to Uniform?
+			"	float TAU = 6.283185316;",//Move to Uniform?
+            "   vec2 pos = vec2(gl_FragCoord.x/width, gl_FragCoord.y/height);",
+            "   pos.x -= 0.5;",
+            "   pos.y -= 0.5;",//Seems to be screen coords? Off with non fullscreen sprites
+  			"	float rad = length(pos);",
+            "   float angle = atan(pos.y, pos.x);",
+            "   float ma = mod(angle, TAU/sections);",
+  			"	ma = abs(ma - PI/sections);",
+            "   float x = cos(ma) * rad * 2.0;",
+  			"	float y = sin(ma) * rad * 2.0;",
+            "   vec2 uv = vec2(mod(x + time, 1.0), mod(y + time, 1.0));",//yields same results as Unity
+            //"   uv.x = mod(x, 1.0);",
+            //"   vec4 color = texture2D(uSampler, pos);",
+  		    "   vec4 col = texture2D(uSampler, uv * 0.5);",
+            //"   gl_FragColor = vec4(uv.y, 0.0, 0.0, 1.0);",
+            //"   gl_FragColor = vec4(y, 0.0, 0.0, 1.0);",
+            "   gl_FragColor = col;",
             "}",
         ].join("\n")
 
@@ -33,20 +50,26 @@
             },
 
             init: function(PIXI, input) 
-            {
+            {;
                 background = new PIXI.Sprite(input.patterns.animaltech);
                 input.container.addChild(background);
-
-                //background = SPF.fullscreenSprite(input.container, input.patterns.animaltech);
 
                 uniforms = {
                     "width": {
                         type:"f",
-                        value: input.width
+                        value: background.width
                     },
                     "height": {
                         type:"f",
-                        value: input.height
+                        value: background.height
+                    },
+                    "sections": {
+                        type:"f",
+                        value: 6.0
+                    },
+                    "time": {
+                        type:"f",
+                        value: 0.0
                     }
                 };
 
@@ -56,17 +79,15 @@
 
             render:function(PIXI, input)
             {
-                //filter.uniforms.width = input.width;
-                //filter.uniforms.height = input.height;
+                filter.uniforms.width = background.width;
+                filter.uniforms.height = background.height;
+                filter.uniforms.time += 0.002;
             },
 
             resize: function(PIXI, input) 
             {
-                //background.width = input.width;
-                //background.height = input.height;
-
-                filter.uniforms.width = input.width;
-                filter.uniforms.height = input.height;
+                background.width = input.width;
+                background.height = input.height;
             }
 
         });
