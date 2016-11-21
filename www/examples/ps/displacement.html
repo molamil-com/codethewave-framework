@@ -4,7 +4,6 @@
 
     <![endif]--><script src="../../sp-framework.js"></script><script>
 
-        /* DISPLACEMENT */
         var background;
         var displacementFilter;
         var displacementSprite;
@@ -25,16 +24,20 @@
 
                 var displacementTexture = PIXI.Texture.fromImage('http://i.imgur.com/2yYayZk.png'); //TODO: Load from framework
                 displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                
+                //Tiled
                 //displacementSprite = new PIXI.extras.TilingSprite(displacementTexture, 1, 1);
-                displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
                 //displacementSprite.anchor.set(0);
+                
+                //Standard
+                displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
 
                 displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
                 
                 input.container.addChild(displacementSprite);
                 background.filters = [displacementFilter];
 
-                var scale = 150;
+                var scale = 100;
                 displacementFilter.scale.x = scale;
                 displacementFilter.scale.y = scale;
                 displacementFilter.resolution = 1; //Lower values are faster, higher better quality
