@@ -11,6 +11,7 @@
         var hueFilter;
         var maximumLeafCount = 50;
         var lastSpawnPosition = new Point(-1000, -1000);
+        var lastMousePosition = new Point(-1000, -1000);
         var currentMousePosition = new Point(0,0);
         var minimumSpawnDistance = 50;
 
@@ -33,6 +34,8 @@
         var spawnIntervalMillisEnd = 250;
         var spawnIntervalDecrease = 50; 
         var spawnIntervalMillis = spawnIntervalMillisStart;
+
+        var leafHueFilter;
 
         print = console.log;//TEMP
 
@@ -57,7 +60,7 @@
                 //print(lastSpawnPosition);
                 var mousePosition = new Point(input.mouseTouchPosition.x, input.mouseTouchPosition.y);
                 
-                if(lastSpawnPosition.distance(mousePosition) > minimumSpawnDistance)
+                if(lastSpawnPosition.distance(mousePosition) > minimumSpawnDistance && lastMousePosition.distance(mousePosition) > minimumSpawnDistance)
                 {
                     leaf.x = input.mouseTouchPosition.x;
                     leaf.y = input.mouseTouchPosition.y;
@@ -75,6 +78,7 @@
             }
             
             lastSpawnPosition = new Point(leaf.x, leaf.y);
+            lastMousePosition = new Point(input.mouseTouchPosition.x, input.mouseTouchPosition.y);
             
             //while (leafs.length >= maximumLeafCount)
             while (backgroundContainer.children.length >= maximumLeafCount)
@@ -133,6 +137,9 @@
                 backgroundContainer = new PIXI.Container();
                 input.container.addChild(backgroundContainer);
 
+	            //leafHueFilter = new PIXI.filters.ColorMatrixFilter();
+                //backgroundContainer.filters = [leafHueFilter];
+
                 lastSpawnTime = new Date().getTime();
             },
 
@@ -176,8 +183,10 @@
 
             mouseDownTouchStart: function(PIXI, input)
             {
-                print("hello");
                 spawnLeaf(PIXI, input);
+
+                //DEV. change hue/
+                // leafHueFilter.hue(Math.random() * 360);
             }
         });
 
@@ -208,6 +217,13 @@
 
                 leftFrontLeaf.tint = 0x000000;
                 rightFrontLeaf.tint = 0x000000;
+
+                leftFrontLeaf.alpha = 0;
+                rightFrontLeaf.alpha = 0;
+
+                var delay = 4.0;
+                TweenMax.to(leftFrontLeaf, 0.5, {alpha:1,delay: delay});
+                TweenMax.to(rightFrontLeaf, 0.5, {alpha:1,delay: delay});
             },
 
             render:function(PIXI, input)
