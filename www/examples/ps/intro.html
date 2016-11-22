@@ -9,7 +9,7 @@
         var backgroundContainer;
         var leafTexture;
         var hueFilter;
-        var maximumLeafCount = 20;
+        var maximumLeafCount = 50;
         var lastSpawnPosition = new Point(-1000, -1000);
         var currentMousePosition = new Point(0,0);
         var minimumSpawnDistance = 50;
@@ -29,13 +29,20 @@
         var leafMaximumRotationSpeed = 2 * DEG2RAD;
 
         var lastSpawnTime;
-        var spawnIntervalMillis = 1500;
+        var spawnIntervalMillisStart = 1500;
+        var spawnIntervalMillisEnd = 250;
+        var spawnIntervalDecrease = 50; 
+        var spawnIntervalMillis = spawnIntervalMillisStart;
 
         print = console.log;//TEMP
 
         function spawnLeaf(PIXI, input)
         {
             lastSpawnTime = new Date().getTime();
+            if(spawnIntervalMillis > spawnIntervalMillisEnd)
+            {
+                spawnIntervalMillis -= spawnIntervalDecrease;
+            }
             var leaf = new PIXI.Sprite(leafTexture);
             //var leaf = new PIXI.Sprite(input.patterns.animaltech);
             leaf.anchor.set(0.5);
@@ -98,7 +105,6 @@
                 return;
             }
 
-            print("remove leaf");
             backgroundContainer.removeChildAt(i);
             leafs.splice(i, 1);
             speeds.splice(i, 1);
@@ -112,7 +118,8 @@
             load: function(PIXI, input) 
             {
                 //TODO: Preload textures
-                return [input.patterns.animaltech];
+                return [];
+                //return [input.patterns.animaltech];
             },
 
             init: function(PIXI, input) 
@@ -169,36 +176,58 @@
 
             mouseDownTouchStart: function(PIXI, input)
             {
+                print("hello");
                 spawnLeaf(PIXI, input);
             }
         });
 
-/*
+        var leftFrontLeaf, rightFrontLeaf;
+        var leafEdgeInset = 250;
+
         SPF.set({
 
-            at:"front",
+            at:"fore",
             load: function(PIXI, input) 
             {
-                return [input.patterns.animaltech];
+                //return [input.patterns.animaltech];
+                return [];
             },
 
             init: function(PIXI, input) 
             {
+                frontLeafTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_leaf_palm_001.png'); //TODO: Load from framework
+                frontLeafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
+
+                leftFrontLeaf = new PIXI.Sprite(frontLeafTexture);
+                leftFrontLeaf.anchor.set(0.5);
+                rightFrontLeaf = new PIXI.Sprite(frontLeafTexture);
+                rightFrontLeaf.anchor.set(0.5);
                 
+                input.container.addChild(leftFrontLeaf);
+                input.container.addChild(rightFrontLeaf);
+
+                leftFrontLeaf.tint = 0x000000;
+                rightFrontLeaf.tint = 0x000000;
             },
 
             render:function(PIXI, input)
             {
-                
+                //Rotate on beats
+                var rotationSpeed = 0.005;
+                leftFrontLeaf.rotation += rotationSpeed;
+                rightFrontLeaf.rotation -= rotationSpeed;
             },
 
             resize: function(PIXI, input) 
             {
-
+                leftFrontLeaf.scale.x = leftFrontLeaf.scale.y = rightFrontLeaf.scale.x = rightFrontLeaf.scale.y = input.height / 700;
+                leftFrontLeaf.x = -leafEdgeInset;
+                leftFrontLeaf.y = input.height / 1.75;
+                rightFrontLeaf.x = input.width + leafEdgeInset;
+                rightFrontLeaf.y = input.height / 1.75;
             }
-
         });
-*/
+
         SPF.info({
             debug: false,
             title: "Intro",
