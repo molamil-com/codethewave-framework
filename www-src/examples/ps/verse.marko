@@ -67,6 +67,7 @@
         var lastSpawnTime;
         var spawnIntervalTouching = 75; 
         var spawnIntervalMillis = 1500;
+        var rockAnimators = [];
 
         function showText(show)
         {
@@ -108,7 +109,6 @@
 
         function spawnRock(PIXI, input, mirrored)
         {
-            console.log("spawn rock, mirrored: "+mirrored);
             lastSpawnTime = new Date().getTime();
 
             var rock = new PIXI.Sprite(rockTexture);
@@ -148,6 +148,8 @@
             var destroyRock = function(r)
             {
                 rockContainer.removeChild(r);
+
+                //TODO: cleanup animators?
             }
 
             var fadeOutDelay = 6.0;
@@ -181,32 +183,23 @@
                 tl4.to(rockMirrored.scale, 1, {delay:scaleOutDelay, x:-targetScale * minScale, y:-targetScale * minScale, ease: Power2.easeIn})
                 tl4.duration(rockDuration);
             }
-        }
-        /*
-        function spawnRock(PIXI, input, mirrored)
-        {
-            lastSpawnTime = new Date().getTime();
 
-            var params = {
-                size: 300, 
-                container: rockContainer, 
-                animate: true, 
-                duration: 3.0,  
-                inDuration: 0.5, 
-                outDuration: 0.5, 
-                startScale: 0.1,
-                mirrored: touching
-            };
-
-            if (touching)
+            //Add animators for none mirrored rocks
+            if(!mirrored)
             {
-                params.x = input.mouseTouchPosition.x;
-                params.y = input.mouseTouchPosition.y;
+                var rockAnimator = new SPHelpers.SpriteAnimator(rock);
+                rockAnimator.speed = 0.0;
+                rockAnimator.maxSpeed = 5;
+                rockAnimator.acceleration = 0.025;
+                rockAnimator.rotationSpeed = (Math.random() * 2.0 - 1.0) * 2 * DEG2RAD;
+                var position = new SPHelpers.Vector2(rock.x, rock.y);
+                var center = new SPHelpers.Vector2(input.width / 2, input.height / 2);
+                var direction = position.subtract(center);
+                direction.normalize();
+                rockAnimator.direction = direction;
+                rockAnimators.push(rockAnimator);
             }
-            
-            var rock = SPHelpers.spawn(PIXI, input, rockTexture, params);
         }
-        */
 
         SPF.set({
 
@@ -239,6 +232,7 @@
 	            rockColorFilter = new PIXI.filters.ColorMatrixFilter();
                 rockContainer.filters = [rockColorFilter];
                 rockColorFilter.reset();
+                rockColorFilter.hue(-110, true);
                 input.container.addChild(rockContainer);
 
                 rockTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
@@ -256,6 +250,18 @@
                 {
                     spawnRock(PIXI, input, touching);
                 }
+
+                for (var i = rockAnimators.length - 1; i >= 0; i--)
+                {
+                    rockAnimators[i].update(0);
+                    
+                    //cleanup animators
+                    if(null == rockAnimators[i].sprite.parent)
+                    {
+                        rockAnimators.splice(i, 1);
+                    }
+                }
+
             },
 
             mouseDownTouchStart: function(PIXI, input) 
@@ -328,6 +334,8 @@
                             backgroundColorFilter.brightness(0.5, true);
                             backgroundColorFilter.saturate(2, true);
                             backgroundColorFilter.hue(120, true);
+                            rockColorFilter.reset();
+                            rockColorFilter.hue(0, true);
                             break;
                         case "bass":
                         case "drums":
@@ -335,6 +343,10 @@
                             backgroundColorFilter.brightness(0.5, true);
                             backgroundColorFilter.saturate(1, true);
                             backgroundColorFilter.hue(-20, true);
+                            rockColorFilter.reset();
+                            rockColorFilter.brightness(0.5, true);
+                            rockColorFilter.saturate(0.5, true);
+                            rockColorFilter.hue(120, true);
                             break;
                         case "all":
                         case "none":
@@ -343,6 +355,8 @@
                             backgroundColorFilter.brightness(0.5, true);
                             //backgroundColorFilter.saturate(1, true);
                             backgroundColorFilter.hue(30, true);
+                            rockColorFilter.reset();
+                            rockColorFilter.hue(-110, true);
                             break;
                     }
                     //TEXT
@@ -383,7 +397,7 @@
         SPF.info({
             debug: false,
             title: "Verse",
-            tip: "Move the mouse around and click the screen",
+            tip: "Move the mouse around and click&drag the screen",
             firstName: "Patrik",
             lastName: "Svensson",
             email: "ps@molamil.com"
