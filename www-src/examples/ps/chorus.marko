@@ -1,0 +1,186 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Hue</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+    <script src="/js/ps-includes.js"></script>
+
+    <script>
+         
+        print = console.log 
+        var DEG2RAD = Math.PI / 180.0;
+
+        var currentCast = "";
+        var beatInterval = 1500;
+        var lastBeatTime;
+        var background, sprite, masker;
+        var patternColor;
+        
+        function updatePattern(PIXI, input)
+        {
+            background.clear();
+            background.beginFill(patternColor, 1);
+            background.drawRect(0,0,input.width, input.height);
+            background.endFill();
+        }
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [input.maskers.handdrawnanimal1, input.maskers.botanicorganic1, input.maskers.bbbbird1];
+            },
+
+            init: function(PIXI, input) 
+            {
+                patternColor = input.colors[3];
+                background = new PIXI.Graphics();
+                input.container.addChild(background);
+
+                var backgroundTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_pattern_handdrawnanimal.png'); //TODO: Load from framework
+                backgroundPattern = SPF.fullscreenSprite(input.container,  backgroundTexture );
+
+	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
+                backgroundPattern.filters = [backgroundColorFilter];
+                backgroundColorFilter.reset();
+                backgroundColorFilter.hue(-120, true);
+
+                var textures = [input.maskers.handdrawnanimal1, input.maskers.botanicorganic1, input.maskers.bbbbird1];
+                var tex = textures[Math.round(Math.random() * textures.length - 1)];
+                masker = SPF.fullscreenSprite(input.container, tex);
+                input.container.addChild(masker);
+
+                backgroundPattern.mask = masker;
+                /*
+                var backgroundTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_pattern_handdrawnanimal.png'); //TODO: Load from framework
+                var background = SPF.fullscreenSprite(input.container,  backgroundTexture );
+
+	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
+                background.filters = [backgroundColorFilter];
+                backgroundColorFilter.reset();
+                backgroundColorFilter.hue(-120, true);
+                */
+
+                /*
+                //var index = Math.round(Math.random() * 1);
+                maskSprite = new PIXI.extras.TilingSprite(input.maskers.handdrawnanimal1, 1, 1);
+                input.container.addChild(maskSprite);
+
+                maskSpriteGraphics = new PIXI.Graphics();
+                input.container.addChild(maskSpriteGraphics);
+                */
+
+                lastBeatTime = new Date().getTime();
+            },
+
+            render:function(PIXI, input)
+            {
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                }
+                
+                if(input.cast != null && input.cast.id != currentCast)
+                {
+                    currentCast = input.cast.id
+                    //Hues
+                    switch(input.cast.id)
+                    {
+                        case "singer":
+                            backgroundColorFilter.reset();
+                            patternColor = input.colors[2];
+                            break;
+                        case "bass":
+                        case "drums":
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.hue(-170, true);
+                            patternColor = input.colors[1];
+                            break;
+                        case "all":
+                        case "none":
+                        default:
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.hue(-120, true);
+                            patternColor = input.colors[3];
+                            break;
+                    }
+                    updatePattern(PIXI, input);
+                }
+            },
+
+            mouseDownTouchStart: function(PIXI, input) 
+            {
+                
+            },
+
+            resize: function(PIXI, input) 
+            {
+                //sprite.width = input.width;
+                //sprite.height = input.height;
+                updatePattern(PIXI, input);
+
+                /*
+                maskSprite.width = input.width;
+                maskSprite.height = input.height;
+
+                maskSpriteGraphics.clear();
+                maskSpriteGraphics.beginFill(0xff0000);
+                maskSpriteGraphics.drawRect(0, 0, input.width, input.height);
+
+                maskSpriteGraphics.mask = maskSprite;
+                */
+            }
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Chorus",
+            tip: "",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script>
+
+    </body>
+
+</html>
