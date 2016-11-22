@@ -23,6 +23,14 @@
         var lastBeatTime;
         var beatRotationSpeed = 0;
 
+        var rockContainer;
+        var rockDuration = 3.0;
+        var rockSize = 300;
+        var touching = false;
+        var lastSpawnTime;
+        var spawnIntervalTouching = 75; 
+        var spawnIntervalMillis = 1500;
+
         function showText(show)
         {
             if(show)
@@ -61,6 +69,108 @@
             TweenMax.to(frontRotatingSprite, 0.5, {alpha: 1});
         }
 
+        function spawnRock(PIXI, input, mirrored)
+        {
+            console.log("spawn rock, mirrored: "+mirrored);
+            lastSpawnTime = new Date().getTime();
+
+            var rock = new PIXI.Sprite(rockTexture);
+            rock.anchor.set(0.5);
+            rock.rotation = Math.random() * 2 * Math.PI;
+            rock.x = touching == true ? input.mouseTouchPosition.x : Math.random() * input.width;
+            rock.y = touching == true ? input.mouseTouchPosition.y : Math.random() * input.height;
+            var w = rockSize;
+            var h = w * (1046.0/1024.0);
+            rock.width = w;
+            rock.height = h;
+            rockContainer.addChild(rock);
+
+            var rockMirrored = null;
+            if (mirrored == true)
+            {
+                var xMirrored = input.width * 0.5 - (rock.x - input.width * 0.5);
+                if (xMirrored < 0)
+                {
+                    xMirrored = input.width - xMirrored;
+                }
+
+                rockMirrored = new PIXI.Sprite(rockTexture);
+                rockMirrored.anchor.set(0.5);
+                rockMirrored.rotation = rock.rotation;
+                rockMirrored.x = xMirrored;
+                rockMirrored.y = input.mouseTouchPosition.y;
+                rockMirrored.width = w;
+                rockMirrored.height = w;
+                rockMirrored.scale.x *= -1;
+                rockContainer.addChild(rockMirrored);
+                rockMirrored.alpha = 0;
+            }
+
+            //animate
+            rock.alpha = 0;
+            var destroyRock = function(r)
+            {
+                rockContainer.removeChild(r);
+            }
+
+            var fadeOutDelay = 6.0;
+            var tl = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rock]});
+            tl.to(rock, 0.5,{alpha:1})
+            tl.to(rock, 0.5, {delay:fadeOutDelay, alpha:0})
+            tl.duration(rockDuration);
+
+            if(rockMirrored != null)
+            {
+                var tl2 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rockMirrored]});
+                tl2.to(rockMirrored, 0.5,{alpha:1})
+                tl2.to(rockMirrored, 0.5, {delay:fadeOutDelay, alpha:0})
+                tl2.duration(rockDuration);
+            }
+            var minScale = 0.1;
+            var targetScale = rock.scale.x;// * (1 + (Math.random() * 2 - 1) * 0.2);
+            rock.scale.x = rock.scale.y = targetScale * minScale;
+
+            var scaleOutDelay = 0.0;
+            var tl3 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rock]});
+            tl3.to(rock.scale, 0.5,{x:targetScale, y:targetScale, ease: Power2.easeOut})
+            tl3.to(rock.scale, 1, {delay:scaleOutDelay, x:targetScale * minScale, y:targetScale * minScale, ease: Power2.easeIn})
+            tl3.duration(rockDuration);
+
+            if(rockMirrored != null)
+            {
+                rockMirrored.scale.x = rockMirrored.scale.y = targetScale * minScale;
+                var tl4 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rockMirrored]});
+                tl4.to(rockMirrored.scale, 0.5,{x:-targetScale, y:-targetScale, ease: Power2.easeOut})
+                tl4.to(rockMirrored.scale, 1, {delay:scaleOutDelay, x:-targetScale * minScale, y:-targetScale * minScale, ease: Power2.easeIn})
+                tl4.duration(rockDuration);
+            }
+        }
+        /*
+        function spawnRock(PIXI, input, mirrored)
+        {
+            lastSpawnTime = new Date().getTime();
+
+            var params = {
+                size: 300, 
+                container: rockContainer, 
+                animate: true, 
+                duration: 3.0,  
+                inDuration: 0.5, 
+                outDuration: 0.5, 
+                startScale: 0.1,
+                mirrored: touching
+            };
+
+            if (touching)
+            {
+                params.x = input.mouseTouchPosition.x;
+                params.y = input.mouseTouchPosition.y;
+            }
+            
+            var rock = SPHelpers.spawn(PIXI, input, rockTexture, params);
+        }
+        */
+
         SPF.set({
 
             at:"back",
@@ -81,19 +191,45 @@
                 
 	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
                 background.filters = [backgroundColorFilter];
-                
                 backgroundColorFilter.reset();
                 backgroundColorFilter.brightness(0.5, true);
                 //backgroundColorFilter.saturate(1, true);
                 backgroundColorFilter.hue(30, true);
                 input.container.addChild(background);
+
+                rockContainer = new PIXI.Container();
+                input.container.addChild(rockContainer);
+	            rockColorFilter = new PIXI.filters.ColorMatrixFilter();
+                rockContainer.filters = [rockColorFilter];
+                rockColorFilter.reset();
+                input.container.addChild(rockContainer);
+
+                rockTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
+                rockTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
+                
+                lastSpawnTime = new Date().getTime();
             },
 
             //TODO: Animate framerate independent using delta time
             render:function(PIXI, input)
             {
-                
-            }
+                //Different interval when touching..
+                var timeSinceSpawn = new Date().getTime() - lastSpawnTime;
+                if (timeSinceSpawn > (touching == true ? spawnIntervalTouching : spawnIntervalMillis))
+                {
+                    spawnRock(PIXI, input, touching);
+                }
+            },
+
+            mouseDownTouchStart: function(PIXI, input) 
+            {
+                touching = true;
+            },
+
+            mouseUpTouchEnd: function(PIXI, input) 
+            {
+                touching = false;
+            },
         });
 
         SPF.set({
@@ -136,7 +272,7 @@
                     beatRotationSpeed = 15 * DEG2RAD;
 
                     //beat faking for pattern
-                        frontPatternSprite.alpha = 1;
+                    frontPatternSprite.alpha = 1;
                 }
 
                 beatRotationSpeed *= 0.85;

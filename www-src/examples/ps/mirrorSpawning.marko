@@ -126,20 +126,6 @@
             tl4.duration(rockDuration);
         }
 
-        function removeLeaf(i)
-        {
-            if (i < 0)
-            {
-                return;
-            }
-
-            backgroundContainer.removeChildAt(i);
-            leafs.splice(i, 1);
-            speeds.splice(i, 1);
-            directions.splice(i, 1);
-            rotationSpeed.splice(i, 1);
-        }
-
         SPF.set({
 
             at:"back",
@@ -151,7 +137,7 @@
             init: function(PIXI, input) 
             {
                 //TODO: Move textures into framework
-                rockTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
+                rockTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
                 rockTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
 
                 backgroundContainer = new PIXI.Container();
