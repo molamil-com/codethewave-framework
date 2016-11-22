@@ -4,11 +4,22 @@
 
     <![endif]--><script src="../../sp-framework.js"></script><script>
 
+        print = console.log;
+        var DEG2RAD = Math.PI / 180.0;
+
         var background;
         var colorFilter;				
         var angle = 0;
         var touching;
-                            
+        var sprites = [];
+        var spriteSpeeds = [];
+        var spriteRotations = [];
+        var spriteCount = 5;
+        var spriteMinScale = 0.25;
+        var spriteMaxScale = 0.75;
+        var lastBeatTime;
+        var beatInterval = 1500;
+
         SPF.set({
 
             at:"back",
@@ -19,7 +30,7 @@
 
             init: function(PIXI, input) 
             {
-                background = new PIXI.extras.TilingSprite(input.patterns.handdrawnanimal, 1, 1);
+                background = new PIXI.extras.TilingSprite(input.patterns.animaltech, 1, 1);
                 background.anchor.set(0);
                 input.container.addChild(background);
 
@@ -31,7 +42,9 @@
             {
                 if (touching)
                 {
-                    colorFilter.hue((input.mouseTouchPosition.x / input.width)*360);
+                    colorFilter.reset();
+                    colorFilter.saturate((input.mouseTouchPosition.y / input.height - 0.5) * 1, true)
+                    colorFilter.hue((input.mouseTouchPosition.x / input.width)*360, true);
                 }
                 else
                 {
@@ -58,8 +71,7 @@
 
         });
 
-SPF.set({
-
+        SPF.set({
             at:"fore",
             load: function(PIXI, input) 
             {
@@ -69,9 +81,25 @@ SPF.set({
 
             init: function(PIXI, input) 
             {
-                frontLeafTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_leaf_palm_001.png'); //TODO: Load from framework
-                frontLeafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
 
+                spriteMaxScale = input.width / 2000;
+                spriteMinScale = input.width / 2200;
+
+                frontSpriteTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_leaf_palm_001.png'); //TODO: Load from framework
+                frontSpriteTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
+
+                for (i = 0;i<spriteCount; i++)
+                {
+                    var sprite = new PIXI.Sprite(frontSpriteTexture);
+                    sprite.anchor.set(0.5);
+                    input.container.addChild(sprite);
+                    sprites.push(sprite);
+                    sprite.x = input.width * Math.random();
+                    sprite.y = - input.height * Math.random() - sprite.height;
+                    sprite.scale.x = sprite.scale.y = spriteMinScale + Math.random() * (spriteMaxScale - spriteMinScale);
+                    spriteSpeeds.push(Math.random() * 4 + 3);
+                    spriteRotations.push((Math.random() * 2 - 1) * 1 * DEG2RAD);
+                }
                 /*
                 leftFrontLeaf = new PIXI.Sprite(frontLeafTexture);
                 leftFrontLeaf.anchor.set(0.5);
@@ -91,7 +119,7 @@ SPF.set({
                 TweenMax.to(leftFrontLeaf, 0.5, {alpha:1,delay: delay});
                 TweenMax.to(rightFrontLeaf, 0.5, {alpha:1,delay: delay});
                 */
-                
+
                 lastBeatTime = new Date().getTime();
             },
 
@@ -102,16 +130,33 @@ SPF.set({
                 if (timeSinceBeat > beatInterval)
                 {
                     lastBeatTime = new Date().getTime();
-                    edgeLeafRotationSpeed = 15 * DEG2RAD;
+                    //edgeLeafRotationSpeed = 15 * DEG2RAD;
                 }
 
-                edgeLeafRotationSpeed *= 0.75;
+                //edgeLeafRotationSpeed *= 0.75;
                 //leftFrontLeaf.rotation += edgeLeafRotationSpeed;
                 //rightFrontLeaf.rotation -= edgeLeafRotationSpeed;
+
+                for (i = 0;i<sprites.length; i++)
+                {
+                    sprites[i].y += spriteSpeeds[i];
+                    sprites[i].rotation += spriteRotations[i];
+
+                    if(sprites[i].y > input.height + sprites[i].height * 0.5)
+                    {
+                        sprites[i].x = input.width * Math.random();
+                        sprites[i].scale.x = sprites[i].scale.y = spriteMinScale + Math.random() * (spriteMaxScale - spriteMinScale);
+                        sprites[i].y = - (input.height * Math.random() * 0.25) - sprites[i].height * 1.5;
+                        spriteSpeeds[i] = (Math.random() * 4 + 3);
+                        spriteRotations[i] = ((Math.random() * 2 - 1) * 1 * DEG2RAD);
+                    }
+                }
             },
 
             resize: function(PIXI, input) 
             {
+                spriteMaxScale = input.width / 2000;
+                spriteMinScale = input.width / 2200;
                 /*
                 leftFrontLeaf.scale.x = leftFrontLeaf.scale.y = rightFrontLeaf.scale.x = rightFrontLeaf.scale.y = input.height / 700;
                 leftFrontLeaf.x = -leafEdgeInset;
