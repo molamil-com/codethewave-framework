@@ -50,6 +50,18 @@
         var background, sprite, masker;
         var patternColor;
         
+        var displacementFilter;
+        var displacementSprite;
+        var displacementMultiplier = 0.0;
+
+        var videoPatternSprite;
+
+        var sprites = [];
+        var spritePositions = [];
+        var spriteRotationSpeed = 0;
+        var spriteScale = 1.0;
+
+        var touching = false;
         function updatePattern(PIXI, input)
         {
             background.clear();
@@ -86,35 +98,63 @@
                 input.container.addChild(masker);
 
                 backgroundPattern.mask = masker;
-                /*
-                var backgroundTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_pattern_handdrawnanimal.png'); //TODO: Load from framework
-                var background = SPF.fullscreenSprite(input.container,  backgroundTexture );
+                
+                //Displacement
+                var displacementTexture = PIXI.Texture.fromImage('/assets/ps_temp/clouds.png'); //TODO: Load from framework
+                displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
+                displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+                input.container.addChild(displacementSprite);
+                backgroundPattern.filters = [displacementFilter];
 
-	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
-                background.filters = [backgroundColorFilter];
-                backgroundColorFilter.reset();
-                backgroundColorFilter.hue(-120, true);
-                */
+                var scale = 100;
+                displacementFilter.scale.x = scale;
+                displacementFilter.scale.y = scale;
+                displacementFilter.resolution = 1; //Lower values are faster, higher better quality
 
-                /*
-                //var index = Math.round(Math.random() * 1);
-                maskSprite = new PIXI.extras.TilingSprite(input.maskers.handdrawnanimal1, 1, 1);
-                input.container.addChild(maskSprite);
-
-                maskSpriteGraphics = new PIXI.Graphics();
-                input.container.addChild(maskSpriteGraphics);
-                */
+                var index = Math.round(Math.random() * 1);
+                spriteScale = index == 0 ? 0.45: 1;
+                var frontSpriteTexture = PIXI.Texture.fromImage(['/assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
+                var spriteCount = 3;
+                for(var i = 0;i<spriteCount;i++)
+                {
+                    var sprite = new PIXI.Sprite(frontSpriteTexture);
+                    sprite.anchor.set(0.5);
+                    input.container.addChild(sprite);
+                    sprites.push(sprite);
+                    spritePositions.push(new SPHelpers.Vector2(Math.random(), Math.random()));
+                }
 
                 lastBeatTime = new Date().getTime();
             },
 
             render:function(PIXI, input)
             {
+                if(touching)
+                {
+                    var t = 0.95;
+                    displacementMultiplier = (displacementMultiplier * t) + (1 - t);
+                }
+                else
+                {
+                    displacementMultiplier *= 0.9;
+                }
+
+
                 var timeSinceBeat = new Date().getTime() - lastBeatTime;
                 if (timeSinceBeat > beatInterval)
                 {
                     lastBeatTime = new Date().getTime();
+                
+                    spriteRotationSpeed = 15 * DEG2RAD;
                 }
+
+                for(var i = 0;i<sprites.length;i++)
+                {
+                    sprites[i].rotation += spriteRotationSpeed
+                }
+
+                spriteRotationSpeed *= 0.75;
                 
                 if(input.cast != null && input.cast.id != currentCast)
                 {
@@ -125,12 +165,14 @@
                         case "singer":
                             backgroundColorFilter.reset();
                             patternColor = input.colors[2];
+                            videoPatternSprite.tint = 0xfa8474;//0xed8010;
                             break;
                         case "bass":
                         case "drums":
                             backgroundColorFilter.reset();
                             backgroundColorFilter.hue(-170, true);
                             patternColor = input.colors[1];
+                            videoPatternSprite.tint = 0xfa8474;
                             break;
                         case "all":
                         case "none":
@@ -138,15 +180,26 @@
                             backgroundColorFilter.reset();
                             backgroundColorFilter.hue(-120, true);
                             patternColor = input.colors[3];
+                            videoPatternSprite.tint = 0x84fc8b;
+
                             break;
                     }
                     updatePattern(PIXI, input);
                 }
+
+                displacementFilter.scale.x =  displacementFilter.scale.y = 200 * displacementMultiplier;
+                displacementSprite.x += 1.5 * displacementMultiplier;
+                displacementSprite.y += 2.5 * displacementMultiplier;
             },
 
             mouseDownTouchStart: function(PIXI, input) 
             {
-                
+                touching = true;
+            },
+
+            mouseUpTouchEnd: function(PIXI, input) 
+            {
+                touching = false;
             },
 
             resize: function(PIXI, input) 
@@ -165,9 +218,107 @@
 
                 maskSpriteGraphics.mask = maskSprite;
                 */
+                
+                for(var i = 0;i<sprites.length;i++)
+                {
+                    sprites[i].x = spritePositions[i].x * input.width;
+                    sprites[i].y = spritePositions[i].y * input.height;
+                    sprites[i].scale.x = sprites[i].scale.y = (input.width / 1000.0) * spriteScale;
+                }
             }
         });
 
+        SPF.set({
+
+            at:"mid",
+
+            load: function(PIXI, input) {
+
+                return [input.patterns.botanicorganic2];
+            },
+
+            init: function(PIXI, input) {
+
+                var texture = PIXI.Texture.fromImage('/assets/ps_temp/SP_mask_handdrawnanimal_001_TRANSPARENT.png'); //TODO: Load from framework
+                //sprite = new PIXI.extras.TilingSprite(input.maskers.handdrawnanimal1, 1, 1);
+                videoPatternSprite = new PIXI.extras.TilingSprite(texture, 1, 1);
+                videoPatternSprite.anchor.set(0);
+                input.container.addChild(videoPatternSprite);
+                videoPatternSprite.tint = 0xfa8474;
+
+                SPF.midgroundMask(true);
+
+            },
+
+            resize: function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                videoPatternSprite.width = w;
+                videoPatternSprite.height = h;
+
+
+            }
+
+        });
+
+        /*
+        SPF.set({
+
+            at:"fore",
+            load: function(PIXI, input) 
+            {
+                return [];
+            },
+
+            init: function(PIXI, input) 
+            {
+                var index = Math.round(Math.random() * 1);
+                spriteScale = index == 0 ? 0.45: 1;
+                var frontSpriteTexture = PIXI.Texture.fromImage(['/assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
+                var spriteCount = 3;
+                for(var i = 0;i<spriteCount;i++)
+                {
+                    var sprite = new PIXI.Sprite(frontSpriteTexture);
+                    sprite.anchor.set(0.5);
+                    input.container.addChild(sprite);
+                    sprites.push(sprite);
+                    spritePositions.push(new SPHelpers.Vector2(Math.random(), Math.random()));
+                }
+
+                lastBeatTime = new Date().getTime();
+            },
+
+            render:function(PIXI, input)
+            {
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    spriteRotationSpeed = 15 * DEG2RAD;
+                }
+
+                for(var i = 0;i<sprites.length;i++)
+                {
+                    sprites[i].rotation += spriteRotationSpeed
+                }
+
+                spriteRotationSpeed *= 0.75;
+            },
+
+            resize: function(PIXI, input) 
+            {
+                for(var i = 0;i<sprites.length;i++)
+                {
+                    sprites[i].x = spritePositions[i].x * input.width;
+                    sprites[i].y = spritePositions[i].y * input.height;
+                    sprites[i].scale.x = sprites[i].scale.y = (input.width / 1000.0) * spriteScale;
+                }
+            }
+        });
+        */
+        
         SPF.info({
             debug: false,
             title: "Chorus",
