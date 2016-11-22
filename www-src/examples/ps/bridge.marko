@@ -1,0 +1,176 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Hue</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+
+    <script>
+
+        var background;
+        var colorFilter;				
+        var angle = 0;
+        var touching;
+                            
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                background = new PIXI.extras.TilingSprite(input.patterns.handdrawnanimal, 1, 1);
+                background.anchor.set(0);
+                input.container.addChild(background);
+
+	            colorFilter = new PIXI.filters.ColorMatrixFilter();
+                background.filters = [colorFilter];
+            },
+
+            render:function(PIXI, input)
+            {
+                if (touching)
+                {
+                    colorFilter.hue((input.mouseTouchPosition.x / input.width)*360);
+                }
+                else
+                {
+                    var speed = 5;
+                    angle = (angle + speed) % 360;
+                    colorFilter.hue(angle);
+                }
+            },
+
+            resize: function(PIXI, input) 
+            {
+                background.width = input.width;
+                background.height = input.height;
+            },
+            mouseDownTouchStart: function(PIXI, input) 
+            {
+                touching = true;
+            },
+
+            mouseUpTouchEnd: function(PIXI, input) 
+            {
+                touching = false;
+            }
+
+        });
+
+SPF.set({
+
+            at:"fore",
+            load: function(PIXI, input) 
+            {
+                //return [input.patterns.animaltech];
+                return [];
+            },
+
+            init: function(PIXI, input) 
+            {
+                frontLeafTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_leaf_palm_001.png'); //TODO: Load from framework
+                frontLeafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
+
+                /*
+                leftFrontLeaf = new PIXI.Sprite(frontLeafTexture);
+                leftFrontLeaf.anchor.set(0.5);
+                rightFrontLeaf = new PIXI.Sprite(frontLeafTexture);
+                rightFrontLeaf.anchor.set(0.5);
+                
+                input.container.addChild(leftFrontLeaf);
+                input.container.addChild(rightFrontLeaf);
+
+                leftFrontLeaf.tint = 0x000000;
+                rightFrontLeaf.tint = 0x000000;
+
+                leftFrontLeaf.alpha = 0;
+                rightFrontLeaf.alpha = 0;
+
+                var delay = 4.0;
+                TweenMax.to(leftFrontLeaf, 0.5, {alpha:1,delay: delay});
+                TweenMax.to(rightFrontLeaf, 0.5, {alpha:1,delay: delay});
+                */
+                
+                lastBeatTime = new Date().getTime();
+            },
+
+            render:function(PIXI, input)
+            {
+                //TODO: Replace by beat detection
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    edgeLeafRotationSpeed = 15 * DEG2RAD;
+                }
+
+                edgeLeafRotationSpeed *= 0.75;
+                //leftFrontLeaf.rotation += edgeLeafRotationSpeed;
+                //rightFrontLeaf.rotation -= edgeLeafRotationSpeed;
+            },
+
+            resize: function(PIXI, input) 
+            {
+                /*
+                leftFrontLeaf.scale.x = leftFrontLeaf.scale.y = rightFrontLeaf.scale.x = rightFrontLeaf.scale.y = input.height / 700;
+                leftFrontLeaf.x = -leafEdgeInset;
+                leftFrontLeaf.y = input.height / 1.75;
+                rightFrontLeaf.x = input.width + leafEdgeInset;
+                rightFrontLeaf.y = input.height / 1.75;
+                */
+            }
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Bridge",
+            tip: "",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script>
+
+    </body>
+
+</html>
