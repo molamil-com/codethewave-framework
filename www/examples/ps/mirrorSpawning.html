@@ -2,12 +2,14 @@
 
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 
-    <![endif]--><script src="../../sp-framework.js"></script><script>
+    <![endif]--><script src="../../sp-framework.js"></script><script src="/js/ps-includes.js"></script><script>
          
+        //var config = require('../../config.js');
+        
         var rockTexture;
         var lastSpawnTime;
-        var spawnIntervalMillis = 50;
-        var rockDuration = 2.0;
+        var spawnIntervalMillis = 75;
+        var rockDuration = 3.0;
         var rockSize = 300;
         var backgroundContainer;
 
@@ -60,7 +62,7 @@
                 backgroundContainer.removeChild(r);
             }
 
-            var fadeOutDelay = 10.0;
+            var fadeOutDelay = 6.0;
             var tl = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rock]});
             tl.to(rock, 0.5,{alpha:1})
             tl.to(rock, 0.5, {delay:fadeOutDelay, alpha:0})
@@ -78,12 +80,12 @@
             var scaleOutDelay = 0.0;
             var tl3 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rock]});
             tl3.to(rock.scale, 0.5,{x:targetScale, y:targetScale, ease: Power2.easeOut})
-            tl3.to(rock.scale, 0.5, {delay:scaleOutDelay, x:targetScale * minScale, y:targetScale * minScale, ease: Power2.easeIn})
+            tl3.to(rock.scale, 1, {delay:scaleOutDelay, x:targetScale * minScale, y:targetScale * minScale, ease: Power2.easeIn})
             tl3.duration(rockDuration);
 
             var tl4 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rockMirrored]});
             tl4.to(rockMirrored.scale, 0.5,{x:-targetScale, y:-targetScale, ease: Power2.easeOut})
-            tl4.to(rockMirrored.scale, 0.5, {delay:scaleOutDelay, x:-targetScale * minScale, y:-targetScale * minScale, ease: Power2.easeIn})
+            tl4.to(rockMirrored.scale, 1, {delay:scaleOutDelay, x:-targetScale * minScale, y:-targetScale * minScale, ease: Power2.easeIn})
             tl4.duration(rockDuration);
         }
 

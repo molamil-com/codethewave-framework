@@ -22,7 +22,9 @@
                 background.anchor.set(0);
                 input.container.addChild(background);
 
-                var displacementTexture = PIXI.Texture.fromImage('http://i.imgur.com/2yYayZk.png'); //TODO: Load from framework
+                //var displacementTexture = PIXI.Texture.fromImage('http://i.imgur.com/2yYayZk.png'); //TODO: Load from framework
+                var displacementTexture = PIXI.Texture.fromImage('/assets/ps_temp/qbert.jpg'); //TODO: Load from framework
+                
                 displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
                 
                 //Tiled
@@ -37,7 +39,7 @@
                 input.container.addChild(displacementSprite);
                 background.filters = [displacementFilter];
 
-                var scale = 100;
+                var scale = 50;
                 displacementFilter.scale.x = scale;
                 displacementFilter.scale.y = scale;
                 displacementFilter.resolution = 1; //Lower values are faster, higher better quality
@@ -53,8 +55,8 @@
                 //displacementFilter.offset.x += 2;
                 //displacementFilter.offset.y += 2;
 
-                displacementSprite.x += 2;
-                displacementSprite.y += 0.5;
+                displacementSprite.x += (input.mouseTouchPosition.x * 0.02);
+            /displacementSprite.y += 0.5;
                 
                 //displacementSprite.tilePosition.x -= 2;
                 //displacementSprite.tilePosition.y += 1;
