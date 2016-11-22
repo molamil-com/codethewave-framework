@@ -9,26 +9,22 @@
         var backgroundContainer;
         var leafTexture;
         var hueFilter;
+
+        var leafs = [];
+        
+        var leafSize = 250;
+        var leafDiagonalSize = leafSize * Math.sqrt(2) * 0.5;
+        var leafAspect = 1;
+        var leafMaximumSpeed = 5;
+        var leafAcceleration= 0.025;
+        var leafMaximumRotationSpeed = 2 * DEG2RAD;
+
         var maximumLeafCount = 50;
         var lastSpawnPosition = new SPHelpers.Vector2(-1000, -1000);
         var lastMousePosition = new SPHelpers.Vector2(-1000, -1000);
         var currentMousePosition = new SPHelpers.Vector2(0,0);
         var minimumSpawnDistance = 50;
 
-        //Wrap this in objects for easier updating
-        var leafs = [];
-        /*
-        var speeds = [];
-        var directions = [];
-        var rotationSpeed = [];
-        */
-        //
-        var leafSize = 250;
-        var leafDiagonalSize = leafSize * Math.sqrt(2);
-        var leafAspect = 1;
-        var leafMaximumSpeed = 5;
-        var leafAcceleration= 0.025;
-        var leafMaximumRotationSpeed = 2 * DEG2RAD;
 
         var lastSpawnTime;
         var spawnIntervalMillisStart = 1500;
@@ -48,6 +44,7 @@
                 spawnIntervalMillis -= spawnIntervalDecrease;
             }
             
+            //Spawn
             var params = {
                 size: leafSize, 
                 container: backgroundContainer, 
@@ -74,32 +71,18 @@
             lastSpawnPosition = new SPHelpers.Vector2(leaf.x, leaf.y);
             lastMousePosition = new SPHelpers.Vector2(input.mouseTouchPosition.x, input.mouseTouchPosition.y);
 
+            //Animation
             var leafAnimator = new SPHelpers.SpriteAnimator(leaf);
-
-
             leafAnimator.speed = 0.0;
             leafAnimator.maxSpeed = leafMaximumSpeed;
             leafAnimator.acceleration = leafAcceleration;
             leafAnimator.rotationSpeed = (Math.random() * 2.0 - 1.0) * leafMaximumRotationSpeed;
-
             var center = new SPHelpers.Vector2(input.width / 2, input.height / 2);
             var direction = lastSpawnPosition.subtract(center);
             direction.normalize();
             leafAnimator.direction = direction;
-            //leafAnimator.update(0);
-
             leafs.push(leafAnimator);
 
-            /*
-            //store vars for animation. TODO, wrap in animation object, including sprite reference?
-            leafs.push(leaf);
-            speeds.push(0.0);
-            rotationSpeed.push((Math.random() * 2.0 - 1.0) * leafMaximumRotationSpeed);
-            var center = new SPHelpers.Vector2(input.width / 2, input.height / 2);
-            var direction = lastSpawnPosition.subtract(center);
-            direction.normalize();
-            directions.push(direction);
-            */
             while (backgroundContainer.children.length >= maximumLeafCount)
             {
                 removeLeaf(0);
@@ -115,11 +98,6 @@
 
             backgroundContainer.removeChildAt(i);
             leafs.splice(i, 1);
-            /*
-            speeds.splice(i, 1);
-            directions.splice(i, 1);
-            rotationSpeed.splice(i, 1);
-            */
         }
 
         SPF.set({
@@ -190,6 +168,10 @@
         var leftFrontLeaf, rightFrontLeaf;
         var leafEdgeInset = 250;
 
+        var beatInterval = 1000;//millis
+        var lastBeatTime;
+        var edgeLeafRotationSpeed = 0;
+
         SPF.set({
 
             at:"fore",
@@ -221,14 +203,23 @@
                 var delay = 4.0;
                 TweenMax.to(leftFrontLeaf, 0.5, {alpha:1,delay: delay});
                 TweenMax.to(rightFrontLeaf, 0.5, {alpha:1,delay: delay});
+
+                lastBeatTime = new Date().getTime();
             },
 
             render:function(PIXI, input)
             {
-                //Rotate on beats
-                var rotationSpeed = 0.005;
-                leftFrontLeaf.rotation += rotationSpeed;
-                rightFrontLeaf.rotation -= rotationSpeed;
+                //TODO: Replace by beat detection
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    edgeLeafRotationSpeed = 15 * DEG2RAD;
+                }
+
+                edgeLeafRotationSpeed *= 0.75;
+                leftFrontLeaf.rotation += edgeLeafRotationSpeed;
+                rightFrontLeaf.rotation -= edgeLeafRotationSpeed;
             },
 
             resize: function(PIXI, input) 
@@ -244,7 +235,7 @@
         SPF.info({
             debug: false,
             title: "Intro",
-            tip: "Intro",
+            tip: "Move the mouse around and click the screen",
             firstName: "Patrik",
             lastName: "Svensson",
             email: "ps@molamil.com"

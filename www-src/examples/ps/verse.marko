@@ -1,0 +1,262 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Hue</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+    <script src="/js/ps-includes.js"></script>
+
+    <script>
+
+        var DEG2RAD = Math.PI / 180.0;
+
+        print = console.log;//TEMP
+
+        var background;
+        var backgroundColorFilter;
+        var frontRotatingSprite;
+        var frontPatternSprite;
+        var text; 
+        var textFadeDuration = 0;
+        var textContainer;
+        var didShowText = false;
+        var didHideText = false;
+        var currentCast = "";
+
+        var beatInterval = 1000;//millis
+        var lastBeatTime;
+        var beatRotationSpeed = 0;
+
+        function showText(show)
+        {
+            if(show)
+            {
+                if(didShowText)
+                {
+                    return;
+                }
+                didShowText = true;
+                textContainer.addChild(text);
+                text.alpha = 0;
+                TweenMax.to(text, textFadeDuration, {alpha: 1});
+            }
+            else
+            {
+                if(!didShowText || didHideText)
+                {
+                    return;
+                }
+                didHideText = true;
+                TweenMax.to(text, textFadeDuration, {alpha: 0, onComplete: function()
+                    {
+                        textContainer.removeChild(text);
+                        showFrontElement();
+                    }});
+            }
+        }
+
+        function showFrontElement()
+        {
+            //console.log("show front element");
+            textContainer.addChild(frontRotatingSprite);
+            beatRotationSpeed = 15 * DEG2RAD;
+            lastBeatTime = new Date().getTime();
+            frontRotatingSprite.alpha = 0;
+            TweenMax.to(frontRotatingSprite, 0.5, {alpha: 1});
+        }
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                //TODO: Preload textures. First move them into framework
+                return [];
+                //return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                //TODO: Move textures into framework
+                var backgroundTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_pattern_botanicorganic_background.png'); //TODO: Load from framework
+                //background = new PIXI.extras.TilingSprite(backgroundTexture, 1, 1);
+                //background.anchor.set(0);
+                background = SPF.fullscreenSprite(input.container,  backgroundTexture );
+                
+	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
+                background.filters = [backgroundColorFilter];
+                
+                backgroundColorFilter.reset();
+                backgroundColorFilter.brightness(0.5, true);
+                //backgroundColorFilter.saturate(1, true);
+                backgroundColorFilter.hue(30, true);
+                input.container.addChild(background);
+            },
+
+            //TODO: Animate framerate independent using delta time
+            render:function(PIXI, input)
+            {
+                
+            }
+        });
+
+        SPF.set({
+
+            at:"fore",
+            load: function(PIXI, input) 
+            {
+                //TODO: Preload textures. First move them into framework
+                return [];
+                //return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                //TODO: Font?
+                text = new PIXI.Text('THE\nWAVE', {fontFamily : 'Arial Black', fontSize: 100, fill :0xffffff, align : 'center'});
+                text.anchor.set(0.5);
+                textContainer = input.container;
+
+                var frontSpriteTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_crazyflower_001.png'); //TODO: Move to framework
+                frontRotatingSprite = new PIXI.Sprite(frontSpriteTexture);
+                frontRotatingSprite.anchor.set(0.5);
+                frontRotatingSprite.rotation = Math.random() * 2 * Math.PI;
+
+                var frontPatternTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_pattern_botanicorganic_crazyness.png'); //TODO: Move to framework
+                frontPatternSprite = SPF.fullscreenSprite(input.container,  frontPatternTexture );
+                frontPatternSprite.visible = false;
+                
+            },
+
+            //TODO: Animate framerate independent using delta time
+            render:function(PIXI, input)
+            {
+                //Fake beat
+                //TODO: Replace by beat detection
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    beatRotationSpeed = 15 * DEG2RAD;
+
+                    //beat faking for pattern
+                    frontPatternSprite.alpha = 1;
+                }
+
+                beatRotationSpeed *= 0.85;
+                frontRotatingSprite.rotation += beatRotationSpeed;
+
+                //Changes on cast
+                if(input.cast != null && input.cast.id != currentCast)
+                {
+                    currentCast = input.cast.id
+                    
+                    //Hues
+                    switch(input.cast.id)
+                    {
+                        case "singer":
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.brightness(0.5, true);
+                            backgroundColorFilter.saturate(2, true);
+                            backgroundColorFilter.hue(120, true);
+                            break;
+                        case "bass":
+                        case "drums":
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.brightness(0.5, true);
+                            backgroundColorFilter.saturate(1, true);
+                            backgroundColorFilter.hue(-20, true);
+                            break;
+                        case "all":
+                        case "none":
+                        default:
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.brightness(0.5, true);
+                            //backgroundColorFilter.saturate(1, true);
+                            backgroundColorFilter.hue(30, true);
+                            break;
+                    }
+                    //TEXT
+                    if(input.cast.id == "none")
+                    {
+                        showText(true);
+                    }
+                    else
+                    {
+                        showText(false);
+                    }
+
+                    //front element
+                    if(didHideText)
+                    {
+                        frontPatternSprite.visible = input.cast.id == "drums";
+                        frontPatternSprite.alpha = 1;
+                        frontRotatingSprite.visible = input.cast.id != "drums";
+                    }
+                }
+
+                //Fade pattern outdated
+                frontPatternSprite.alpha *= 0.85;
+            },
+
+            resize: function(PIXI, input) 
+            {
+                text.position.set(input.width/2, input.height/2);
+                text.style.fontSize = input.width/5;
+
+                //console.log(frontRotatingSprite.scale);
+                frontRotatingSprite.scale.x = frontRotatingSprite.scale.y = input.width / 1200.0;
+                frontRotatingSprite.position.set(input.width/2, input.height*1.1);
+            }
+
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Verse",
+            tip: "Move the mouse around and click the screen",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script>
+
+    </body>
+
+</html>
