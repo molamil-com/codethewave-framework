@@ -1,0 +1,308 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Hue</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+
+    <script>
+
+        var DEG2RAD = Math.PI / 180.0;
+
+        var backgroundContainer;
+        var leafTexture;
+        var hueFilter;
+        var maximumLeafCount = 20;
+        var lastSpawnPosition = new Point(-1000, -1000);
+        var currentMousePosition = new Point(0,0);
+        var minimumSpawnDistance = 50;
+
+        //Wrap this in objects for easier updating
+        var leafs = [];
+        var speeds = [];
+        var directions = [];
+        var rotationSpeed = [];
+
+        //
+        var leafSize = 250;
+        var leafDiagonalSize = leafSize * Math.sqrt(2);
+        var leafAspect = 1;
+        var leafMaximumSpeed = 5;
+        var leafAcceleration= 0.025;
+        var leafMaximumRotationSpeed = 2 * DEG2RAD;
+
+        var lastSpawnTime;
+        var spawnIntervalMillis = 1500;
+
+        print = console.log;//TEMP
+
+        function spawnLeaf(PIXI, input)
+        {
+            lastSpawnTime = new Date().getTime();
+            var leaf = new PIXI.Sprite(leafTexture);
+            //var leaf = new PIXI.Sprite(input.patterns.animaltech);
+            leaf.anchor.set(0.5);
+            leaf.rotation = Math.random() * 2 * Math.PI;
+            
+            leaf.height = leafSize;
+            leaf.width = leafSize * 605 / 640;//TODO: Get from texture
+
+            leaf.alpha = 0
+            if( input.mouseTouchPosition.x != 0 &&  input.mouseTouchPosition.y != 0)
+            {  
+                //print(lastSpawnPosition);
+                var mousePosition = new Point(input.mouseTouchPosition.x, input.mouseTouchPosition.y);
+                
+                if(lastSpawnPosition.distance(mousePosition) > minimumSpawnDistance)
+                {
+                    leaf.x = input.mouseTouchPosition.x;
+                    leaf.y = input.mouseTouchPosition.y;
+                }
+                else
+                {
+                    leaf.x = Math.random()*input.width;
+                    leaf.y = Math.random()*input.height;
+                }
+            }
+            else
+            {
+                leaf.x = Math.random()*input.width;
+                leaf.y = Math.random()*input.height;
+            }
+            
+            lastSpawnPosition = new Point(leaf.x, leaf.y);
+            
+            //while (leafs.length >= maximumLeafCount)
+            while (backgroundContainer.children.length >= maximumLeafCount)
+            {
+                removeLeaf(0);
+            }
+            
+            leafs.push(leaf);
+            speeds.push(0.0);
+            rotationSpeed.push((Math.random() * 2.0 - 1.0) * leafMaximumRotationSpeed);
+            var center = new Point(input.width / 2, input.height / 2);
+            var direction = lastSpawnPosition.subtract(center);
+            direction.normalize();
+            directions.push(direction);
+            backgroundContainer.addChild(leaf);
+
+            var targetScale = leaf.scale.x * (1 + (Math.random() * 2 - 1) * 0.2);
+            leaf.scale.x = targetScale * 0.5;
+            leaf.scale.y = targetScale * 0.5;
+            TweenMax.to(leaf, 0.5, {alpha:1});
+            TweenMax.to(leaf.scale, 0.5, {x:targetScale, y:targetScale, ease: Back.easeOut.config(1.7)});
+        }
+
+        function removeLeaf(i)
+        {
+            if (i < 0)
+            {
+                return;
+            }
+
+            print("remove leaf");
+            backgroundContainer.removeChildAt(i);
+            leafs.splice(i, 1);
+            speeds.splice(i, 1);
+            directions.splice(i, 1);
+            rotationSpeed.splice(i, 1);
+        }
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                //TODO: Preload textures
+                return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                //TODO: Move textures into framework
+                leafTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
+                leafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
+                
+                //leafAspect = leafTexture.width / leafTexture.height;//width / height not available here, maybe when we preload
+
+                backgroundContainer = new PIXI.Container();
+                input.container.addChild(backgroundContainer);
+
+                lastSpawnTime = new Date().getTime();
+            },
+
+            //TODO: Animate framerate independent using delta time
+            render:function(PIXI, input)
+            {
+                //Auto spawn leafs (TODO: Use beat to spawn, for now timed)
+                //TODO: Also delay until everyting is running
+                var timeSinceSpawn = new Date().getTime() - lastSpawnTime;
+                if (timeSinceSpawn > spawnIntervalMillis)
+                {
+                    spawnLeaf(PIXI, input);
+                }
+                //Animate leafs
+                var removeIndices = [];
+                for (var i = 0;i < leafs.length; i++)
+                {
+                    speeds[i] = Math.min(speeds[i] + leafAcceleration, leafMaximumSpeed);
+                    leafs[i].x += directions[i].x * speeds[i];
+                    leafs[i].y += directions[i].y * speeds[i];
+                    leafs[i].rotation += rotationSpeed[i];
+
+                    //remove when outside
+                    if(leafs[i].x < -leafDiagonalSize || leafs[i].x > leafDiagonalSize + input.width || leafs[i].y < -leafDiagonalSize || leafs[i].y > leafDiagonalSize + input.height)
+                    {   
+                        removeIndices.push(i);
+                    }
+                }
+                
+                while(removeIndices.length > 0)
+                {
+                    removeLeaf(removeIndices[0]);
+                    removeIndices.shift();
+                }
+            },
+
+            resize: function(PIXI, input) 
+            {
+
+            },
+
+            mouseDownTouchStart: function(PIXI, input)
+            {
+                spawnLeaf(PIXI, input);
+            }
+        });
+
+/*
+        SPF.set({
+
+            at:"front",
+            load: function(PIXI, input) 
+            {
+                return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                
+            },
+
+            render:function(PIXI, input)
+            {
+                
+            },
+
+            resize: function(PIXI, input) 
+            {
+
+            }
+
+        });
+*/
+        SPF.info({
+            debug: false,
+            title: "Intro",
+            tip: "Intro",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+        //Helpers
+        function Point(x, y){
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Point.prototype.x = null;
+        Point.prototype.y = null;
+        Point.prototype.add = function(v){
+            return new Point(this.x + v.x, this.y + v.y);
+        };
+        Point.prototype.clone = function(){
+            return new Point(this.x, this.y);
+        };
+        Point.prototype.distance = function(v){
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Point.prototype.equals = function(toCompare){
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Point.prototype.interpolate = function(v, f){
+            return new Point((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Point.prototype.length = function(){
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Point.prototype.sqrLength = function(){
+            return this.x * this.x + this.y * this.y;
+        };
+        Point.prototype.normalize = function(thickness = 1){
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Point.prototype.offset = function(dx, dy){
+            this.x += dx;
+            this.y += dy;
+        };
+        Point.prototype.subtract = function(v){
+            return new Point(this.x - v.x, this.y - v.y);
+        };
+        Point.prototype.toString = function(){
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+        Point.interpolate = function(pt1, pt2, f){
+            return new Point((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Point.distance = function(pt1, pt2){
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
+
+    </script>
+
+    </body>
+
+</html>
