@@ -37,7 +37,6 @@
     <![endif]-->
 
     <script src="../../sp-framework.js"></script>
-    <script src="/js/ps-includes.js"></script>
 
     <script>
 
@@ -187,13 +186,13 @@
             //Add animators for none mirrored rocks
             if(!mirrored)
             {
-                var rockAnimator = new SPHelpers.SpriteAnimator(rock);
+                var rockAnimator = new SpriteAnimator(rock);
                 rockAnimator.speed = 0.0;
                 rockAnimator.maxSpeed = 5;
                 rockAnimator.acceleration = 0.025;
                 rockAnimator.rotationSpeed = (Math.random() * 2.0 - 1.0) * 2 * DEG2RAD;
-                var position = new SPHelpers.Vector2(rock.x, rock.y);
-                var center = new SPHelpers.Vector2(input.width / 2, input.height / 2);
+                var position = new Vector2(rock.x, rock.y);
+                var center = new Vector2(input.width / 2, input.height / 2);
                 var direction = position.subtract(center);
                 direction.normalize();
                 rockAnimator.direction = direction;
@@ -214,7 +213,7 @@
             init: function(PIXI, input) 
             {
                 //TODO: Move textures into framework
-                var backgroundTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_pattern_botanicorganic_background.png'); //TODO: Load from framework
+                var backgroundTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_botanicorganic_background.png'); //TODO: Load from framework
                 //background = new PIXI.extras.TilingSprite(backgroundTexture, 1, 1);
                 //background.anchor.set(0);
                 background = SPF.fullscreenSprite(input.container,  backgroundTexture );
@@ -235,7 +234,7 @@
                 rockColorFilter.hue(-110, true);
                 input.container.addChild(rockContainer);
 
-                rockTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
+                rockTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
                 rockTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
                 
                 lastSpawnTime = new Date().getTime();
@@ -292,12 +291,12 @@
                 text.anchor.set(0.5);
                 textContainer = input.container;
 
-                var frontSpriteTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_crazyflower_001.png'); //TODO: Move to framework
+                var frontSpriteTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_crazyflower_001.png'); //TODO: Move to framework
                 frontRotatingSprite = new PIXI.Sprite(frontSpriteTexture);
                 frontRotatingSprite.anchor.set(0.5);
                 frontRotatingSprite.rotation = Math.random() * 2 * Math.PI;
 
-                var frontPatternTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_pattern_botanicorganic_crazyness.png'); //TODO: Move to framework
+                var frontPatternTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_botanicorganic_crazyness.png'); //TODO: Move to framework
                 frontPatternSprite = SPF.fullscreenSprite(input.container,  frontPatternTexture );
                 frontPatternSprite.visible = false;
                 
@@ -405,6 +404,174 @@
 
         SPF.start();
 
+        //HELPERS
+        spawn = function(PIXI, input, texture, params)
+        {
+            var spawnee = new PIXI.Sprite(texture);
+            spawnee.anchor.set(0.5);
+            spawnee.rotation = Math.random() * 2 * Math.PI;
+            spawnee.x = ("x" in params) ? params.x : Math.random() * input.width;
+            spawnee.y = ("y" in params) ? params.y : Math.random() * input.height;
+
+            var spawneeMirrored = null;
+            if(("mirrored" in params))
+            {
+                if(params.mirrored == true)
+                {
+                    console.log("mirrored spawn")
+                }
+            }
+
+            if(("size" in params))
+            {
+                var aspect = texture.width / texture.height;
+                if (aspect > 1)
+                {
+                    spawnee.width = params.size;
+                    spawnee.height = params.size / aspect;
+                }
+                else
+                {
+                    spawnee.height = params.size;
+                    spawnee.width = params.size * aspect;
+                }
+            }
+
+            if(("container" in params))
+            {
+                params.container.addChild(spawnee);
+            }
+            else
+            {
+                input.container.addChild(spawnee);
+            }
+
+            if(("animate" in params))
+            {
+                if(params.animate == true)
+                {
+                    spawnee.alpha = 0;
+                    var duration = ("duration" in params) ? params.duration : -1.0;
+                    var inDuration = ("inDuration" in params) ? params.inDuration : 0.25; //0-1
+                    var outDuration = ("outDuration" in params) ? params.outDuration : 0.25;//0-1
+
+                    //TweenMax.to(spawnee, 0.5, {alpha:1});
+                    animationParams = duration > 0 ? {onComplete:destroySpawnee, onCompleteParams:[spawnee]} : {}
+                    var alphaTimeline = new TimelineMax(animationParams);
+                    alphaTimeline.to(spawnee, inDuration,{alpha:1})
+                    if (duration > 0)
+                    {
+                        alphaTimeline.to(spawnee, outDuration, {delay:1 - outDuration, alpha:0})
+                        alphaTimeline.duration(duration);
+                    }
+
+                    if(("startScale" in params))
+                    {
+                        var startScale = params.startScale;
+                        var targetScale = spawnee.scale.x;
+                        var easeIn = ("easeIn" in params) ? params.easeIn : Power2.easeOut;
+                        var easeOut = ("easeOut" in params) ? params.easeOut : Power2.easeIn;
+                        
+                        spawnee.scale.x = spawnee.scale.y = targetScale * startScale;
+
+                        var scaleTimeline = new TimelineMax(animationParams);
+                        scaleTimeline.to(spawnee.scale, inDuration,{x:targetScale, y:targetScale, ease: easeIn})
+                        if (duration > 0)
+                        {
+                            scaleTimeline.to(spawnee.scale, outDuration, {delay:1 - outDuration, x:targetScale * startScale, y:targetScale * startScale, ease: easeOut})
+                            scaleTimeline.duration(duration);
+                        }
+                    }
+                }
+            }
+
+            return spawnee;
+        }
+
+        destroySpawnee = function(spawnee)
+        {
+            if (!spawnee.parent)
+            {
+                return;
+            }
+            spawnee.parent.removeChild(spawnee);
+        }
+
+        //Vector2 
+        function Vector2(x, y)
+        {
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Vector2.prototype.x = null;
+        Vector2.prototype.y = null;
+        Vector2.prototype.add = function (v) {
+            return new Vector2(this.x + v.x, this.y + v.y);
+        };
+        Vector2.prototype.clone = function () {
+            return new Vector2(this.x, this.y);
+        };
+        Vector2.prototype.distance = function (v) {
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Vector2.prototype.equals = function (toCompare) {
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Vector2.prototype.interpolate = function (v, f) {
+            return new Vector2((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Vector2.prototype.length = function () {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Vector2.prototype.sqrLength = function () {
+            return this.x * this.x + this.y * this.y;
+        };
+        Vector2.prototype.normalize = function (thickness = 1) {
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Vector2.prototype.offset = function (dx, dy) {
+            this.x += dx;
+            this.y += dy;
+        };
+        Vector2.prototype.subtract = function (v) {
+            return new Vector2(this.x - v.x, this.y - v.y);
+        };
+        Vector2.prototype.toString = function () {
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+
+        Vector2.interpolate = function (pt1, pt2, f) {
+            return new Vector2((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Vector2.distance = function (pt1, pt2) {
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
+
+        SpriteAnimator = function(sprite)
+        {
+            this.sprite = sprite || null;
+        };
+
+        SpriteAnimator.prototype.sprite = null;
+        SpriteAnimator.prototype.speed = 0;
+        SpriteAnimator.prototype.maxSpeed = 0;
+        SpriteAnimator.prototype.acceleration = 0;
+        SpriteAnimator.prototype.rotationSpeed = 0;
+        SpriteAnimator.prototype.direction = new Vector2(0,0);
+        SpriteAnimator.prototype.update = function(deltaTime)
+        {
+            this.speed = Math.min(this.speed + this.acceleration, this.maxSpeed);
+            this.sprite.x += this.direction.x * this.speed;
+            this.sprite.y += this.direction.y * this.speed;
+            this.sprite.rotation += this.rotationSpeed;
+        };
     </script>
 
     </body>

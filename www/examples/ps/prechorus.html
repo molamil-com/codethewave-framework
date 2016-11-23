@@ -2,7 +2,7 @@
 
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 
-    <![endif]--><script src="../../sp-framework.js"></script><script src="/js/ps-includes.js"></script><script>
+    <![endif]--><script src="../../sp-framework.js"></script><script>
          
         print = console.log 
         var DEG2RAD = Math.PI / 180.0;
@@ -118,7 +118,7 @@
             {
                 var index = Math.round(Math.random() * 1);
                 scale = index == 0 ? 0.45: 1;
-                var frontSpriteTexture = PIXI.Texture.fromImage(['/assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
+                var frontSpriteTexture = PIXI.Texture.fromImage(['../../assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
                 for(var i = 0;i<7;i++)
                 {
                     var sprite = new PIXI.Sprite(frontSpriteTexture);
@@ -129,7 +129,7 @@
 
                 //centerpiece
 
-                var centerPieceTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_element_wing_wave2.png');//TODO: add to framework
+                var centerPieceTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_wing_wave2.png');//TODO: add to framework
 
                 //centerPieceContainer = new PIXI.Container();
                 //input.container.addChild(centerPieceContainer);

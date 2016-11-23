@@ -2,7 +2,7 @@
 
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 
-    <![endif]--><script src="../../sp-framework.js"></script><script src="/js/ps-includes.js"></script><script>
+    <![endif]--><script src="../../sp-framework.js"></script><script>
          
         print = console.log 
         var DEG2RAD = Math.PI / 180.0;
@@ -47,7 +47,7 @@
                 background = new PIXI.Graphics();
                 input.container.addChild(background);
 
-                var backgroundTexture = PIXI.Texture.fromImage('/assets/ps_temp/SP_pattern_handdrawnanimal.png'); //TODO: Load from framework
+                var backgroundTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_handdrawnanimal.png'); //TODO: Load from framework
                 backgroundPattern = SPF.fullscreenSprite(input.container,  backgroundTexture );
 
 	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
@@ -63,7 +63,7 @@
                 backgroundPattern.mask = masker;
                 
                 //Displacement
-                var displacementTexture = PIXI.Texture.fromImage('/assets/ps_temp/clouds.png'); //TODO: Load from framework
+                var displacementTexture = PIXI.Texture.fromImage('../../assets/ps_temp/clouds.png'); //TODO: Load from framework
                 displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
                 displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
                 displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
@@ -77,7 +77,7 @@
 
                 var index = Math.round(Math.random() * 1);
                 spriteScale = index == 0 ? 0.45: 1;
-                var frontSpriteTexture = PIXI.Texture.fromImage(['/assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
+                var frontSpriteTexture = PIXI.Texture.fromImage(['../../assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
                 var spriteCount = 3;
                 for(var i = 0;i<spriteCount;i++)
                 {
@@ -85,7 +85,7 @@
                     sprite.anchor.set(0.5);
                     input.container.addChild(sprite);
                     sprites.push(sprite);
-                    spritePositions.push(new SPHelpers.Vector2(Math.random(), Math.random()));
+                    spritePositions.push(new Vector2(Math.random(), Math.random()));
                 }
 
                 lastBeatTime = new Date().getTime();
@@ -202,7 +202,7 @@
 
             init: function(PIXI, input) {
 
-                var texture = PIXI.Texture.fromImage('/assets/ps_temp/SP_mask_handdrawnanimal_001_TRANSPARENT.png'); //TODO: Load from framework
+                var texture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_mask_handdrawnanimal_001_TRANSPARENT.png'); //TODO: Load from framework
                 //sprite = new PIXI.extras.TilingSprite(input.maskers.handdrawnanimal1, 1, 1);
                 videoPatternSprite = new PIXI.extras.TilingSprite(texture, 1, 1);
                 videoPatternSprite.anchor.set(0);
@@ -225,67 +225,11 @@
             }
 
         });
-
-        /*
-        SPF.set({
-
-            at:"fore",
-            load: function(PIXI, input) 
-            {
-                return [];
-            },
-
-            init: function(PIXI, input) 
-            {
-                var index = Math.round(Math.random() * 1);
-                spriteScale = index == 0 ? 0.45: 1;
-                var frontSpriteTexture = PIXI.Texture.fromImage(['/assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
-                var spriteCount = 3;
-                for(var i = 0;i<spriteCount;i++)
-                {
-                    var sprite = new PIXI.Sprite(frontSpriteTexture);
-                    sprite.anchor.set(0.5);
-                    input.container.addChild(sprite);
-                    sprites.push(sprite);
-                    spritePositions.push(new SPHelpers.Vector2(Math.random(), Math.random()));
-                }
-
-                lastBeatTime = new Date().getTime();
-            },
-
-            render:function(PIXI, input)
-            {
-                var timeSinceBeat = new Date().getTime() - lastBeatTime;
-                if (timeSinceBeat > beatInterval)
-                {
-                    lastBeatTime = new Date().getTime();
-                    spriteRotationSpeed = 15 * DEG2RAD;
-                }
-
-                for(var i = 0;i<sprites.length;i++)
-                {
-                    sprites[i].rotation += spriteRotationSpeed
-                }
-
-                spriteRotationSpeed *= 0.75;
-            },
-
-            resize: function(PIXI, input) 
-            {
-                for(var i = 0;i<sprites.length;i++)
-                {
-                    sprites[i].x = spritePositions[i].x * input.width;
-                    sprites[i].y = spritePositions[i].y * input.height;
-                    sprites[i].scale.x = sprites[i].scale.y = (input.width / 1000.0) * spriteScale;
-                }
-            }
-        });
-        */
         
         SPF.info({
             debug: false,
             title: "Chorus",
-            tip: "",
+            tip: "Click and press to distort background",
             firstName: "Patrik",
             lastName: "Svensson",
             email: "ps@molamil.com"
@@ -293,4 +237,172 @@
 
         SPF.start();
 
+        //HELPERS
+        spawn = function(PIXI, input, texture, params)
+        {
+            var spawnee = new PIXI.Sprite(texture);
+            spawnee.anchor.set(0.5);
+            spawnee.rotation = Math.random() * 2 * Math.PI;
+            spawnee.x = ("x" in params) ? params.x : Math.random() * input.width;
+            spawnee.y = ("y" in params) ? params.y : Math.random() * input.height;
+
+            var spawneeMirrored = null;
+            if(("mirrored" in params))
+            {
+                if(params.mirrored == true)
+                {
+                    console.log("mirrored spawn")
+                }
+            }
+
+            if(("size" in params))
+            {
+                var aspect = texture.width / texture.height;
+                if (aspect > 1)
+                {
+                    spawnee.width = params.size;
+                    spawnee.height = params.size / aspect;
+                }
+                else
+                {
+                    spawnee.height = params.size;
+                    spawnee.width = params.size * aspect;
+                }
+            }
+
+            if(("container" in params))
+            {
+                params.container.addChild(spawnee);
+            }
+            else
+            {
+                input.container.addChild(spawnee);
+            }
+
+            if(("animate" in params))
+            {
+                if(params.animate == true)
+                {
+                    spawnee.alpha = 0;
+                    var duration = ("duration" in params) ? params.duration : -1.0;
+                    var inDuration = ("inDuration" in params) ? params.inDuration : 0.25; //0-1
+                    var outDuration = ("outDuration" in params) ? params.outDuration : 0.25;//0-1
+
+                    //TweenMax.to(spawnee, 0.5, {alpha:1});
+                    animationParams = duration > 0 ? {onComplete:destroySpawnee, onCompleteParams:[spawnee]} : {}
+                    var alphaTimeline = new TimelineMax(animationParams);
+                    alphaTimeline.to(spawnee, inDuration,{alpha:1})
+                    if (duration > 0)
+                    {
+                        alphaTimeline.to(spawnee, outDuration, {delay:1 - outDuration, alpha:0})
+                        alphaTimeline.duration(duration);
+                    }
+
+                    if(("startScale" in params))
+                    {
+                        var startScale = params.startScale;
+                        var targetScale = spawnee.scale.x;
+                        var easeIn = ("easeIn" in params) ? params.easeIn : Power2.easeOut;
+                        var easeOut = ("easeOut" in params) ? params.easeOut : Power2.easeIn;
+                        
+                        spawnee.scale.x = spawnee.scale.y = targetScale * startScale;
+
+                        var scaleTimeline = new TimelineMax(animationParams);
+                        scaleTimeline.to(spawnee.scale, inDuration,{x:targetScale, y:targetScale, ease: easeIn})
+                        if (duration > 0)
+                        {
+                            scaleTimeline.to(spawnee.scale, outDuration, {delay:1 - outDuration, x:targetScale * startScale, y:targetScale * startScale, ease: easeOut})
+                            scaleTimeline.duration(duration);
+                        }
+                    }
+                }
+            }
+
+            return spawnee;
+        }
+
+        destroySpawnee = function(spawnee)
+        {
+            if (!spawnee.parent)
+            {
+                return;
+            }
+            spawnee.parent.removeChild(spawnee);
+        }
+
+        //Vector2 
+        function Vector2(x, y)
+        {
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Vector2.prototype.x = null;
+        Vector2.prototype.y = null;
+        Vector2.prototype.add = function (v) {
+            return new Vector2(this.x + v.x, this.y + v.y);
+        };
+        Vector2.prototype.clone = function () {
+            return new Vector2(this.x, this.y);
+        };
+        Vector2.prototype.distance = function (v) {
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Vector2.prototype.equals = function (toCompare) {
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Vector2.prototype.interpolate = function (v, f) {
+            return new Vector2((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Vector2.prototype.length = function () {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Vector2.prototype.sqrLength = function () {
+            return this.x * this.x + this.y * this.y;
+        };
+        Vector2.prototype.normalize = function (thickness = 1) {
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Vector2.prototype.offset = function (dx, dy) {
+            this.x += dx;
+            this.y += dy;
+        };
+        Vector2.prototype.subtract = function (v) {
+            return new Vector2(this.x - v.x, this.y - v.y);
+        };
+        Vector2.prototype.toString = function () {
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+
+        Vector2.interpolate = function (pt1, pt2, f) {
+            return new Vector2((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Vector2.distance = function (pt1, pt2) {
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
+
+        SpriteAnimator = function(sprite)
+        {
+            this.sprite = sprite || null;
+        };
+
+        SpriteAnimator.prototype.sprite = null;
+        SpriteAnimator.prototype.speed = 0;
+        SpriteAnimator.prototype.maxSpeed = 0;
+        SpriteAnimator.prototype.acceleration = 0;
+        SpriteAnimator.prototype.rotationSpeed = 0;
+        SpriteAnimator.prototype.direction = new Vector2(0,0);
+        SpriteAnimator.prototype.update = function(deltaTime)
+        {
+            this.speed = Math.min(this.speed + this.acceleration, this.maxSpeed);
+            this.sprite.x += this.direction.x * this.speed;
+            this.sprite.y += this.direction.y * this.speed;
+            this.sprite.rotation += this.rotationSpeed;
+        };
     </script></body></html>
