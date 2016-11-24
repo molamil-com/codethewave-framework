@@ -19,6 +19,9 @@
         var kaleidoscopeTextureFlipped;
         var kaleidoscopeContainer;
 
+        var speed = new Vector2(2, 0);
+        var scrollOffset = new Vector2(0,0);
+
         SPF.set({
 
             at:"back",
@@ -30,8 +33,6 @@
             init: function(PIXI, input) 
             {
                 kaleidoscopeTexture = input.patterns.animaltech;
-                //kaleidoscopeTextureFlipped = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_animaltech_LO_flipped.jpg'); //TODO: Load from framework
-                //kaleidoscopeTextureFlipped.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
                 kaleidoscopeContainer = new PIXI.Container();
                 input.container.addChild(kaleidoscopeContainer);
                 updateKaleidoscope(PIXI, input);
@@ -39,7 +40,12 @@
 
             render:function(PIXI, input)
             {
-                
+                scrollOffset = scrollOffset.add(speed);
+                for(var i=0;i<kaleidoscopeSprites.length;i++)
+                {
+                    kaleidoscopeSprites[i].tilePosition.x = scrollOffset.x;
+                    kaleidoscopeSprites[i].tilePosition.y = scrollOffset.y;
+                }
             },
 
             resize: function(PIXI, input) 
@@ -91,7 +97,6 @@
 
         function updateKaleidoscope(PIXI, input)
         {
-            print(currentSections);
             //Add
             while(kaleidoscopeSprites.length < currentSections)
             {
@@ -114,14 +119,12 @@
                 var endAngle = (i+1) / (currentSections * 1.0) * TAU;
                 
                 var angle = startAngle * 0.5 + endAngle * 0.5;
-                //var angle = startAngle * t + endAngle * (1-t);
+                
                 //Sprite
                 var sprite = kaleidoscopeSprites[i];
                 sprite.width = sprite.height = length;
-                //var size = length * 0.5;
-                //sprite.width = sprite.height = size*0.5;//TODO: Handle aspect
-                sprite.x = center.x;// + Math.cos(angle) * size*0.5;
-                sprite.y = center.y;// + Math.cos(angle) * size*0.5;
+                sprite.x = center.x;
+                sprite.y = center.y;
                 var flip = (0 == i % 2) ? 1 : -1;
                 sprite.scale.y = Math.abs(sprite.scale.y) * flip;
                 sprite.rotation = angle;

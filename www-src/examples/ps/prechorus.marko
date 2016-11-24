@@ -42,6 +42,8 @@
          
         print = console.log 
         var DEG2RAD = Math.PI / 180.0;
+        var RAD2DEG = 180.0 / Math.PI;
+        var TAU = Math.PI * 2;
         var sprites = [];
         var xp = [
             0.3, 0.7,
@@ -56,14 +58,25 @@
         ]
 
         var scale = 1;
-
         var beatInterval = 1000;//millis
         var lastBeatTime;
         var spriteRotationSpeed = 0;
-        
         var leftCenterPiece, rightCenterPiece, leftCenterPieceMask, rightCenterPieceMask
         //var leftCenterPieceContainer, rightCenterPieceContainer;
         var centerPieceVisible = false;
+
+        var maxSections = 16;
+        var minSections = 6;
+        var sectionsStep = 2;
+        var currentSections = minSections;
+        var kaleidoscopeMasks = [];
+        var kaleidoscopeSprites = [];
+        var kaleidoscopeTexture;
+        var kaleidoscopeTextureFlipped;
+        var kaleidoscopeContainer;
+
+        var speed = new Vector2(2, 0);
+        var scrollOffset = new Vector2(0,0);
 
         function showCenterPiece(PIXI, input)
         {
@@ -152,6 +165,12 @@
 
             init: function(PIXI, input) 
             {
+                //Kaleidoscope
+                kaleidoscopeTexture = input.patterns.animaltech;
+                kaleidoscopeContainer = new PIXI.Container();
+                input.container.addChild(kaleidoscopeContainer);
+                updateKaleidoscope(PIXI, input);
+
                 var index = Math.round(Math.random() * 1);
                 scale = index == 0 ? 0.45: 1;
                 var frontSpriteTexture = PIXI.Texture.fromImage(['../../assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
@@ -207,6 +226,7 @@
                 {
                     lastBeatTime = new Date().getTime();
                     spriteRotationSpeed = 15 * DEG2RAD;
+                    speed.y = 4;
                 }
 
                 for(var i = 0;i<7;i++)
@@ -215,16 +235,30 @@
                 }
 
                 spriteRotationSpeed *= 0.75;
+
+                //Kaleidoscope
+                scrollOffset = scrollOffset.add(speed);
+                for(var i=0;i<kaleidoscopeSprites.length;i++)
+                {
+                    kaleidoscopeSprites[i].tilePosition.x = scrollOffset.x;
+                    kaleidoscopeSprites[i].tilePosition.y = scrollOffset.y;
+                }
+                
+                speed.y *= 0.9;
             },
 
             mouseDownTouchStart: function(PIXI, input) 
             {
                 //DEV. For now show centerpiece when clicking
                 showCenterPiece(PIXI, input);
+
+                currentSections = (currentSections - minSections + sectionsStep) % (maxSections - minSections + sectionsStep) + minSections;
+                updateKaleidoscope(PIXI, input);
             },
 
             resize: function(PIXI, input) 
             {
+                updateKaleidoscope(PIXI, input);
                 updateSprites(PIXI, input);
                 updateMasks(PIXI, input);
             }
@@ -240,6 +274,139 @@
         });
 
         SPF.start();
+
+        //KALEIDOSCOPE
+        function addSection(PIXI, input, flip)
+        {
+            //var sprite = new PIXI.Sprite(flip ? kaleidoscopeTextureFlipped : kaleidoscopeTexture); //negative scale on sprite and mask does not work
+            //var sprite = new PIXI.Sprite(kaleidoscopeTexture); //negative scale on sprite and mask does not work
+            var sprite = new PIXI.extras.TilingSprite(kaleidoscopeTexture, 500, 500);
+            sprite.anchor.set(0.5, 0.5);
+            kaleidoscopeContainer.addChild(sprite);
+            kaleidoscopeSprites.push(sprite);
+
+            var mask = new PIXI.Graphics();
+            mask.clear();
+            kaleidoscopeContainer.addChild(mask);
+            kaleidoscopeMasks.push(mask);
+                
+        }
+        function removeSection(PIXI, input)
+        {
+            var sprite = kaleidoscopeSprites.shift();
+            var mask = kaleidoscopeMasks.shift();
+            sprite.parent.removeChild(sprite);
+            mask.parent.removeChild(mask);
+        }
+
+        function updateKaleidoscope(PIXI, input)
+        {
+            //Add
+            while(kaleidoscopeSprites.length < currentSections)
+            {
+                addSection(PIXI, input, 0 == kaleidoscopeSprites.length % 2);
+            }
+
+            //Remove
+            while(kaleidoscopeSprites.length > currentSections)
+            {
+                removeSection(PIXI, input);
+            }
+
+            //Draw
+            var center = new Vector2(input.width * 0.5, input.height * 0.5);
+            var length = Math.sqrt(input.width * input.width + input.height * input.height);//This is bigger than needed
+            for (var i = 0;i<currentSections; i++)
+            {
+                var t = i / (currentSections - 1.0);
+                var startAngle = i / (currentSections * 1.0) * TAU;
+                var endAngle = (i+1) / (currentSections * 1.0) * TAU;
+                
+                var angle = startAngle * 0.5 + endAngle * 0.5;
+                
+                //Sprite
+                var sprite = kaleidoscopeSprites[i];
+                sprite.width = sprite.height = length;
+                sprite.x = center.x;
+                sprite.y = center.y;
+                var flip = (0 == i % 2) ? 1 : -1;
+                sprite.scale.y = Math.abs(sprite.scale.y) * flip;
+                sprite.rotation = angle;
+
+                //Mask
+                var mask = kaleidoscopeMasks[i];
+                mask.clear();
+                mask.beginFill(input.colors[i]);
+                mask.drawPolygon([
+                        center.x, center.y,
+                        center.x + Math.cos(startAngle) * length, center.y + Math.sin(startAngle) * length,
+                        center.x + Math.cos(endAngle) * length, center.y + Math.sin(endAngle) * length,
+                        center.x, center.y
+                    ]);
+                mask.endFill();
+                
+                sprite.mask = mask;
+
+            }
+        }
+
+        //HELPERS
+        //Vector2 
+        function Vector2(x, y)
+        {
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Vector2.prototype.x = null;
+        Vector2.prototype.y = null;
+        Vector2.prototype.add = function (v) {
+            return new Vector2(this.x + v.x, this.y + v.y);
+        };
+        Vector2.prototype.clone = function () {
+            return new Vector2(this.x, this.y);
+        };
+        Vector2.prototype.distance = function (v) {
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Vector2.prototype.equals = function (toCompare) {
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Vector2.prototype.interpolate = function (v, f) {
+            return new Vector2((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Vector2.prototype.length = function () {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Vector2.prototype.sqrLength = function () {
+            return this.x * this.x + this.y * this.y;
+        };
+        Vector2.prototype.normalize = function (thickness = 1) {
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Vector2.prototype.offset = function (dx, dy) {
+            this.x += dx;
+            this.y += dy;
+        };
+        Vector2.prototype.subtract = function (v) {
+            return new Vector2(this.x - v.x, this.y - v.y);
+        };
+        Vector2.prototype.toString = function () {
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+
+        Vector2.interpolate = function (pt1, pt2, f) {
+            return new Vector2((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Vector2.distance = function (pt1, pt2) {
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
 
     </script>
 
