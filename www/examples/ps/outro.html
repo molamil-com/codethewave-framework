@@ -5,7 +5,6 @@
     <![endif]--><script src="../../sp-framework.js"></script><script>
 
         var DEG2RAD = Math.PI / 180.0;
-        print = console.log;//TEMP
 
         var backgroundContainer;
         var leafTexture;
@@ -143,9 +142,10 @@
             at:"back",
             load: function(PIXI, input) 
             {
-                //TODO: Preload textures. First move them into framework
-                return [];
-                //return [input.patterns.animaltech];
+                return [
+                    input.patterns.handdrawnanimal2,
+                    input.graphics.leaf1
+                ];
             },
 
             init: function(PIXI, input) 
@@ -154,7 +154,7 @@
                 background = new PIXI.Graphics();
                 input.container.addChild(background);
 
-                var backgroundTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_handdrawnanimal.png'); //TODO: Load from framework
+                var backgroundTexture = input.patterns.handdrawnanimal2;
                 backgroundPattern = SPF.fullscreenSprite(input.container,  backgroundTexture );
 
 	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
@@ -170,7 +170,7 @@
                 backgroundPattern.mask = masker;
 
                 //TODO: Move textures into framework
-                leafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
+                leafTexture = input.graphics.leaf1;
                 leafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
 
                 backgroundContainer = new PIXI.Container();
@@ -289,7 +289,7 @@
             {
                 if(params.mirrored == true)
                 {
-                    console.log("mirrored spawn")
+                    //console.log("mirrored spawn")
                 }
             }
 
