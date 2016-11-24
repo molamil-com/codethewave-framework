@@ -4,7 +4,6 @@
 
     <![endif]--><script src="../../sp-framework.js"></script><script>
 
-        print = console.log;
         var DEG2RAD = Math.PI / 180.0;
         var RAD2DEG = 180.0 / Math.PI;
         var TAU = Math.PI * 2;
@@ -74,8 +73,6 @@
         //KALEIDOSCOPE
         function addSection(PIXI, input, flip)
         {
-            //var sprite = new PIXI.Sprite(flip ? kaleidoscopeTextureFlipped : kaleidoscopeTexture); //negative scale on sprite and mask does not work
-            //var sprite = new PIXI.Sprite(kaleidoscopeTexture); //negative scale on sprite and mask does not work
             var sprite = new PIXI.extras.TilingSprite(kaleidoscopeTexture, 500, 500);
             sprite.anchor.set(0.5, 0.5);
             kaleidoscopeContainer.addChild(sprite);
