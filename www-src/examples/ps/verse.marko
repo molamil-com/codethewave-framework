@@ -48,11 +48,11 @@
         var backgroundColorFilter;
         var frontRotatingSprite;
         var frontPatternSprite;
-        var text; 
-        var textFadeDuration = 0;
+        //var text; 
+        //var textFadeDuration = 0;
         var textContainer;
-        var didShowText = false;
-        var didHideText = false;
+        //var didShowText = false;
+        //var didHideText = false;
         var currentCast = "";
 
         var beatInterval = 1000;//millis
@@ -68,6 +68,7 @@
         var spawnIntervalMillis = 1500;
         var rockAnimators = [];
 
+        /*
         function showText(show)
         {
             if(show)
@@ -95,6 +96,7 @@
                     }});
             }
         }
+        */
 
         function showFrontElement()
         {
@@ -286,9 +288,11 @@
 
             init: function(PIXI, input) 
             {
+                /*
                 //TODO: Font?
                 text = new PIXI.Text('THE\nWAVE', {fontFamily : 'Arial Black', fontSize: 100, fill :0xffffff, align : 'center'});
                 text.anchor.set(0.5);
+                */
                 textContainer = input.container;
 
                 var frontSpriteTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_crazyflower_001.png'); //TODO: Move to framework
@@ -300,6 +304,7 @@
                 frontPatternSprite = SPF.fullscreenSprite(input.container,  frontPatternTexture );
                 frontPatternSprite.visible = false;
                 
+                showFrontElement();
             },
 
             //TODO: Animate framerate independent using delta time
@@ -358,23 +363,11 @@
                             rockColorFilter.hue(-110, true);
                             break;
                     }
-                    //TEXT
-                    if(input.cast.id == "none")
-                    {
-                        showText(true);
-                    }
-                    else
-                    {
-                        showText(false);
-                    }
 
                     //front element
-                    if(didHideText)
-                    {
-                        frontPatternSprite.visible = input.cast.id == "drums";
-                        frontPatternSprite.alpha = 1;
-                        frontRotatingSprite.visible = input.cast.id != "drums";
-                    }
+                    frontPatternSprite.visible = input.cast.id == "drums";
+                    frontPatternSprite.alpha = 1;
+                    frontRotatingSprite.visible = input.cast.id != "drums";
                 }
 
                 //Fade pattern outdated
@@ -383,9 +376,10 @@
 
             resize: function(PIXI, input) 
             {
+                /*
                 text.position.set(input.width/2, input.height/2);
                 text.style.fontSize = input.width/5;
-
+                */
                 //console.log(frontRotatingSprite.scale);
                 frontRotatingSprite.scale.x = frontRotatingSprite.scale.y = input.width / 1200.0;
                 frontRotatingSprite.position.set(input.width/2, input.height*1.1);

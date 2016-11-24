@@ -18,6 +18,7 @@
         var displacementMultiplier = 0.0;
 
         var videoPatternSprite;
+        var videoPatternSpriteAlpha = 0.0;
 
         var sprites = [];
         var spritePositions = [];
@@ -25,6 +26,21 @@
         var spriteScale = 1.0;
 
         var touching = false;
+
+        var invertTintFilter;
+        var invertTintFrag = [
+            "varying vec2 vTextureCoord;",
+            "uniform sampler2D uSampler;",
+            "uniform vec4 tint;",
+            "uniform float tintMultiplier;",
+            "void main(void) {",
+            "   vec4 col = 1.0 - texture2D(uSampler, vTextureCoord);",
+            "   vec3 tintMul = tint.rgb * tintMultiplier;",
+            //"   tint = tint * 1.0;",
+            "   gl_FragColor = vec4(col.rgb * tintMul.rgb, col.a);",
+            "}",
+        ].join("\n");
+
         function updatePattern(PIXI, input)
         {
             background.clear();
@@ -108,7 +124,7 @@
                 if (timeSinceBeat > beatInterval)
                 {
                     lastBeatTime = new Date().getTime();
-                
+                    videoPatternSpriteAlpha = 1.0;
                     spriteRotationSpeed = 15 * DEG2RAD;
                 }
 
@@ -128,14 +144,16 @@
                         case "singer":
                             backgroundColorFilter.reset();
                             patternColor = input.colors[2];
-                            videoPatternSprite.tint = 0xfa8474;//0xed8010;
+                            //videoPatternSprite.tint = 0xfa8474;//0xed8010;//Part of mid
+                            var tintRGB = PIXI.utils.hex2rgb(0xfa8474);
                             break;
                         case "bass":
                         case "drums":
                             backgroundColorFilter.reset();
                             backgroundColorFilter.hue(-170, true);
                             patternColor = input.colors[1];
-                            videoPatternSprite.tint = 0xfa8474;
+                            //videoPatternSprite.tint = 0xfa8474;
+                            var tintRGB = PIXI.utils.hex2rgb(0xfa8474);
                             break;
                         case "all":
                         case "none":
@@ -143,10 +161,12 @@
                             backgroundColorFilter.reset();
                             backgroundColorFilter.hue(-120, true);
                             patternColor = input.colors[3];
-                            videoPatternSprite.tint = 0x84fc8b;
+                            //videoPatternSprite.tint = 0x84fc8b;
+                            var tintRGB = PIXI.utils.hex2rgb(0x84fc8b);
 
                             break;
                     }
+                    invertTintFilter.uniforms.tint = new Float32Array([tintRGB[0], tintRGB[1], tintRGB[2], 1]);
                     updatePattern(PIXI, input);
                 }
 
@@ -167,20 +187,7 @@
 
             resize: function(PIXI, input) 
             {
-                //sprite.width = input.width;
-                //sprite.height = input.height;
                 updatePattern(PIXI, input);
-
-                /*
-                maskSprite.width = input.width;
-                maskSprite.height = input.height;
-
-                maskSpriteGraphics.clear();
-                maskSpriteGraphics.beginFill(0xff0000);
-                maskSpriteGraphics.drawRect(0, 0, input.width, input.height);
-
-                maskSpriteGraphics.mask = maskSprite;
-                */
                 
                 for(var i = 0;i<sprites.length;i++)
                 {
@@ -197,20 +204,45 @@
 
             load: function(PIXI, input) {
 
-                return [input.patterns.botanicorganic2];
+                return [input.maskers.handdrawnanimal1];
             },
 
             init: function(PIXI, input) {
 
-                var texture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_mask_handdrawnanimal_001_TRANSPARENT.png'); //TODO: Load from framework
-                //sprite = new PIXI.extras.TilingSprite(input.maskers.handdrawnanimal1, 1, 1);
-                videoPatternSprite = new PIXI.extras.TilingSprite(texture, 1, 1);
+                //var texture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_mask_handdrawnanimal_001_TRANSPARENT.png'); //TODO: Load from framework
+                //videoPatternSprite = new PIXI.extras.TilingSprite(texture, 1, 1);
+                videoPatternSprite = new PIXI.extras.TilingSprite(input.maskers.handdrawnanimal1, 1, 1);
                 videoPatternSprite.anchor.set(0);
                 input.container.addChild(videoPatternSprite);
-                videoPatternSprite.tint = 0xfa8474;
+                
+                var tintRGB = PIXI.utils.hex2rgb(0xfa8474);
 
+                uniforms = {
+                    "tint": {
+                        type: '4f', 
+                        value: new Float32Array([tintRGB[0], tintRGB[1], tintRGB[2], 1])
+                    },
+                    "tintMultiplier": {
+                        type: 'f',
+                        value: 1.0
+                    },
+                };
+                invertTintFilter = new PIXI.Filter(null,invertTintFrag,uniforms);
+                videoPatternSprite.filters = [invertTintFilter];
+                //videoPatternSprite.filterBlendMode = PIXI.BLEND_MODES.NORMAL;
+                //videoPatternSprite.blendMode = PIXI.BLEND_MODES.NORMAL;
+                //invertTintFilter.blendMode = PIXI.BLEND_MODES.NORMAL;
+                //videoPatternSprite.tint = 0xfa8474;
+                videoPatternSprite.filters[0].blendMode = PIXI.BLEND_MODES.NORMAL;
                 SPF.midgroundMask(true);
 
+            },
+
+            render: function(PIXI, input)
+            {
+                videoPatternSpriteAlpha *= 0.9;
+                invertTintFilter.uniforms.tintMultiplier = videoPatternSpriteAlpha;
+                //videoPatternSprite.alpha = videoPatternSpriteAlpha;//Set to filter instead?
             },
 
             resize: function(PIXI, input) {
@@ -220,7 +252,6 @@
 
                 videoPatternSprite.width = w;
                 videoPatternSprite.height = h;
-
 
             }
 

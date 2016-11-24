@@ -1,10 +1,47 @@
-<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>Intro</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../../js/pixi.min.js"></script><script src="../../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Outro</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
 
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 
-    <![endif]--><script src="../../sp-framework.js"></script><script>
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+
+    <script>
 
         var DEG2RAD = Math.PI / 180.0;
+        print = console.log;//TEMP
 
         var backgroundContainer;
         var leafTexture;
@@ -16,7 +53,7 @@
         var leafDiagonalSize = leafSize * Math.sqrt(2) * 0.5;
         var leafAspect = 1;
         var leafMaximumSpeed = 5;
-        var leafAcceleration= 0.025;
+        var leafAcceleration= 0.005;
         var leafMaximumRotationSpeed = 2 * DEG2RAD;
 
         var maximumLeafCount = 50;
@@ -27,17 +64,30 @@
 
 
         var lastSpawnTime;
-        var spawnIntervalMillisStart = 1500;
-        var spawnIntervalMillisEnd = 250;
-        var spawnIntervalDecrease = 50; 
+        var spawnIntervalMillisStart = 250;
+        var spawnIntervalMillisEnd = 1500;
+        var spawnIntervalDecrease = 500; 
         var spawnIntervalMillis = spawnIntervalMillisStart;
+
+        var beatInterval = 1000;//millis
+        var lastBeatTime;
 
         var leafHueFilter;
 
-        print = console.log;//TEMP
+        var background, masker, backgroundPattern;
+        var patternColor;
+        
+        var endState = 0; //1 = remove on beat, 2 = remove all 
+        var fallSpeed = 0
+        var fallAccelleration = 0.1;
 
         function spawnLeaf(PIXI, input)
         {
+            if(endState != 0)
+            {
+                return;
+            }
+
             lastSpawnTime = new Date().getTime();
             if(spawnIntervalMillis > spawnIntervalMillisEnd)
             {
@@ -85,11 +135,11 @@
 
             while (backgroundContainer.children.length >= maximumLeafCount)
             {
-                removeLeaf(0);
+                removeLeaf(PIXI, input, 0);
             }
         }
 
-        function removeLeaf(i)
+        function removeLeaf(PIXI, input, i)
         {
             if (i < 0)
             {
@@ -98,7 +148,31 @@
 
             backgroundContainer.removeChildAt(i);
             leafs.splice(i, 1);
+
+            if(leafs.length == 0 && endState == 2)
+            {
+                reset(PIXI, input);
+            }
         }
+
+        function reset(PIXI, input)
+        {
+            endState = 0;
+            fallSpeed = 0;
+            patternColor = input.colors[3];
+            masker.visible = true;
+            backgroundPattern.visible = true;
+            backgroundPattern.mask = masker;
+            updateBackground(PIXI, input);
+        }
+
+        function updateBackground(PIXI, input)
+        {
+            background.clear();
+            background.beginFill(patternColor, 1);
+            background.drawRect(0,0,input.width, input.height);
+            background.endFill();
+        }  
 
         SPF.set({
 
@@ -112,6 +186,25 @@
 
             init: function(PIXI, input) 
             {
+                patternColor = input.colors[3];
+                background = new PIXI.Graphics();
+                input.container.addChild(background);
+
+                var backgroundTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_handdrawnanimal.png'); //TODO: Load from framework
+                backgroundPattern = SPF.fullscreenSprite(input.container,  backgroundTexture );
+
+	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
+                backgroundPattern.filters = [backgroundColorFilter];
+                backgroundColorFilter.reset();
+                backgroundColorFilter.hue(-120, true);
+
+                var textures = [input.maskers.handdrawnanimal1, input.maskers.botanicorganic1, input.maskers.bbbbird1];
+                var tex = textures[Math.round(Math.random() * textures.length - 1)];
+                masker = SPF.fullscreenSprite(input.container, tex);
+                input.container.addChild(masker);
+
+                backgroundPattern.mask = masker;
+
                 //TODO: Move textures into framework
                 leafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
                 leafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
@@ -127,22 +220,57 @@
                 leafHueFilter.saturate(2, true);
 
                 lastSpawnTime = new Date().getTime();
+                lastBeatTime = new Date().getTime();
             },
 
             //TODO: Animate framerate independent using delta time
             render:function(PIXI, input)
             {
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    
+                    if(endState == 1)
+                    {
+                        if (backgroundPattern.mask != null)
+                        {
+                            backgroundPattern.mask = null
+                            masker.visible = false;
+                            patternColor = 0x000000;
+                            updateBackground();
+                        }
+                        else
+                        {
+                            backgroundPattern.visible = false;
+                            endState = 2;
+                            fallSpeed = 0;
+                        }
+                    }
+                    else if(endState == 2)
+                    {
+                        endState = 3;
+                    }
+                }
+
+                if(3 == endState)
+                {
+                    fallSpeed += fallAccelleration;
+                }
+
                 //Auto spawn leafs (TODO: Use beat to spawn, for now timed)
                 var timeSinceSpawn = new Date().getTime() - lastSpawnTime;
                 if (timeSinceSpawn > spawnIntervalMillis)
                 {
                     spawnLeaf(PIXI, input);
                 }
+
                 //Animate leafs
                 var removeIndices = [];
                 for (var i = 0;i < leafs.length; i++)
                 {
                     leafs[i].update(0);
+                    leafs[i].sprite.y += fallSpeed;
                     
                     //remove when outside view
                     if(leafs[i].sprite.x < -leafDiagonalSize || leafs[i].sprite.x > leafDiagonalSize + input.width || leafs[i].sprite.y < -leafDiagonalSize || leafs[i].sprite.y > leafDiagonalSize + input.height)
@@ -153,89 +281,28 @@
                 
                 while(removeIndices.length > 0)
                 {
-                    removeLeaf(removeIndices[0]);
+                    removeLeaf(PIXI, input, removeIndices[0]);
                     removeIndices.shift();
                 }
                 
             },
 
+            resize: function(PIXI, input)
+            {
+                updateBackground(PIXI, input);
+            },
+
             mouseDownTouchStart: function(PIXI, input)
             {
-                spawnLeaf(PIXI, input);
-            }
-        });
-
-        var leftFrontLeaf, rightFrontLeaf;
-        var leafEdgeInset = 250;
-
-        var beatInterval = 1000;//millis
-        var lastBeatTime;
-        var edgeLeafRotationSpeed = 0;
-
-        SPF.set({
-
-            at:"fore",
-            load: function(PIXI, input) 
-            {
-                //return [input.patterns.animaltech];
-                return [];
-            },
-
-            init: function(PIXI, input) 
-            {
-                frontLeafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_palm_001.png'); //TODO: Load from framework
-                frontLeafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
-
-                leftFrontLeaf = new PIXI.Sprite(frontLeafTexture);
-                leftFrontLeaf.anchor.set(0.5);
-                rightFrontLeaf = new PIXI.Sprite(frontLeafTexture);
-                rightFrontLeaf.anchor.set(0.5);
-                
-                input.container.addChild(leftFrontLeaf);
-                input.container.addChild(rightFrontLeaf);
-
-                leftFrontLeaf.tint = 0x000000;
-                rightFrontLeaf.tint = 0x000000;
-
-                leftFrontLeaf.alpha = 0;
-                rightFrontLeaf.alpha = 0;
-
-                var delay = 4.0;
-                TweenMax.to(leftFrontLeaf, 0.5, {alpha:1,delay: delay});
-                TweenMax.to(rightFrontLeaf, 0.5, {alpha:1,delay: delay});
-
-                lastBeatTime = new Date().getTime();
-            },
-
-            render:function(PIXI, input)
-            {
-                //TODO: Replace by beat detection
-                var timeSinceBeat = new Date().getTime() - lastBeatTime;
-                if (timeSinceBeat > beatInterval)
-                {
-                    lastBeatTime = new Date().getTime();
-                    edgeLeafRotationSpeed = 15 * DEG2RAD;
-                }
-
-                edgeLeafRotationSpeed *= 0.75;
-                leftFrontLeaf.rotation += edgeLeafRotationSpeed;
-                rightFrontLeaf.rotation -= edgeLeafRotationSpeed;
-            },
-
-            resize: function(PIXI, input) 
-            {
-                leftFrontLeaf.scale.x = leftFrontLeaf.scale.y = rightFrontLeaf.scale.x = rightFrontLeaf.scale.y = input.height / 700;
-                leftFrontLeaf.x = -leafEdgeInset;
-                leftFrontLeaf.y = input.height / 1.75;
-                rightFrontLeaf.x = input.width + leafEdgeInset;
-                rightFrontLeaf.y = input.height / 1.75;
+                //spawnLeaf(PIXI, input);
+                endState = 1;
             }
         });
 
         SPF.info({
             debug: false,
-            title: "Intro",
-            tip: "Click to add leafs",
+            title: "Outro",
+            tip: "Click to start outro",
             firstName: "Patrik",
             lastName: "Svensson",
             email: "ps@molamil.com"
@@ -412,4 +479,8 @@
             this.sprite.y += this.direction.y * this.speed;
             this.sprite.rotation += this.rotationSpeed;
         };
-    </script></body></html>
+    </script>
+
+    </body>
+
+</html>
