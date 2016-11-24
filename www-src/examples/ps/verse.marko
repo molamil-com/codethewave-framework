@@ -42,15 +42,13 @@
 
         var DEG2RAD = Math.PI / 180.0;
 
-        print = console.log;//TEMP
-
         var background;
         var backgroundColorFilter;
         var frontRotatingSprite;
         var frontPatternSprite;
         //var text; 
         //var textFadeDuration = 0;
-        var textContainer;
+        var frontContainer;
         //var didShowText = false;
         //var didHideText = false;
         var currentCast = "";
@@ -78,7 +76,7 @@
                     return;
                 }
                 didShowText = true;
-                textContainer.addChild(text);
+                frontContainer.addChild(text);
                 text.alpha = 0;
                 TweenMax.to(text, textFadeDuration, {alpha: 1});
             }
@@ -91,7 +89,7 @@
                 didHideText = true;
                 TweenMax.to(text, textFadeDuration, {alpha: 0, onComplete: function()
                     {
-                        textContainer.removeChild(text);
+                        frontContainer.removeChild(text);
                         showFrontElement();
                     }});
             }
@@ -100,8 +98,7 @@
 
         function showFrontElement()
         {
-            //console.log("show front element");
-            textContainer.addChild(frontRotatingSprite);
+            frontContainer.addChild(frontRotatingSprite);
             beatRotationSpeed = 15 * DEG2RAD;
             lastBeatTime = new Date().getTime();
             frontRotatingSprite.alpha = 0;
@@ -207,17 +204,16 @@
             at:"back",
             load: function(PIXI, input) 
             {
-                //TODO: Preload textures. First move them into framework
-                return [];
-                //return [input.patterns.animaltech];
+                return [
+                    input.patterns.botanicorganic4,
+                    input.graphics.stone
+                ];
             },
 
             init: function(PIXI, input) 
             {
                 //TODO: Move textures into framework
-                var backgroundTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_botanicorganic_background.png'); //TODO: Load from framework
-                //background = new PIXI.extras.TilingSprite(backgroundTexture, 1, 1);
-                //background.anchor.set(0);
+                var backgroundTexture = input.patterns.botanicorganic4;
                 background = SPF.fullscreenSprite(input.container,  backgroundTexture );
                 
 	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
@@ -236,7 +232,7 @@
                 rockColorFilter.hue(-110, true);
                 input.container.addChild(rockContainer);
 
-                rockTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
+                rockTexture = input.graphics.stone;
                 rockTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
                 
                 lastSpawnTime = new Date().getTime();
@@ -281,26 +277,22 @@
             at:"fore",
             load: function(PIXI, input) 
             {
-                //TODO: Preload textures. First move them into framework
-                return [];
-                //return [input.patterns.animaltech];
+                return [
+                    input.graphics.crazyflower1,
+                    input.patterns.botanicorganic5
+                ];
             },
 
             init: function(PIXI, input) 
             {
-                /*
-                //TODO: Font?
-                text = new PIXI.Text('THE\nWAVE', {fontFamily : 'Arial Black', fontSize: 100, fill :0xffffff, align : 'center'});
-                text.anchor.set(0.5);
-                */
-                textContainer = input.container;
+                frontContainer = input.container;
 
-                var frontSpriteTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_crazyflower_001.png'); //TODO: Move to framework
+                var frontSpriteTexture = input.graphics.crazyflower1
                 frontRotatingSprite = new PIXI.Sprite(frontSpriteTexture);
                 frontRotatingSprite.anchor.set(0.5);
                 frontRotatingSprite.rotation = Math.random() * 2 * Math.PI;
 
-                var frontPatternTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_botanicorganic_crazyness.png'); //TODO: Move to framework
+                var frontPatternTexture = input.patterns.botanicorganic5;
                 frontPatternSprite = SPF.fullscreenSprite(input.container,  frontPatternTexture );
                 frontPatternSprite.visible = false;
                 
@@ -376,11 +368,6 @@
 
             resize: function(PIXI, input) 
             {
-                /*
-                text.position.set(input.width/2, input.height/2);
-                text.style.fontSize = input.width/5;
-                */
-                //console.log(frontRotatingSprite.scale);
                 frontRotatingSprite.scale.x = frontRotatingSprite.scale.y = input.width / 1200.0;
                 frontRotatingSprite.position.set(input.width/2, input.height*1.1);
             }
@@ -397,99 +384,6 @@
         });
 
         SPF.start();
-
-        //HELPERS
-        spawn = function(PIXI, input, texture, params)
-        {
-            var spawnee = new PIXI.Sprite(texture);
-            spawnee.anchor.set(0.5);
-            spawnee.rotation = Math.random() * 2 * Math.PI;
-            spawnee.x = ("x" in params) ? params.x : Math.random() * input.width;
-            spawnee.y = ("y" in params) ? params.y : Math.random() * input.height;
-
-            var spawneeMirrored = null;
-            if(("mirrored" in params))
-            {
-                if(params.mirrored == true)
-                {
-                    console.log("mirrored spawn")
-                }
-            }
-
-            if(("size" in params))
-            {
-                var aspect = texture.width / texture.height;
-                if (aspect > 1)
-                {
-                    spawnee.width = params.size;
-                    spawnee.height = params.size / aspect;
-                }
-                else
-                {
-                    spawnee.height = params.size;
-                    spawnee.width = params.size * aspect;
-                }
-            }
-
-            if(("container" in params))
-            {
-                params.container.addChild(spawnee);
-            }
-            else
-            {
-                input.container.addChild(spawnee);
-            }
-
-            if(("animate" in params))
-            {
-                if(params.animate == true)
-                {
-                    spawnee.alpha = 0;
-                    var duration = ("duration" in params) ? params.duration : -1.0;
-                    var inDuration = ("inDuration" in params) ? params.inDuration : 0.25; //0-1
-                    var outDuration = ("outDuration" in params) ? params.outDuration : 0.25;//0-1
-
-                    //TweenMax.to(spawnee, 0.5, {alpha:1});
-                    animationParams = duration > 0 ? {onComplete:destroySpawnee, onCompleteParams:[spawnee]} : {}
-                    var alphaTimeline = new TimelineMax(animationParams);
-                    alphaTimeline.to(spawnee, inDuration,{alpha:1})
-                    if (duration > 0)
-                    {
-                        alphaTimeline.to(spawnee, outDuration, {delay:1 - outDuration, alpha:0})
-                        alphaTimeline.duration(duration);
-                    }
-
-                    if(("startScale" in params))
-                    {
-                        var startScale = params.startScale;
-                        var targetScale = spawnee.scale.x;
-                        var easeIn = ("easeIn" in params) ? params.easeIn : Power2.easeOut;
-                        var easeOut = ("easeOut" in params) ? params.easeOut : Power2.easeIn;
-                        
-                        spawnee.scale.x = spawnee.scale.y = targetScale * startScale;
-
-                        var scaleTimeline = new TimelineMax(animationParams);
-                        scaleTimeline.to(spawnee.scale, inDuration,{x:targetScale, y:targetScale, ease: easeIn})
-                        if (duration > 0)
-                        {
-                            scaleTimeline.to(spawnee.scale, outDuration, {delay:1 - outDuration, x:targetScale * startScale, y:targetScale * startScale, ease: easeOut})
-                            scaleTimeline.duration(duration);
-                        }
-                    }
-                }
-            }
-
-            return spawnee;
-        }
-
-        destroySpawnee = function(spawnee)
-        {
-            if (!spawnee.parent)
-            {
-                return;
-            }
-            spawnee.parent.removeChild(spawnee);
-        }
 
         //Vector2 
         function Vector2(x, y)
