@@ -49,7 +49,7 @@
             at:"back",
             load: function(PIXI, input) 
             {
-                return [input.patterns.handdrawnanimal]; //handdrawnanimal
+                return [input.patterns.handdrawnanimal, input.patterns.clouds];
             },
 
             init: function(PIXI, input) 
@@ -58,17 +58,11 @@
                 background.anchor.set(0);
                 input.container.addChild(background);
 
-                //var displacementTexture = PIXI.Texture.fromImage('http://i.imgur.com/2yYayZk.png'); //TODO: Load from framework
-                var displacementTexture = PIXI.Texture.fromImage('../../assets/ps_temp/clouds.png'); //TODO: Load from framework
-                
+                var displacementTexture = input.patterns.clouds;
                 displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
                 
-                //Tiled
-                //displacementSprite = new PIXI.extras.TilingSprite(displacementTexture, 1, 1);
-                //displacementSprite.anchor.set(0);
-                
                 //Standard
-                displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
+                displacementSprite = new PIXI.Sprite(displacementTexture); 
 
                 displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
                 
@@ -84,18 +78,7 @@
 
             render:function(PIXI, input)
             {
-                //background.tilePosition.x -= 1;
-                //background.tilePosition.y += 1;
-
-                //offset not working? Animate by moving sprite, which is stupid since it might move offscreen. USe tiling sprite
-                //displacementFilter.offset.x += 2;
-                //displacementFilter.offset.y += 2;
-
-                displacementSprite.x += (input.mouseTouchPosition.x * 0.02);
-                //displacementSprite.y += 0.5;
-                
-                //displacementSprite.tilePosition.x -= 2;
-                //displacementSprite.tilePosition.y += 1;
+                displacementSprite.y += 0.5;
             },
 
             resize: function(PIXI, input) 

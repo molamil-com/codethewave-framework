@@ -40,8 +40,6 @@
 
     <script>
 
-        print = console.log;
-
         var background;
         var driftFilter;
         var driftSpeed = 0.0001;
@@ -68,12 +66,15 @@
             at:"back",
             load: function(PIXI, input) 
             {
-                return [input.patterns.handdrawnanimal];
+                return [
+                    input.graphics.leaf1,
+                    input.patterns.clouds
+                    ];
             },
 
             init: function(PIXI, input) 
             {
-                leafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
+                leafTexture = input.graphics.leaf1;
                 leafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
                 background = new PIXI.Sprite(leafTexture);
                 input.container.addChild(background);
@@ -93,11 +94,11 @@
                 //background.filters = [driftFilter];
 
                 //Displace
-                var displacementTexture = PIXI.Texture.fromImage('../../assets/ps_temp/clouds.png'); //TODO: Load from framework
+                var displacementTexture = input.patterns.clouds;
                 displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
                 
                 //Standard
-                displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
+                displacementSprite = new PIXI.Sprite(displacementTexture);
                 displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
                 input.container.addChild(displacementSprite);
                 //background.filters = [displacementFilter];
