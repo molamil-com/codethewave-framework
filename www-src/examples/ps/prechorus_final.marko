@@ -1,0 +1,415 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Prechorus (Kaleidoscope)</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+
+    <script>
+         
+        print = console.log 
+        var DEG2RAD = Math.PI / 180.0;
+        var RAD2DEG = 180.0 / Math.PI;
+        var TAU = Math.PI * 2;
+        var sprites = [];
+        var xp = [
+            0.3, 0.7,
+            0.1, 0.5, 0.9,
+            0.3, 0.7,
+        ]
+
+        var yp = [
+            0, 0,
+            0.5,0.5,0.5,
+            1, 1,
+        ]
+
+        var scale = 1;
+        var beatInterval = 1000;//millis
+        var lastBeatTime;
+        var spriteRotationSpeed = 0;
+        var leftCenterPiece, rightCenterPiece, leftCenterPieceMask, rightCenterPieceMask
+        //var leftCenterPieceContainer, rightCenterPieceContainer;
+        var centerPieceVisible = false;
+
+        var maxSections = 16;
+        var minSections = 6;
+        var sectionsStep = 2;
+        var currentSections = minSections;
+        var kaleidoscopeMasks = [];
+        var kaleidoscopeSprites = [];
+        var kaleidoscopeTexture;
+        var kaleidoscopeTextureFlipped;
+        var kaleidoscopeContainer;
+
+        var speed = new Vector2(2, 0);
+        var scrollOffset = new Vector2(0,0);
+
+        function showCenterPiece(PIXI, input)
+        {
+            centerPieceVisible = true;
+            updateMasks(PIXI, input);
+
+            var offsetX = input.width / 6.0;
+            var offsetY = input.width / 3.0;
+            var duration = 4.0;
+            var rotation = 360;
+            leftCenterPiece.x += offsetX;
+            leftCenterPiece.y += offsetY;
+            rightCenterPiece.x -= offsetX;
+            rightCenterPiece.y += offsetY;
+            leftCenterPiece.rotation = rightCenterPiece.rotation = 0;
+            rightCenterPiece.alpha = leftCenterPiece.alpha = 0;
+            //Now animate, if resizing while animating it might break
+            TweenMax.to(leftCenterPiece, 0.5, {alpha: 1});
+            TweenMax.to(rightCenterPiece, 0.5, {alpha: 1});
+            TweenMax.to(leftCenterPiece, duration, {rotation: - rotation * DEG2RAD, x: input.width/2, y: input.height, ease: Power2.easeOut});
+            TweenMax.to(rightCenterPiece, duration, {rotation: rotation * DEG2RAD, x: input.width/2, y: input.height, ease: Power2.easeOut, onComplete:function(){
+                centerPieceVisible = false;
+                updateMasks(PIXI, input);
+                for(var i = 0;i<7;i++)
+                {
+                    sprites[i].alpha = 1;
+                }
+                updateSprites(PIXI, input)
+                
+            }});
+
+            for(var i = 0;i<7;i++)
+            {
+                TweenMax.to(sprites[i], 1, {alpha: 0});
+                TweenMax.to(sprites[i].scale, 1, {x: .1, y: .1, ease: Power2.easeIn});
+            }
+
+            //reset for testing purposes
+        }
+
+        function updateMasks(PIXI, input)
+        {
+                //Update masks
+            leftCenterPieceMask.clear();
+            leftCenterPieceMask.beginFill(0xff0000);
+            leftCenterPieceMask.drawRect(0, 0, input.width / 2, input.height);
+
+            leftCenterPiece.x = input.width / 2;
+            leftCenterPiece.y = input.height;
+
+            leftCenterPiece.scale.x = - input.width / 1024.0;
+            leftCenterPiece.scale.y = input.width / 1024.0;
+            leftCenterPiece.mask = leftCenterPieceMask;
+                
+            rightCenterPieceMask.clear();
+            rightCenterPieceMask.beginFill(0xff0000);
+            rightCenterPieceMask.drawRect(input.width / 2, 0, input.width / 2, input.height);
+                
+            rightCenterPiece.x  = input.width / 2;
+            rightCenterPiece.y  = input.height;
+
+            rightCenterPiece.scale.x = rightCenterPiece.scale.y = input.width / 1024.0;
+            rightCenterPiece.mask = rightCenterPieceMask;
+
+            leftCenterPiece.visible = centerPieceVisible;
+            rightCenterPiece.visible = centerPieceVisible;
+        }
+
+        function updateSprites(PIXI, input)
+        {
+            for(var i = 0;i<7;i++)
+            {
+                sprites[i].x = xp[i] * input.width;
+                sprites[i].y = yp[i] * input.height;
+                sprites[i].scale.x = sprites[i].scale.y = (input.width / 1500.0) *scale;
+            }
+        }
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [];
+            },
+
+            init: function(PIXI, input) 
+            {
+                //Kaleidoscope
+                kaleidoscopeTexture = input.patterns.animaltech;
+                kaleidoscopeContainer = new PIXI.Container();
+                input.container.addChild(kaleidoscopeContainer);
+                updateKaleidoscope(PIXI, input);
+
+                var index = Math.round(Math.random() * 1);
+                scale = index == 0 ? 0.45: 1;
+                var frontSpriteTexture = PIXI.Texture.fromImage(['../../assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
+                for(var i = 0;i<7;i++)
+                {
+                    var sprite = new PIXI.Sprite(frontSpriteTexture);
+                    sprite.anchor.set(0.5);
+                    input.container.addChild(sprite);
+                    sprites.push(sprite);
+                }
+
+                //centerpiece
+
+                var centerPieceTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_wing_wave2.png');//TODO: add to framework
+
+                //centerPieceContainer = new PIXI.Container();
+                //input.container.addChild(centerPieceContainer);
+                leftCenterPieceMask = new PIXI.Graphics();
+                leftCenterPieceMask.beginFill(0xFF0000);
+                leftCenterPieceMask.drawRect(0, 0, 100, 100);
+                input.container.addChild(leftCenterPieceMask);
+                
+                leftCenterPieceContainer = new PIXI.Container();
+                input.container.addChild(leftCenterPieceContainer);
+                
+                leftCenterPiece = new PIXI.Sprite(centerPieceTexture);
+                leftCenterPiece.anchor.set(0.5);
+                leftCenterPieceContainer.addChild(leftCenterPiece);
+                leftCenterPiece.scale.x = -1;
+                //leftCenterPieceContainer.mask = leftCenterPieceMask;
+                
+                rightCenterPieceMask = new PIXI.Graphics();
+                rightCenterPieceMask.beginFill(0xFF0000);
+                rightCenterPieceMask.drawRect(0, 0, 100, 100);
+                input.container.addChild(rightCenterPieceMask);
+
+                rightCenterPieceContainer = new PIXI.Container();
+                input.container.addChild(rightCenterPieceContainer);
+                
+                rightCenterPiece = new PIXI.Sprite(centerPieceTexture);
+                rightCenterPiece.anchor.set(0.5);
+                input.container.addChild(rightCenterPiece);
+                //rightCenterPieceContainer.mask = rightCenterPieceMask;
+                
+                //
+                lastBeatTime = new Date().getTime();
+            },
+
+            render:function(PIXI, input)
+            {
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    spriteRotationSpeed = 15 * DEG2RAD;
+                    speed.y = 4;
+                }
+
+                for(var i = 0;i<7;i++)
+                {
+                    sprites[i].rotation += spriteRotationSpeed
+                }
+
+                spriteRotationSpeed *= 0.75;
+
+                //Kaleidoscope
+                scrollOffset = scrollOffset.add(speed);
+                for(var i=0;i<kaleidoscopeSprites.length;i++)
+                {
+                    kaleidoscopeSprites[i].tilePosition.x = scrollOffset.x;
+                    kaleidoscopeSprites[i].tilePosition.y = scrollOffset.y;
+                }
+                
+                speed.y *= 0.9;
+            },
+
+            mouseDownTouchStart: function(PIXI, input) 
+            {
+                //DEV. For now show centerpiece when clicking
+                showCenterPiece(PIXI, input);
+
+                currentSections = (currentSections - minSections + sectionsStep) % (maxSections - minSections + sectionsStep) + minSections;
+                updateKaleidoscope(PIXI, input);
+            },
+
+            resize: function(PIXI, input) 
+            {
+                updateKaleidoscope(PIXI, input);
+                updateSprites(PIXI, input);
+                updateMasks(PIXI, input);
+            }
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Pre Chorus",
+            tip: "Click to test out transition",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+        //KALEIDOSCOPE
+        function addSection(PIXI, input, flip)
+        {
+            //var sprite = new PIXI.Sprite(flip ? kaleidoscopeTextureFlipped : kaleidoscopeTexture); //negative scale on sprite and mask does not work
+            //var sprite = new PIXI.Sprite(kaleidoscopeTexture); //negative scale on sprite and mask does not work
+            var sprite = new PIXI.extras.TilingSprite(kaleidoscopeTexture, 500, 500);
+            sprite.anchor.set(0.5, 0.5);
+            kaleidoscopeContainer.addChild(sprite);
+            kaleidoscopeSprites.push(sprite);
+
+            var mask = new PIXI.Graphics();
+            mask.clear();
+            kaleidoscopeContainer.addChild(mask);
+            kaleidoscopeMasks.push(mask);
+                
+        }
+        function removeSection(PIXI, input)
+        {
+            var sprite = kaleidoscopeSprites.shift();
+            var mask = kaleidoscopeMasks.shift();
+            sprite.parent.removeChild(sprite);
+            mask.parent.removeChild(mask);
+        }
+
+        function updateKaleidoscope(PIXI, input)
+        {
+            //Add
+            while(kaleidoscopeSprites.length < currentSections)
+            {
+                addSection(PIXI, input, 0 == kaleidoscopeSprites.length % 2);
+            }
+
+            //Remove
+            while(kaleidoscopeSprites.length > currentSections)
+            {
+                removeSection(PIXI, input);
+            }
+
+            //Draw
+            var center = new Vector2(input.width * 0.5, input.height * 0.5);
+            var length = Math.sqrt(input.width * input.width + input.height * input.height);//This is bigger than needed
+            for (var i = 0;i<currentSections; i++)
+            {
+                var t = i / (currentSections - 1.0);
+                var startAngle = i / (currentSections * 1.0) * TAU;
+                var endAngle = (i+1) / (currentSections * 1.0) * TAU;
+                
+                var angle = startAngle * 0.5 + endAngle * 0.5;
+                
+                //Sprite
+                var sprite = kaleidoscopeSprites[i];
+                sprite.width = sprite.height = length;
+                sprite.x = center.x;
+                sprite.y = center.y;
+                var flip = (0 == i % 2) ? 1 : -1;
+                sprite.scale.y = Math.abs(sprite.scale.y) * flip;
+                sprite.rotation = angle;
+
+                //Mask
+                var mask = kaleidoscopeMasks[i];
+                mask.clear();
+                mask.beginFill(input.colors[i]);
+                mask.drawPolygon([
+                        center.x, center.y,
+                        center.x + Math.cos(startAngle) * length, center.y + Math.sin(startAngle) * length,
+                        center.x + Math.cos(endAngle) * length, center.y + Math.sin(endAngle) * length,
+                        center.x, center.y
+                    ]);
+                mask.endFill();
+                
+                sprite.mask = mask;
+
+            }
+        }
+
+        //HELPERS
+        //Vector2 
+        function Vector2(x, y)
+        {
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Vector2.prototype.x = null;
+        Vector2.prototype.y = null;
+        Vector2.prototype.add = function (v) {
+            return new Vector2(this.x + v.x, this.y + v.y);
+        };
+        Vector2.prototype.clone = function () {
+            return new Vector2(this.x, this.y);
+        };
+        Vector2.prototype.distance = function (v) {
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Vector2.prototype.equals = function (toCompare) {
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Vector2.prototype.interpolate = function (v, f) {
+            return new Vector2((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Vector2.prototype.length = function () {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Vector2.prototype.sqrLength = function () {
+            return this.x * this.x + this.y * this.y;
+        };
+        Vector2.prototype.normalize = function (thickness = 1) {
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Vector2.prototype.offset = function (dx, dy) {
+            this.x += dx;
+            this.y += dy;
+        };
+        Vector2.prototype.subtract = function (v) {
+            return new Vector2(this.x - v.x, this.y - v.y);
+        };
+        Vector2.prototype.toString = function () {
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+
+        Vector2.interpolate = function (pt1, pt2, f) {
+            return new Vector2((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Vector2.distance = function (pt1, pt2) {
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
+
+    </script>
+
+    </body>
+
+</html>

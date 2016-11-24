@@ -1,0 +1,169 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>Kaleidoscope</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../../js/pixi.min.js"></script><script src="../../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../../sp-framework.js"></script><script>
+
+        var frag = [
+            "precision mediump float;",
+            "uniform float offset;",
+            "uniform float roll;",
+            "uniform float width;",
+            "uniform float height;",
+            "uniform sampler2D uSampler;",
+            "void main(void) {",
+            "   vec2 p = vec2(gl_FragCoord.x/width, gl_FragCoord.y/height);",
+            "   p -= 0.5;",
+            "   float r = length(p);",//+ mod(offset, 1.0);",
+            "   float a = atan(p.y, p.x);", // + mod(roll, 1.0);",
+            "   float sides = 6.;",
+            "   float tau = 2. * 3.1416;",
+            "   a = mod(a, tau/sides);",
+            "   a = abs(a - tau/sides/2.);",
+            "   p = r * vec2(cos(a), sin(a + roll));",
+            //"   p += 0.5;",
+            "   p.x = mod(p.x, 1.0);",//This is not quite right. Not sure why 0.5 is needed   
+            "   p.y = mod(p.y, 1.0);",
+            "   vec4 color = texture2D(uSampler, p);",
+            //"   vec4 color = texture2D(uSampler, texCoord);",
+            "   gl_FragColor = color;",
+            //"   gl_FragColor = vec4(p.x,p.y,0.0,1.0);",
+            "}",
+        ].join("\n")
+/*
+        var frag = [
+            "precision mediump float;",
+            // "uniform float time;", //Name differently?
+            "uniform float divisor;",
+            "uniform float offset;",
+            "uniform float roll;",
+            "uniform float width;",
+            "uniform float height;",
+            //"uniform vec2 resolution;",
+            "varying vec2 vTextureCoord;",
+            "uniform sampler2D uSampler;",
+            "void main(void) {",
+            "   vec2 sc = gl_FragCoord.xy;",// / vec2(width, height)",
+            "   sc.x /= width;",
+            "   sc.y /= height;",
+            //"   sc = sc * 2.0 - 1.0;",
+            "   sc = sc - 0.5;",
+            //"   sc -= 0.5",
+            //"   vec2 sc = vTextureCoord * 2.0 - 0.5;",
+            //"   float phi = atan2(sc.y, sc.x);",
+            "   float phi = atan(sc.y, sc.x);",
+            "   float r = sqrt(dot(sc, sc));",
+
+            "   phi += offset;",
+            "   phi = phi - divisor * floor(phi / divisor);",
+            "   phi = min(phi, divisor - phi);",
+            "   phi += roll - offset;",
+
+            "   vec2 uv = vec2(cos(phi), sin(phi)) * r + 0.5;",
+            "   uv = max(min(uv, 2.0 - uv), -uv);",
+
+            "   vec4 col =  texture2D(uSampler,uv);",
+            //"   vec4 col =  texture2D(uSampler,vec2(phi, r));",
+            "   gl_FragColor = col;",
+            //"   gl_FragColor = vec4(phi,0.0,0.0,1.0);",
+            "}",
+        ].join("\n");
+*/
+        var background;
+        var filter;
+        var uniforms;
+        var repeat = 6.0;
+        var offset = 0.0;
+        var roll = 0.0;
+        var DEG2RAD = Math.PI / 180.0;
+                            
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                
+                var texture = PIXI.Texture.fromImage('http://scarletpleasure.molamil.com/assets/SP_pattern_animaltech_LO.jpg'); //TODO: Load from framework
+                texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                //background = new PIXI.Sprite(texture);
+                background = SPF.fullscreenSprite(input.container, texture);
+                
+                //input.patterns.handdrawnanimal.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+                //background = new PIXI.Sprite(input.patterns.handdrawnanimal);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
+                //background = new PIXI.extras.TilingSprite(input.patterns.handdrawnanimal, 1, 1);
+                //background.anchor.set(0);
+                //input.container.addChild(background);
+
+                //background = SPF.fullscreenSprite(input.container, input.patterns.animaltech);
+
+                uniforms = {
+                    /*
+                    "divisor": {
+                        type:"f",
+                        value: 1.0
+                    },
+                    */
+                    "offset": {
+                        type:"f",
+                        value: 0.0
+                    },
+                    "roll": {
+                        type:"f",
+                        value: 0.0
+                    },
+                    "width": {
+                        type:"f",
+                        value: input.width
+                    },
+                    "height": {
+                        type:"f",
+                        value: input.height
+                    }
+                };   
+
+                filter = new PIXI.Filter(null,frag,uniforms);
+                background.filters = [filter];
+            },
+
+            render:function(PIXI, input)
+            {
+                filter.uniforms.width = input.width;
+                filter.uniforms.height = input.height;
+                filter.uniforms.roll += 0.01;
+                //filter.uniforms.offset += 0.002;
+                
+                /*
+                var divisor = Math.PI * 2 / Math.max(1, repeat);
+                offset = (offset + 1) % 360;
+                roll = (roll + 2) % 360;
+                filter.uniforms.divisor = divisor;
+                filter.uniforms.offset = offset * DEG2RAD;
+                filter.uniforms.roll = roll * DEG2RAD;
+                */
+            },
+
+            resize: function(PIXI, input) 
+            {
+                //background.width = input.width;
+                //background.height = input.height;
+            }
+
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Custom Filter (Kaleidoscope)",
+            tip: "PIXI's Custom filters used to create Kaleidoscope Effect",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script></body></html>

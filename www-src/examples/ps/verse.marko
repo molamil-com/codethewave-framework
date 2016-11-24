@@ -1,0 +1,573 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Verse</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+
+    <script>
+
+        var DEG2RAD = Math.PI / 180.0;
+
+        print = console.log;//TEMP
+
+        var background;
+        var backgroundColorFilter;
+        var frontRotatingSprite;
+        var frontPatternSprite;
+        //var text; 
+        //var textFadeDuration = 0;
+        var textContainer;
+        //var didShowText = false;
+        //var didHideText = false;
+        var currentCast = "";
+
+        var beatInterval = 1000;//millis
+        var lastBeatTime;
+        var beatRotationSpeed = 0;
+
+        var rockContainer;
+        var rockDuration = 3.0;
+        var rockSize = 300;
+        var touching = false;
+        var lastSpawnTime;
+        var spawnIntervalTouching = 75; 
+        var spawnIntervalMillis = 1500;
+        var rockAnimators = [];
+
+        /*
+        function showText(show)
+        {
+            if(show)
+            {
+                if(didShowText)
+                {
+                    return;
+                }
+                didShowText = true;
+                textContainer.addChild(text);
+                text.alpha = 0;
+                TweenMax.to(text, textFadeDuration, {alpha: 1});
+            }
+            else
+            {
+                if(!didShowText || didHideText)
+                {
+                    return;
+                }
+                didHideText = true;
+                TweenMax.to(text, textFadeDuration, {alpha: 0, onComplete: function()
+                    {
+                        textContainer.removeChild(text);
+                        showFrontElement();
+                    }});
+            }
+        }
+        */
+
+        function showFrontElement()
+        {
+            //console.log("show front element");
+            textContainer.addChild(frontRotatingSprite);
+            beatRotationSpeed = 15 * DEG2RAD;
+            lastBeatTime = new Date().getTime();
+            frontRotatingSprite.alpha = 0;
+            TweenMax.to(frontRotatingSprite, 0.5, {alpha: 1});
+        }
+
+        function spawnRock(PIXI, input, mirrored)
+        {
+            lastSpawnTime = new Date().getTime();
+
+            var rock = new PIXI.Sprite(rockTexture);
+            rock.anchor.set(0.5);
+            rock.rotation = Math.random() * 2 * Math.PI;
+            rock.x = touching == true ? input.mouseTouchPosition.x : Math.random() * input.width;
+            rock.y = touching == true ? input.mouseTouchPosition.y : Math.random() * input.height;
+            var w = rockSize;
+            var h = w * (1046.0/1024.0);
+            rock.width = w;
+            rock.height = h;
+            rockContainer.addChild(rock);
+
+            var rockMirrored = null;
+            if (mirrored == true)
+            {
+                var xMirrored = input.width * 0.5 - (rock.x - input.width * 0.5);
+                if (xMirrored < 0)
+                {
+                    xMirrored = input.width - xMirrored;
+                }
+
+                rockMirrored = new PIXI.Sprite(rockTexture);
+                rockMirrored.anchor.set(0.5);
+                rockMirrored.rotation = rock.rotation;
+                rockMirrored.x = xMirrored;
+                rockMirrored.y = input.mouseTouchPosition.y;
+                rockMirrored.width = w;
+                rockMirrored.height = w;
+                rockMirrored.scale.x *= -1;
+                rockContainer.addChild(rockMirrored);
+                rockMirrored.alpha = 0;
+            }
+
+            //animate
+            rock.alpha = 0;
+            var destroyRock = function(r)
+            {
+                rockContainer.removeChild(r);
+
+                //TODO: cleanup animators?
+            }
+
+            var fadeOutDelay = 6.0;
+            var tl = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rock]});
+            tl.to(rock, 0.5,{alpha:1})
+            tl.to(rock, 0.5, {delay:fadeOutDelay, alpha:0})
+            tl.duration(rockDuration);
+
+            if(rockMirrored != null)
+            {
+                var tl2 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rockMirrored]});
+                tl2.to(rockMirrored, 0.5,{alpha:1})
+                tl2.to(rockMirrored, 0.5, {delay:fadeOutDelay, alpha:0})
+                tl2.duration(rockDuration);
+            }
+            var minScale = 0.1;
+            var targetScale = rock.scale.x;// * (1 + (Math.random() * 2 - 1) * 0.2);
+            rock.scale.x = rock.scale.y = targetScale * minScale;
+
+            var scaleOutDelay = 0.0;
+            var tl3 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rock]});
+            tl3.to(rock.scale, 0.5,{x:targetScale, y:targetScale, ease: Power2.easeOut})
+            tl3.to(rock.scale, 1, {delay:scaleOutDelay, x:targetScale * minScale, y:targetScale * minScale, ease: Power2.easeIn})
+            tl3.duration(rockDuration);
+
+            if(rockMirrored != null)
+            {
+                rockMirrored.scale.x = rockMirrored.scale.y = targetScale * minScale;
+                var tl4 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rockMirrored]});
+                tl4.to(rockMirrored.scale, 0.5,{x:-targetScale, y:-targetScale, ease: Power2.easeOut})
+                tl4.to(rockMirrored.scale, 1, {delay:scaleOutDelay, x:-targetScale * minScale, y:-targetScale * minScale, ease: Power2.easeIn})
+                tl4.duration(rockDuration);
+            }
+
+            //Add animators for none mirrored rocks
+            if(!mirrored)
+            {
+                var rockAnimator = new SpriteAnimator(rock);
+                rockAnimator.speed = 0.0;
+                rockAnimator.maxSpeed = 5;
+                rockAnimator.acceleration = 0.025;
+                rockAnimator.rotationSpeed = (Math.random() * 2.0 - 1.0) * 2 * DEG2RAD;
+                var position = new Vector2(rock.x, rock.y);
+                var center = new Vector2(input.width / 2, input.height / 2);
+                var direction = position.subtract(center);
+                direction.normalize();
+                rockAnimator.direction = direction;
+                rockAnimators.push(rockAnimator);
+            }
+        }
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                //TODO: Preload textures. First move them into framework
+                return [];
+                //return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                //TODO: Move textures into framework
+                var backgroundTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_botanicorganic_background.png'); //TODO: Load from framework
+                //background = new PIXI.extras.TilingSprite(backgroundTexture, 1, 1);
+                //background.anchor.set(0);
+                background = SPF.fullscreenSprite(input.container,  backgroundTexture );
+                
+	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
+                background.filters = [backgroundColorFilter];
+                backgroundColorFilter.reset();
+                backgroundColorFilter.brightness(0.5, true);
+                //backgroundColorFilter.saturate(1, true);
+                backgroundColorFilter.hue(30, true);
+                input.container.addChild(background);
+
+                rockContainer = new PIXI.Container();
+                input.container.addChild(rockContainer);
+	            rockColorFilter = new PIXI.filters.ColorMatrixFilter();
+                rockContainer.filters = [rockColorFilter];
+                rockColorFilter.reset();
+                rockColorFilter.hue(-110, true);
+                input.container.addChild(rockContainer);
+
+                rockTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
+                rockTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
+                
+                lastSpawnTime = new Date().getTime();
+            },
+
+            //TODO: Animate framerate independent using delta time
+            render:function(PIXI, input)
+            {
+                //Different interval when touching..
+                var timeSinceSpawn = new Date().getTime() - lastSpawnTime;
+                if (timeSinceSpawn > (touching == true ? spawnIntervalTouching : spawnIntervalMillis))
+                {
+                    spawnRock(PIXI, input, touching);
+                }
+
+                for (var i = rockAnimators.length - 1; i >= 0; i--)
+                {
+                    rockAnimators[i].update(0);
+                    
+                    //cleanup animators
+                    if(null == rockAnimators[i].sprite.parent)
+                    {
+                        rockAnimators.splice(i, 1);
+                    }
+                }
+
+            },
+
+            mouseDownTouchStart: function(PIXI, input) 
+            {
+                touching = true;
+            },
+
+            mouseUpTouchEnd: function(PIXI, input) 
+            {
+                touching = false;
+            },
+        });
+
+        SPF.set({
+
+            at:"fore",
+            load: function(PIXI, input) 
+            {
+                //TODO: Preload textures. First move them into framework
+                return [];
+                //return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                /*
+                //TODO: Font?
+                text = new PIXI.Text('THE\nWAVE', {fontFamily : 'Arial Black', fontSize: 100, fill :0xffffff, align : 'center'});
+                text.anchor.set(0.5);
+                */
+                textContainer = input.container;
+
+                var frontSpriteTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_crazyflower_001.png'); //TODO: Move to framework
+                frontRotatingSprite = new PIXI.Sprite(frontSpriteTexture);
+                frontRotatingSprite.anchor.set(0.5);
+                frontRotatingSprite.rotation = Math.random() * 2 * Math.PI;
+
+                var frontPatternTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_pattern_botanicorganic_crazyness.png'); //TODO: Move to framework
+                frontPatternSprite = SPF.fullscreenSprite(input.container,  frontPatternTexture );
+                frontPatternSprite.visible = false;
+                
+                showFrontElement();
+            },
+
+            //TODO: Animate framerate independent using delta time
+            render:function(PIXI, input)
+            {
+                //Fake beat
+                //TODO: Replace by beat detection
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    beatRotationSpeed = 15 * DEG2RAD;
+
+                    //beat faking for pattern
+                    frontPatternSprite.alpha = 1;
+                }
+
+                beatRotationSpeed *= 0.85;
+                frontRotatingSprite.rotation += beatRotationSpeed;
+
+                //Changes on cast
+                if(input.cast != null && input.cast.id != currentCast)
+                {
+                    currentCast = input.cast.id
+                    
+                    //Hues
+                    switch(input.cast.id)
+                    {
+                        case "singer":
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.brightness(0.5, true);
+                            backgroundColorFilter.saturate(2, true);
+                            backgroundColorFilter.hue(120, true);
+                            rockColorFilter.reset();
+                            rockColorFilter.hue(0, true);
+                            break;
+                        case "bass":
+                        case "drums":
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.brightness(0.5, true);
+                            backgroundColorFilter.saturate(1, true);
+                            backgroundColorFilter.hue(-20, true);
+                            rockColorFilter.reset();
+                            rockColorFilter.brightness(0.5, true);
+                            rockColorFilter.saturate(0.5, true);
+                            rockColorFilter.hue(120, true);
+                            break;
+                        case "all":
+                        case "none":
+                        default:
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.brightness(0.5, true);
+                            //backgroundColorFilter.saturate(1, true);
+                            backgroundColorFilter.hue(30, true);
+                            rockColorFilter.reset();
+                            rockColorFilter.hue(-110, true);
+                            break;
+                    }
+
+                    //front element
+                    frontPatternSprite.visible = input.cast.id == "drums";
+                    frontPatternSprite.alpha = 1;
+                    frontRotatingSprite.visible = input.cast.id != "drums";
+                }
+
+                //Fade pattern outdated
+                frontPatternSprite.alpha *= 0.85;
+            },
+
+            resize: function(PIXI, input) 
+            {
+                /*
+                text.position.set(input.width/2, input.height/2);
+                text.style.fontSize = input.width/5;
+                */
+                //console.log(frontRotatingSprite.scale);
+                frontRotatingSprite.scale.x = frontRotatingSprite.scale.y = input.width / 1200.0;
+                frontRotatingSprite.position.set(input.width/2, input.height*1.1);
+            }
+
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Verse",
+            tip: "Move the mouse around and click&drag the screen",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+        //HELPERS
+        spawn = function(PIXI, input, texture, params)
+        {
+            var spawnee = new PIXI.Sprite(texture);
+            spawnee.anchor.set(0.5);
+            spawnee.rotation = Math.random() * 2 * Math.PI;
+            spawnee.x = ("x" in params) ? params.x : Math.random() * input.width;
+            spawnee.y = ("y" in params) ? params.y : Math.random() * input.height;
+
+            var spawneeMirrored = null;
+            if(("mirrored" in params))
+            {
+                if(params.mirrored == true)
+                {
+                    console.log("mirrored spawn")
+                }
+            }
+
+            if(("size" in params))
+            {
+                var aspect = texture.width / texture.height;
+                if (aspect > 1)
+                {
+                    spawnee.width = params.size;
+                    spawnee.height = params.size / aspect;
+                }
+                else
+                {
+                    spawnee.height = params.size;
+                    spawnee.width = params.size * aspect;
+                }
+            }
+
+            if(("container" in params))
+            {
+                params.container.addChild(spawnee);
+            }
+            else
+            {
+                input.container.addChild(spawnee);
+            }
+
+            if(("animate" in params))
+            {
+                if(params.animate == true)
+                {
+                    spawnee.alpha = 0;
+                    var duration = ("duration" in params) ? params.duration : -1.0;
+                    var inDuration = ("inDuration" in params) ? params.inDuration : 0.25; //0-1
+                    var outDuration = ("outDuration" in params) ? params.outDuration : 0.25;//0-1
+
+                    //TweenMax.to(spawnee, 0.5, {alpha:1});
+                    animationParams = duration > 0 ? {onComplete:destroySpawnee, onCompleteParams:[spawnee]} : {}
+                    var alphaTimeline = new TimelineMax(animationParams);
+                    alphaTimeline.to(spawnee, inDuration,{alpha:1})
+                    if (duration > 0)
+                    {
+                        alphaTimeline.to(spawnee, outDuration, {delay:1 - outDuration, alpha:0})
+                        alphaTimeline.duration(duration);
+                    }
+
+                    if(("startScale" in params))
+                    {
+                        var startScale = params.startScale;
+                        var targetScale = spawnee.scale.x;
+                        var easeIn = ("easeIn" in params) ? params.easeIn : Power2.easeOut;
+                        var easeOut = ("easeOut" in params) ? params.easeOut : Power2.easeIn;
+                        
+                        spawnee.scale.x = spawnee.scale.y = targetScale * startScale;
+
+                        var scaleTimeline = new TimelineMax(animationParams);
+                        scaleTimeline.to(spawnee.scale, inDuration,{x:targetScale, y:targetScale, ease: easeIn})
+                        if (duration > 0)
+                        {
+                            scaleTimeline.to(spawnee.scale, outDuration, {delay:1 - outDuration, x:targetScale * startScale, y:targetScale * startScale, ease: easeOut})
+                            scaleTimeline.duration(duration);
+                        }
+                    }
+                }
+            }
+
+            return spawnee;
+        }
+
+        destroySpawnee = function(spawnee)
+        {
+            if (!spawnee.parent)
+            {
+                return;
+            }
+            spawnee.parent.removeChild(spawnee);
+        }
+
+        //Vector2 
+        function Vector2(x, y)
+        {
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Vector2.prototype.x = null;
+        Vector2.prototype.y = null;
+        Vector2.prototype.add = function (v) {
+            return new Vector2(this.x + v.x, this.y + v.y);
+        };
+        Vector2.prototype.clone = function () {
+            return new Vector2(this.x, this.y);
+        };
+        Vector2.prototype.distance = function (v) {
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Vector2.prototype.equals = function (toCompare) {
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Vector2.prototype.interpolate = function (v, f) {
+            return new Vector2((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Vector2.prototype.length = function () {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Vector2.prototype.sqrLength = function () {
+            return this.x * this.x + this.y * this.y;
+        };
+        Vector2.prototype.normalize = function (thickness = 1) {
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Vector2.prototype.offset = function (dx, dy) {
+            this.x += dx;
+            this.y += dy;
+        };
+        Vector2.prototype.subtract = function (v) {
+            return new Vector2(this.x - v.x, this.y - v.y);
+        };
+        Vector2.prototype.toString = function () {
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+
+        Vector2.interpolate = function (pt1, pt2, f) {
+            return new Vector2((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Vector2.distance = function (pt1, pt2) {
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
+
+        SpriteAnimator = function(sprite)
+        {
+            this.sprite = sprite || null;
+        };
+
+        SpriteAnimator.prototype.sprite = null;
+        SpriteAnimator.prototype.speed = 0;
+        SpriteAnimator.prototype.maxSpeed = 0;
+        SpriteAnimator.prototype.acceleration = 0;
+        SpriteAnimator.prototype.rotationSpeed = 0;
+        SpriteAnimator.prototype.direction = new Vector2(0,0);
+        SpriteAnimator.prototype.update = function(deltaTime)
+        {
+            this.speed = Math.min(this.speed + this.acceleration, this.maxSpeed);
+            this.sprite.x += this.direction.x * this.speed;
+            this.sprite.y += this.direction.y * this.speed;
+            this.sprite.rotation += this.rotationSpeed;
+        };
+    </script>
+
+    </body>
+
+</html>

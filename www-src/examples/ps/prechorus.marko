@@ -1,0 +1,313 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Prechorus (Drift)</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../../js/pixi.min.js"></script>
+
+        <script src="../../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../../sp-framework.js"></script>
+
+    <script>
+         
+        print = console.log 
+        var DEG2RAD = Math.PI / 180.0;
+        var sprites = [];
+        var xp = [
+            0.3, 0.7,
+            0.1, 0.5, 0.9,
+            0.3, 0.7,
+        ]
+
+        var yp = [
+            0, 0,
+            0.5,0.5,0.5,
+            1, 1,
+        ]
+
+        var scale = 1;
+
+        var beatInterval = 1000;//millis
+        var lastBeatTime;
+        var spriteRotationSpeed = 0;
+        
+        var leftCenterPiece, rightCenterPiece, leftCenterPieceMask, rightCenterPieceMask
+        var centerPieceVisible = false;
+
+        var background;
+        var driftFilter;
+        var driftSpeed = 0.0001;
+        var displaceSpeed = 0.25;
+        var drift = 0.3;
+        var driftFrag = [
+            "varying vec2 vTextureCoord;",
+            "uniform sampler2D uSampler;",
+            "uniform float texelHeight;",
+            "uniform float drift;",
+            "void main(void) {",
+            "   vec2 uv = vTextureCoord;",
+            "   uv.y = mod(drift + texelHeight*uv.y*20.0, 1.0);",
+            "   vec4 col = texture2D(uSampler, uv);",
+            "   gl_FragColor = col;",
+            "}",
+        ].join("\n");
+
+        var displacementFilter;
+        var displacementSprite;
+
+        function showCenterPiece(PIXI, input)
+        {
+            centerPieceVisible = true;
+            updateMasks(PIXI, input);
+
+            var offsetX = input.width / 6.0;
+            var offsetY = input.width / 3.0;
+            var duration = 4.0;
+            var rotation = 360;
+            leftCenterPiece.x += offsetX;
+            leftCenterPiece.y += offsetY;
+            rightCenterPiece.x -= offsetX;
+            rightCenterPiece.y += offsetY;
+            leftCenterPiece.rotation = rightCenterPiece.rotation = 0;
+            rightCenterPiece.alpha = leftCenterPiece.alpha = 0;
+            //Now animate, if resizing while animating it might break
+            TweenMax.to(leftCenterPiece, 0.5, {alpha: 1});
+            TweenMax.to(rightCenterPiece, 0.5, {alpha: 1});
+            TweenMax.to(leftCenterPiece, duration, {rotation: - rotation * DEG2RAD, x: input.width/2, y: input.height, ease: Power2.easeOut});
+            TweenMax.to(rightCenterPiece, duration, {rotation: rotation * DEG2RAD, x: input.width/2, y: input.height, ease: Power2.easeOut, onComplete:function(){
+                centerPieceVisible = false;
+                updateMasks(PIXI, input);
+                for(var i = 0;i<7;i++)
+                {
+                    sprites[i].alpha = 1;
+                }
+                updateSprites(PIXI, input)
+                
+            }});
+
+            for(var i = 0;i<7;i++)
+            {
+                TweenMax.to(sprites[i], 1, {alpha: 0});
+                TweenMax.to(sprites[i].scale, 1, {x: .1, y: .1, ease: Power2.easeIn});
+            }
+
+            //reset for testing purposes
+        }
+
+        function updateMasks(PIXI, input)
+        {
+                //Update masks
+            leftCenterPieceMask.clear();
+            leftCenterPieceMask.beginFill(0xff0000);
+            leftCenterPieceMask.drawRect(0, 0, input.width / 2, input.height);
+
+            leftCenterPiece.x = input.width / 2;
+            leftCenterPiece.y = input.height;
+
+            leftCenterPiece.scale.x = - input.width / 1024.0;
+            leftCenterPiece.scale.y = input.width / 1024.0;
+            leftCenterPiece.mask = leftCenterPieceMask;
+                
+            rightCenterPieceMask.clear();
+            rightCenterPieceMask.beginFill(0xff0000);
+            rightCenterPieceMask.drawRect(input.width / 2, 0, input.width / 2, input.height);
+                
+            rightCenterPiece.x  = input.width / 2;
+            rightCenterPiece.y  = input.height;
+
+            rightCenterPiece.scale.x = rightCenterPiece.scale.y = input.width / 1024.0;
+            rightCenterPiece.mask = rightCenterPieceMask;
+
+            leftCenterPiece.visible = centerPieceVisible;
+            rightCenterPiece.visible = centerPieceVisible;
+        }
+
+        function updateSprites(PIXI, input)
+        {
+            for(var i = 0;i<7;i++)
+            {
+                sprites[i].x = xp[i] * input.width;
+                sprites[i].y = yp[i] * input.height;
+                sprites[i].scale.x = sprites[i].scale.y = (input.width / 1500.0) *scale;
+            }
+        }
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [];
+            },
+
+            init: function(PIXI, input) 
+            {
+                //background
+                leafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
+                leafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                background = new PIXI.Sprite(leafTexture);
+                input.container.addChild(background);
+
+                uniforms = {
+                    "texelHeight": {
+                        type:"f",
+                        value: 1.0/input.height
+                    },
+                    "drift": {
+                        type:"f",
+                        value: 0.0
+                    }
+                };
+
+                driftFilter = new PIXI.Filter(null,driftFrag,uniforms);
+                //background.filters = [driftFilter];
+
+                //Displace
+                var displacementTexture = PIXI.Texture.fromImage('../../assets/ps_temp/clouds.png'); //TODO: Load from framework
+                displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                
+                //Standard
+                displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
+                displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+                input.container.addChild(displacementSprite);
+                //background.filters = [displacementFilter];
+                var displacementScale = 50;
+                displacementFilter.scale.x = displacementScale;
+                displacementFilter.scale.y = displacementScale;
+                displacementFilter.resolution = 1; //Lower values are faster, higher better quality
+                
+                background.filters = [driftFilter, displacementFilter];
+
+                //sprites
+                var index = Math.round(Math.random() * 1);
+                scale = index == 0 ? 0.45: 1;
+                var frontSpriteTexture = PIXI.Texture.fromImage(['../../assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
+                for(var i = 0;i<7;i++)
+                {
+                    var sprite = new PIXI.Sprite(frontSpriteTexture);
+                    sprite.anchor.set(0.5);
+                    input.container.addChild(sprite);
+                    sprites.push(sprite);
+                }
+
+                //centerpiece
+
+                var centerPieceTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_wing_wave2.png');//TODO: add to framework
+
+                //centerPieceContainer = new PIXI.Container();
+                //input.container.addChild(centerPieceContainer);
+                leftCenterPieceMask = new PIXI.Graphics();
+                leftCenterPieceMask.beginFill(0xFF0000);
+                leftCenterPieceMask.drawRect(0, 0, 100, 100);
+                input.container.addChild(leftCenterPieceMask);
+                
+                leftCenterPieceContainer = new PIXI.Container();
+                input.container.addChild(leftCenterPieceContainer);
+                
+                leftCenterPiece = new PIXI.Sprite(centerPieceTexture);
+                leftCenterPiece.anchor.set(0.5);
+                leftCenterPieceContainer.addChild(leftCenterPiece);
+                leftCenterPiece.scale.x = -1;
+                //leftCenterPieceContainer.mask = leftCenterPieceMask;
+                
+                rightCenterPieceMask = new PIXI.Graphics();
+                rightCenterPieceMask.beginFill(0xFF0000);
+                rightCenterPieceMask.drawRect(0, 0, 100, 100);
+                input.container.addChild(rightCenterPieceMask);
+
+                rightCenterPieceContainer = new PIXI.Container();
+                input.container.addChild(rightCenterPieceContainer);
+                
+                rightCenterPiece = new PIXI.Sprite(centerPieceTexture);
+                rightCenterPiece.anchor.set(0.5);
+                input.container.addChild(rightCenterPiece);
+                //rightCenterPieceContainer.mask = rightCenterPieceMask;
+                
+                //
+                lastBeatTime = new Date().getTime();
+            },
+
+            render:function(PIXI, input)
+            {
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    spriteRotationSpeed = 15 * DEG2RAD;
+                }
+
+                driftFilter.uniforms.texelHeight = 1.0 / input.height;
+                drift += driftSpeed;
+                driftFilter.uniforms.drift = drift;
+                displacementSprite.x += displaceSpeed;
+
+                for(var i = 0;i<7;i++)
+                {
+                    sprites[i].rotation += spriteRotationSpeed
+                }
+
+                spriteRotationSpeed *= 0.75;
+            },
+
+            mouseDownTouchStart: function(PIXI, input) 
+            {
+                //DEV. For now show centerpiece when clicking
+                showCenterPiece(PIXI, input);
+            },
+
+            resize: function(PIXI, input) 
+            {
+                updateSprites(PIXI, input);
+                updateMasks(PIXI, input);
+
+                background.width = input.width;
+                background.height = input.height;
+            }
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Pre Chorus",
+            tip: "Click to test out transition",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script>
+
+    </body>
+
+</html>

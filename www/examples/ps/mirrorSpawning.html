@@ -1,0 +1,139 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>Mirror Spawning</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../../js/pixi.min.js"></script><script src="../../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../../sp-framework.js"></script><script src="/js/ps-includes.js"></script><script>
+         
+        //var config = require('../../config.js');
+        
+        var rockTexture;
+        var lastSpawnTime;
+        var spawnIntervalMillis = 75;
+        var rockDuration = 3.0;
+        var rockSize = 300;
+        var backgroundContainer;
+
+        print = console.log;//TEMP
+
+        function spawnRock(PIXI, input, mirrored)
+        {
+            if( input.mouseTouchPosition.x == 0 &&  input.mouseTouchPosition.y == 0)
+            { 
+                return;
+            }
+
+            lastSpawnTime = new Date().getTime();
+
+            var rock = new PIXI.Sprite(rockTexture);
+            rock.anchor.set(0.5);
+            rock.rotation = Math.random() * 2 * Math.PI;
+            rock.x = input.mouseTouchPosition.x;
+            rock.y = input.mouseTouchPosition.y;
+            var w = rockSize;
+            var h = w * (1046.0/1024.0);
+            rock.width = w;
+            rock.height = h;
+            backgroundContainer.addChild(rock);
+
+            if (mirrored == true)
+            {
+                var xMirrored = input.width * 0.5 - (rock.x - input.width * 0.5);
+                if (xMirrored < 0)
+                {
+                    xMirrored = input.width - xMirrored;
+                }
+
+                var rockMirrored = new PIXI.Sprite(rockTexture);
+                rockMirrored.anchor.set(0.5);
+                rockMirrored.rotation = rock.rotation;
+                rockMirrored.x = xMirrored;
+                rockMirrored.y = input.mouseTouchPosition.y;
+                rockMirrored.width = w;
+                rockMirrored.height = w;
+                rockMirrored.scale.x *= -1;
+                backgroundContainer.addChild(rockMirrored);
+            }
+
+            //animate
+            rock.alpha = 0;
+            rockMirrored.alpha = 0;
+            var destroyRock = function(r)
+            {
+                backgroundContainer.removeChild(r);
+            }
+
+            var fadeOutDelay = 6.0;
+            var tl = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rock]});
+            tl.to(rock, 0.5,{alpha:1})
+            tl.to(rock, 0.5, {delay:fadeOutDelay, alpha:0})
+            tl.duration(rockDuration);
+
+            var tl2 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rockMirrored]});
+            tl2.to(rockMirrored, 0.5,{alpha:1})
+            tl2.to(rockMirrored, 0.5, {delay:fadeOutDelay, alpha:0})
+            tl2.duration(rockDuration);
+
+            var minScale = 0.1;
+            var targetScale = rock.scale.x;// * (1 + (Math.random() * 2 - 1) * 0.2);
+            rock.scale.x = rock.scale.y = rockMirrored.scale.x = rockMirrored.scale.y = targetScale * minScale;
+
+            var scaleOutDelay = 0.0;
+            var tl3 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rock]});
+            tl3.to(rock.scale, 0.5,{x:targetScale, y:targetScale, ease: Power2.easeOut})
+            tl3.to(rock.scale, 1, {delay:scaleOutDelay, x:targetScale * minScale, y:targetScale * minScale, ease: Power2.easeIn})
+            tl3.duration(rockDuration);
+
+            var tl4 = new TimelineMax({onComplete:destroyRock, onCompleteParams:[rockMirrored]});
+            tl4.to(rockMirrored.scale, 0.5,{x:-targetScale, y:-targetScale, ease: Power2.easeOut})
+            tl4.to(rockMirrored.scale, 1, {delay:scaleOutDelay, x:-targetScale * minScale, y:-targetScale * minScale, ease: Power2.easeIn})
+            tl4.duration(rockDuration);
+        }
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [];
+            },
+
+            init: function(PIXI, input) 
+            {
+                //TODO: Move textures into framework
+                rockTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
+                rockTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
+
+                backgroundContainer = new PIXI.Container();
+                input.container.addChild(backgroundContainer);
+
+                lastSpawnTime = new Date().getTime();
+            },
+
+            render:function(PIXI, input)
+            {
+                var timeSinceSpawn = new Date().getTime() - lastSpawnTime;
+                if (timeSinceSpawn > spawnIntervalMillis)
+                {
+                    spawnRock(PIXI, input, true);
+                }
+            },
+
+            resize: function(PIXI, input) 
+            {
+                
+            }
+
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Mirrored Spawing",
+            tip: "",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+    </script></body></html>
