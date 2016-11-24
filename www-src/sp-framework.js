@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.021;
+    var version = 0.022;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -422,10 +422,10 @@ var fps = require('fps');
             }
         };
 
-
         if(isSite) {
 
             setTimeout(function () {
+                video.getVideoSource().loop = false;
                 pause();
             }, 150);
 
@@ -480,11 +480,14 @@ var fps = require('fps');
     };
 
     function pause(){
+        $("body").attr("data-video-paused", "true");
         siteActive = false;
         video.getVideoSource().pause();
     };
 
     function play(){
+
+        $("body").attr("data-video-paused", "false");
         video.getVideoSource().play();
         siteActive = true;
     }
@@ -731,6 +734,7 @@ var fps = require('fps');
 
                 if(isSite)
                     $("body").attr("data-current-section", ""+input.currentSection.id);
+
             }
 
 
