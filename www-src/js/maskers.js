@@ -31,7 +31,11 @@ var init = function(PIXI, input){
 
         handdrawnanimal3: PIXI.Texture.fromImage(serverPath+folder+'SP_mask_handdrawnanimal_003.png'),
 
-        handdrawnanimal4: PIXI.Texture.fromImage(serverPath+folder+'SP_mask_handdrawnanimal_004.png')
+        handdrawnanimal4: PIXI.Texture.fromImage(serverPath+folder+'SP_mask_handdrawnanimal_004.png'),
+
+        /* New assets for featured visuals */
+        
+        animaltech: PIXI.Texture.fromImage(serverPath+folder+'sp_mask_animaltech_001.png')
 
     };
 

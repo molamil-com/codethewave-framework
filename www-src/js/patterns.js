@@ -30,8 +30,19 @@ var init = function(PIXI, input){
 
         botanicorganic3: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_botanicorganic_LO_003.jpg'),
 
-        handdrawnanimal: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_handdrawnanimal_LO.jpg')
+        handdrawnanimal: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_handdrawnanimal_LO.jpg'),
 
+        /* New assets for featured visuals */
+
+        botanicorganic4: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_botanicorganic_background.jpg'),
+
+        botanicorganic5: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_botanicorganic_crazyness.png'),
+
+        handdrawnanimal2: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_handdrawnanimal.jpg'),
+
+        /* KEEP UNDOCUMENTED FOR NOW */
+
+        clouds: PIXI.Texture.fromImage(serverPath+folder+'clouds.jpg')
     };
 
     return textures;
