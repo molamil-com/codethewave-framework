@@ -50,8 +50,6 @@
         var rockSize = 300;
         var backgroundContainer;
 
-        print = console.log;//TEMP
-
         function spawnRock(PIXI, input, mirrored)
         {
             if( input.mouseTouchPosition.x == 0 &&  input.mouseTouchPosition.y == 0)
@@ -131,13 +129,12 @@
             at:"back",
             load: function(PIXI, input) 
             {
-                return [];
+                return [input.graphics.stone];
             },
 
             init: function(PIXI, input) 
             {
-                //TODO: Move textures into framework
-                rockTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_stone_001.png'); //TODO: Load from framework
+                rockTexture = input.graphics.stone;
                 rockTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
 
                 backgroundContainer = new PIXI.Container();
@@ -165,7 +162,7 @@
         SPF.info({
             debug: false,
             title: "Mirrored Spawing",
-            tip: "",
+            tip: "Click and drag...",
             firstName: "Patrik",
             lastName: "Svensson",
             email: "ps@molamil.com"
