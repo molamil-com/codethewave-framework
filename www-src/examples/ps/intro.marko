@@ -70,8 +70,6 @@
 
         var leafHueFilter;
 
-        print = console.log;//TEMP
-
         function spawnLeaf(PIXI, input)
         {
             lastSpawnTime = new Date().getTime();
@@ -141,15 +139,13 @@
             at:"back",
             load: function(PIXI, input) 
             {
-                //TODO: Preload textures. First move them into framework
-                return [];
-                //return [input.patterns.animaltech];
+                return [input.graphics.leaf1];
             },
 
             init: function(PIXI, input) 
             {
                 //TODO: Move textures into framework
-                leafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
+                leafTexture = input.graphics.leaf1;
                 leafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
 
                 backgroundContainer = new PIXI.Container();
@@ -213,13 +209,12 @@
             at:"fore",
             load: function(PIXI, input) 
             {
-                //return [input.patterns.animaltech];
-                return [];
+                return [input.graphics.leaf2];
             },
 
             init: function(PIXI, input) 
             {
-                frontLeafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_palm_001.png'); //TODO: Load from framework
+                frontLeafTexture = input.graphics.leaf2;
                 frontLeafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP
 
                 leftFrontLeaf = new PIXI.Sprite(frontLeafTexture);
@@ -294,7 +289,7 @@
             {
                 if(params.mirrored == true)
                 {
-                    console.log("mirrored spawn")
+                    //console.log("mirrored spawn")
                 }
             }
 
