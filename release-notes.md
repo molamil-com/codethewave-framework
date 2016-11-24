@@ -9,6 +9,12 @@
     - Change documentation: add link to PIXI: http://pixijs.github.io/docs/
     
     - Change documentation: We will remove any visuals that contain errors on its code, so make sure your visual works and adapts to different screen sizes.
+    
+    - FIX: issue with several touch events dispatched together
+     
+    - TODO: add pre-loading system for external images out of the framework.
+    
+    - 
 
 
 ### 07-10-2016

@@ -13366,7 +13366,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.022;
+    var version = 0.023;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -14170,6 +14170,10 @@ var fps = require('fps');
                 $("body").attr("data-video-duration", ""+video.getVideoSource().duration);
                 $("body").attr("data-video-time", ""+video.getVideoSource().currentTime);
                 $("body").attr("data-video-percentage", ""+video.getPositionPercentage());
+
+                if(video.getPositionPercentage() == 100){
+                    $("body").attr("data-current-section", "none");
+                }
 
             };
 
