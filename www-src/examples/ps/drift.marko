@@ -46,7 +46,7 @@
         var driftFilter;
         var driftSpeed = 0.0001;
         var displaceSpeed = 0.25;
-        var drift = - 0.01;
+        var drift = 0.1;
         var driftFrag = [
             "varying vec2 vTextureCoord;",
             "uniform sampler2D uSampler;",
@@ -75,7 +75,6 @@
             {
                 leafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
                 leafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
-                //background = new PIXI.extras.TilingSprite(leafTexture, 1, 1);
                 background = new PIXI.Sprite(leafTexture);
                 input.container.addChild(background);
 

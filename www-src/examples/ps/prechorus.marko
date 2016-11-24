@@ -62,8 +62,28 @@
         var spriteRotationSpeed = 0;
         
         var leftCenterPiece, rightCenterPiece, leftCenterPieceMask, rightCenterPieceMask
-        //var leftCenterPieceContainer, rightCenterPieceContainer;
         var centerPieceVisible = false;
+
+        var background;
+        var driftFilter;
+        var driftSpeed = 0.0001;
+        var displaceSpeed = 0.25;
+        var drift = 0.3;
+        var driftFrag = [
+            "varying vec2 vTextureCoord;",
+            "uniform sampler2D uSampler;",
+            "uniform float texelHeight;",
+            "uniform float drift;",
+            "void main(void) {",
+            "   vec2 uv = vTextureCoord;",
+            "   uv.y = mod(drift + texelHeight*uv.y*20.0, 1.0);",
+            "   vec4 col = texture2D(uSampler, uv);",
+            "   gl_FragColor = col;",
+            "}",
+        ].join("\n");
+
+        var displacementFilter;
+        var displacementSprite;
 
         function showCenterPiece(PIXI, input)
         {
@@ -152,6 +172,43 @@
 
             init: function(PIXI, input) 
             {
+                //background
+                leafTexture = PIXI.Texture.fromImage('../../assets/ps_temp/SP_element_leaf_001.png'); //TODO: Load from framework
+                leafTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                background = new PIXI.Sprite(leafTexture);
+                input.container.addChild(background);
+
+                uniforms = {
+                    "texelHeight": {
+                        type:"f",
+                        value: 1.0/input.height
+                    },
+                    "drift": {
+                        type:"f",
+                        value: 0.0
+                    }
+                };
+
+                driftFilter = new PIXI.Filter(null,driftFrag,uniforms);
+                //background.filters = [driftFilter];
+
+                //Displace
+                var displacementTexture = PIXI.Texture.fromImage('../../assets/ps_temp/clouds.png'); //TODO: Load from framework
+                displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                
+                //Standard
+                displacementSprite = new PIXI.Sprite(displacementTexture);//PIXI.Sprite.fromImage('http://i.imgur.com/2yYayZk.png'); 
+                displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+                input.container.addChild(displacementSprite);
+                //background.filters = [displacementFilter];
+                var displacementScale = 50;
+                displacementFilter.scale.x = displacementScale;
+                displacementFilter.scale.y = displacementScale;
+                displacementFilter.resolution = 1; //Lower values are faster, higher better quality
+                
+                background.filters = [driftFilter, displacementFilter];
+
+                //sprites
                 var index = Math.round(Math.random() * 1);
                 scale = index == 0 ? 0.45: 1;
                 var frontSpriteTexture = PIXI.Texture.fromImage(['../../assets/ps_temp/SP_element_crazyflower_001.png', '/assets/SP_element_botanicorganic_001.png'][index]); //TODO: Move to framework, one of these exist
@@ -209,6 +266,11 @@
                     spriteRotationSpeed = 15 * DEG2RAD;
                 }
 
+                driftFilter.uniforms.texelHeight = 1.0 / input.height;
+                drift += driftSpeed;
+                driftFilter.uniforms.drift = drift;
+                displacementSprite.x += displaceSpeed;
+
                 for(var i = 0;i<7;i++)
                 {
                     sprites[i].rotation += spriteRotationSpeed
@@ -227,6 +289,9 @@
             {
                 updateSprites(PIXI, input);
                 updateMasks(PIXI, input);
+
+                background.width = input.width;
+                background.height = input.height;
             }
         });
 
