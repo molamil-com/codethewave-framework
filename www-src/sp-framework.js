@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.023;
+    var version = 0.024;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -370,6 +370,8 @@ var fps = require('fps');
             target.click(function(){
 
                 playVideoAt($(this).data("starts"));
+                // pause();
+                // console.log("video.getPositionPercentage(): "+video.getPositionPercentage());
 
             });
 
