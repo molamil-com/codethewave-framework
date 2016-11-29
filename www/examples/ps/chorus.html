@@ -1,0 +1,351 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>Chorus</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../../js/pixi.min.js"></script><script src="../../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../../sp-framework.js"></script><script>
+         
+        var DEG2RAD = Math.PI / 180.0;
+
+        var currentCast = "";
+        var beatInterval = 1500;
+        var lastBeatTime;
+        var background, sprite, masker;
+        var patternColor;
+        
+        var displacementFilter;
+        var displacementSprite;
+        var displacementMultiplier = 0.0;
+
+        var videoPatternSprite;
+        var videoPatternSpriteAlpha = 0.0;
+
+        var sprites = [];
+        var spritePositions = [];
+        var spriteRotationSpeed = 0;
+        var spriteScale = 1.0;
+
+        var touching = false;
+
+        var invertTintFilter;
+        var invertTintFrag = [
+            "varying vec2 vTextureCoord;",
+            "uniform sampler2D uSampler;",
+            "uniform vec4 tint;",
+            "uniform float tintMultiplier;",
+            "void main(void) {",
+            "   vec4 col = 1.0 - texture2D(uSampler, vTextureCoord);",
+            "   vec3 tintMul = tint.rgb * tintMultiplier;",
+            //"   tint = tint * 1.0;",
+            "   gl_FragColor = vec4(col.rgb * tintMul.rgb, col.a);",
+            "}",
+        ].join("\n");
+
+        function updatePattern(PIXI, input)
+        {
+            background.clear();
+            background.beginFill(patternColor, 1);
+            background.drawRect(0,0,input.width, input.height);
+            background.endFill();
+        }
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [
+                    input.maskers.handdrawnanimal1,
+                    input.maskers.botanicorganic1, 
+                    input.maskers.bbbbird1,
+                    input.patterns.handdrawnanimal2,
+                    input.patterns.clouds,
+                    input.graphics.crazyflower1,
+                    input.graphics.botanicorganic
+                    ];
+            },
+
+            init: function(PIXI, input) 
+            {
+                patternColor = input.colors[3];
+                background = new PIXI.Graphics();
+                input.container.addChild(background);
+
+                var backgroundTexture = input.patterns.handdrawnanimal2; //TODO: Load from framework
+                backgroundPattern = SPF.fullscreenSprite(input.container,  backgroundTexture );
+
+	            backgroundColorFilter = new PIXI.filters.ColorMatrixFilter();
+                backgroundPattern.filters = [backgroundColorFilter];
+                backgroundColorFilter.reset();
+                backgroundColorFilter.hue(-120, true);
+
+                var textures = [input.maskers.handdrawnanimal1, input.maskers.botanicorganic1, input.maskers.bbbbird1];
+                var tex = textures[Math.round(Math.random() * textures.length - 1)];
+                masker = SPF.fullscreenSprite(input.container, tex);
+                input.container.addChild(masker);
+
+                backgroundPattern.mask = masker;
+                
+                //Displacement
+                var displacementTexture = input.patterns.clouds
+                displacementTexture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+                displacementSprite = new PIXI.Sprite(displacementTexture); 
+                displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+                input.container.addChild(displacementSprite);
+                backgroundPattern.filters = [displacementFilter];
+
+                var scale = 100;
+                displacementFilter.scale.x = scale;
+                displacementFilter.scale.y = scale;
+                displacementFilter.resolution = 1; //Lower values are faster, higher better quality
+
+                var index = Math.round(Math.random() * 1);
+                spriteScale = index == 0 ? 0.45: 1;
+                var frontSpriteTexture = [input.graphics.crazyflower1, input.graphics.botanicorganic][index];
+                var spriteCount = 3;
+                for(var i = 0;i<spriteCount;i++)
+                {
+                    var sprite = new PIXI.Sprite(frontSpriteTexture);
+                    sprite.anchor.set(0.5);
+                    input.container.addChild(sprite);
+                    sprites.push(sprite);
+                    spritePositions.push(new Vector2(Math.random(), Math.random()));
+                }
+
+                lastBeatTime = new Date().getTime();
+            },
+
+            render:function(PIXI, input)
+            {
+                if(touching)
+                {
+                    var t = 0.95;
+                    displacementMultiplier = (displacementMultiplier * t) + (1 - t);
+                }
+                else
+                {
+                    displacementMultiplier *= 0.9;
+                }
+
+
+                var timeSinceBeat = new Date().getTime() - lastBeatTime;
+                if (timeSinceBeat > beatInterval)
+                {
+                    lastBeatTime = new Date().getTime();
+                    videoPatternSpriteAlpha = 1.0;
+                    spriteRotationSpeed = 15 * DEG2RAD;
+                }
+
+                for(var i = 0;i<sprites.length;i++)
+                {
+                    sprites[i].rotation += spriteRotationSpeed
+                }
+
+                spriteRotationSpeed *= 0.75;
+                
+                if(input.cast != null && input.cast.id != currentCast)
+                {
+                    currentCast = input.cast.id
+                    //Hues
+                    switch(input.cast.id)
+                    {
+                        case "singer":
+                            backgroundColorFilter.reset();
+                            patternColor = input.colors[2];
+                            //videoPatternSprite.tint = 0xfa8474;//0xed8010;//Part of mid
+                            var tintRGB = PIXI.utils.hex2rgb(0xfa8474);
+                            break;
+                        case "bass":
+                        case "drums":
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.hue(-170, true);
+                            patternColor = input.colors[1];
+                            //videoPatternSprite.tint = 0xfa8474;
+                            var tintRGB = PIXI.utils.hex2rgb(0xfa8474);
+                            break;
+                        case "all":
+                        case "none":
+                        default:
+                            backgroundColorFilter.reset();
+                            backgroundColorFilter.hue(-120, true);
+                            patternColor = input.colors[3];
+                            //videoPatternSprite.tint = 0x84fc8b;
+                            var tintRGB = PIXI.utils.hex2rgb(0x84fc8b);
+
+                            break;
+                    }
+                    invertTintFilter.uniforms.tint = new Float32Array([tintRGB[0], tintRGB[1], tintRGB[2], 1]);
+                    updatePattern(PIXI, input);
+                }
+
+                displacementFilter.scale.x =  displacementFilter.scale.y = 200 * displacementMultiplier;
+                displacementSprite.x += 1.5 * displacementMultiplier;
+                displacementSprite.y += 2.5 * displacementMultiplier;
+            },
+
+            mouseDownTouchStart: function(PIXI, input) 
+            {
+                touching = true;
+            },
+
+            mouseUpTouchEnd: function(PIXI, input) 
+            {
+                touching = false;
+            },
+
+            resize: function(PIXI, input) 
+            {
+                updatePattern(PIXI, input);
+                
+                for(var i = 0;i<sprites.length;i++)
+                {
+                    sprites[i].x = spritePositions[i].x * input.width;
+                    sprites[i].y = spritePositions[i].y * input.height;
+                    sprites[i].scale.x = sprites[i].scale.y = (input.width / 1000.0) * spriteScale;
+                }
+            }
+        });
+
+        SPF.set({
+
+            at:"mid",
+
+            load: function(PIXI, input) {
+
+                return [input.maskers.handdrawnanimal1];
+            },
+
+            init: function(PIXI, input) {
+
+                videoPatternSprite = new PIXI.extras.TilingSprite(input.maskers.handdrawnanimal1, 1, 1);
+                videoPatternSprite.anchor.set(0);
+                input.container.addChild(videoPatternSprite);
+                
+                var tintRGB = PIXI.utils.hex2rgb(0xfa8474);
+
+                uniforms = {
+                    "tint": {
+                        type: '4f', 
+                        value: new Float32Array([tintRGB[0], tintRGB[1], tintRGB[2], 1])
+                    },
+                    "tintMultiplier": {
+                        type: 'f',
+                        value: 1.0
+                    },
+                };
+                invertTintFilter = new PIXI.Filter(null,invertTintFrag,uniforms);
+                videoPatternSprite.filters = [invertTintFilter];
+                //videoPatternSprite.filterBlendMode = PIXI.BLEND_MODES.NORMAL;
+                //videoPatternSprite.blendMode = PIXI.BLEND_MODES.NORMAL;
+                //invertTintFilter.blendMode = PIXI.BLEND_MODES.NORMAL;
+                //videoPatternSprite.tint = 0xfa8474;
+                videoPatternSprite.filters[0].blendMode = PIXI.BLEND_MODES.NORMAL;
+                SPF.midgroundMask(true);
+
+            },
+
+            render: function(PIXI, input)
+            {
+                videoPatternSpriteAlpha *= 0.9;
+                invertTintFilter.uniforms.tintMultiplier = videoPatternSpriteAlpha;
+                //videoPatternSprite.alpha = videoPatternSpriteAlpha;//Set to filter instead?
+            },
+
+            resize: function(PIXI, input) {
+
+                var w =  input.width;
+                var h =  input.height;
+
+                videoPatternSprite.width = w;
+                videoPatternSprite.height = h;
+
+            }
+
+        });
+        
+        SPF.info({
+            debug: false,
+            title: "Chorus",
+            tip: "Click and press to distort background",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+        //Vector2 
+        function Vector2(x, y)
+        {
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Vector2.prototype.x = null;
+        Vector2.prototype.y = null;
+        Vector2.prototype.add = function (v) {
+            return new Vector2(this.x + v.x, this.y + v.y);
+        };
+        Vector2.prototype.clone = function () {
+            return new Vector2(this.x, this.y);
+        };
+        Vector2.prototype.distance = function (v) {
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Vector2.prototype.equals = function (toCompare) {
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Vector2.prototype.interpolate = function (v, f) {
+            return new Vector2((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Vector2.prototype.length = function () {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Vector2.prototype.sqrLength = function () {
+            return this.x * this.x + this.y * this.y;
+        };
+        Vector2.prototype.normalize = function (thickness = 1) {
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Vector2.prototype.offset = function (dx, dy) {
+            this.x += dx;
+            this.y += dy;
+        };
+        Vector2.prototype.subtract = function (v) {
+            return new Vector2(this.x - v.x, this.y - v.y);
+        };
+        Vector2.prototype.toString = function () {
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+
+        Vector2.interpolate = function (pt1, pt2, f) {
+            return new Vector2((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Vector2.distance = function (pt1, pt2) {
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
+
+        SpriteAnimator = function(sprite)
+        {
+            this.sprite = sprite || null;
+        };
+
+        SpriteAnimator.prototype.sprite = null;
+        SpriteAnimator.prototype.speed = 0;
+        SpriteAnimator.prototype.maxSpeed = 0;
+        SpriteAnimator.prototype.acceleration = 0;
+        SpriteAnimator.prototype.rotationSpeed = 0;
+        SpriteAnimator.prototype.direction = new Vector2(0,0);
+        SpriteAnimator.prototype.update = function(deltaTime)
+        {
+            this.speed = Math.min(this.speed + this.acceleration, this.maxSpeed);
+            this.sprite.x += this.direction.x * this.speed;
+            this.sprite.y += this.direction.y * this.speed;
+            this.sprite.rotation += this.rotationSpeed;
+        };
+    </script></body></html>

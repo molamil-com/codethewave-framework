@@ -1,4 +1,277 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = audioBufferToWav
+function audioBufferToWav (buffer, opt) {
+  opt = opt || {}
+
+  var numChannels = buffer.numberOfChannels
+  var sampleRate = buffer.sampleRate
+  var format = opt.float32 ? 3 : 1
+  var bitDepth = format === 3 ? 32 : 16
+
+  var result
+  if (numChannels === 2) {
+    result = interleave(buffer.getChannelData(0), buffer.getChannelData(1))
+  } else {
+    result = buffer.getChannelData(0)
+  }
+
+  return encodeWAV(result, format, sampleRate, numChannels, bitDepth)
+}
+
+function encodeWAV (samples, format, sampleRate, numChannels, bitDepth) {
+  var bytesPerSample = bitDepth / 8
+  var blockAlign = numChannels * bytesPerSample
+
+  var buffer = new ArrayBuffer(44 + samples.length * bytesPerSample)
+  var view = new DataView(buffer)
+
+  /* RIFF identifier */
+  writeString(view, 0, 'RIFF')
+  /* RIFF chunk length */
+  view.setUint32(4, 36 + samples.length * bytesPerSample, true)
+  /* RIFF type */
+  writeString(view, 8, 'WAVE')
+  /* format chunk identifier */
+  writeString(view, 12, 'fmt ')
+  /* format chunk length */
+  view.setUint32(16, 16, true)
+  /* sample format (raw) */
+  view.setUint16(20, format, true)
+  /* channel count */
+  view.setUint16(22, numChannels, true)
+  /* sample rate */
+  view.setUint32(24, sampleRate, true)
+  /* byte rate (sample rate * block align) */
+  view.setUint32(28, sampleRate * blockAlign, true)
+  /* block align (channel count * bytes per sample) */
+  view.setUint16(32, blockAlign, true)
+  /* bits per sample */
+  view.setUint16(34, bitDepth, true)
+  /* data chunk identifier */
+  writeString(view, 36, 'data')
+  /* data chunk length */
+  view.setUint32(40, samples.length * bytesPerSample, true)
+  if (format === 1) { // Raw PCM
+    floatTo16BitPCM(view, 44, samples)
+  } else {
+    writeFloat32(view, 44, samples)
+  }
+
+  return buffer
+}
+
+function interleave (inputL, inputR) {
+  var length = inputL.length + inputR.length
+  var result = new Float32Array(length)
+
+  var index = 0
+  var inputIndex = 0
+
+  while (index < length) {
+    result[index++] = inputL[inputIndex]
+    result[index++] = inputR[inputIndex]
+    inputIndex++
+  }
+  return result
+}
+
+function writeFloat32 (output, offset, input) {
+  for (var i = 0; i < input.length; i++, offset += 4) {
+    output.setFloat32(offset, input[i], true)
+  }
+}
+
+function floatTo16BitPCM (output, offset, input) {
+  for (var i = 0; i < input.length; i++, offset += 2) {
+    var s = Math.max(-1, Math.min(1, input[i]))
+    output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true)
+  }
+}
+
+function writeString (view, offset, string) {
+  for (var i = 0; i < string.length; i++) {
+    view.setUint8(offset + i, string.charCodeAt(i))
+  }
+}
+
+},{}],2:[function(require,module,exports){
+// sourced from:
+// http://www.leanbackplayer.com/test/h5mt.html
+// https://github.com/broofa/node-mime/blob/master/types.json
+var mimeTypes = require('./mime-types.json')
+
+var mimeLookup = {}
+Object.keys(mimeTypes).forEach(function (key) {
+  var extensions = mimeTypes[key]
+  extensions.forEach(function (ext) {
+    mimeLookup[ext] = key
+  })
+})
+
+module.exports = function lookup (ext) {
+  if (!ext) throw new TypeError('must specify extension string')
+  if (ext.indexOf('.') === 0) {
+    ext = ext.substring(1)
+  }
+  return mimeLookup[ext.toLowerCase()]
+}
+
+},{"./mime-types.json":3}],3:[function(require,module,exports){
+module.exports={
+  "audio/midi": ["mid", "midi", "kar", "rmi"],
+  "audio/mp4": ["mp4a", "m4a"],
+  "audio/mpeg": ["mpga", "mp2", "mp2a", "mp3", "m2a", "m3a"],
+  "audio/ogg": ["oga", "ogg", "spx"],
+  "audio/webm": ["weba"],
+  "audio/x-matroska": ["mka"],
+  "audio/x-mpegurl": ["m3u"],
+  "audio/wav": ["wav"],
+  "video/3gpp": ["3gp"],
+  "video/3gpp2": ["3g2"],
+  "video/mp4": ["mp4", "mp4v", "mpg4"],
+  "video/mpeg": ["mpeg", "mpg", "mpe", "m1v", "m2v"],
+  "video/ogg": ["ogv"],
+  "video/quicktime": ["qt", "mov"],
+  "video/webm": ["webm"],
+  "video/x-f4v": ["f4v"],
+  "video/x-fli": ["fli"],
+  "video/x-flv": ["flv"],
+  "video/x-m4v": ["m4v"],
+  "video/x-matroska": ["mkv", "mk3d", "mks"]
+}
+},{}],4:[function(require,module,exports){
+(function (process){
+var once = require('once')
+var bufferToWav = require('audiobuffer-to-wav')
+
+module.exports = detectMediaElementSource
+function detectMediaElementSource (cb, audioContext, timeoutDelay, ignoreCache) {
+  if (typeof cb !== 'function') {
+    throw new TypeError('must specify a callback function')
+  }
+
+  var AudioCtor = window.AudioContext || window.webkitAudioContext
+  if (!AudioCtor ||
+      typeof window.Blob === 'undefined' ||
+      typeof window.URL === 'undefined' ||
+      typeof window.URL.createObjectURL !== 'function') {
+    // will not support our method, assume browser is too old
+    return process.nextTick(function () {
+      cb(false)
+    })
+  }
+
+  var tempContext = false
+  if (!audioContext) {
+    tempContext = true
+    audioContext = new AudioCtor()
+  }
+
+  var defaultDelay = /Safari/.test(navigator.userAgent) ? 550 : 250
+  timeoutDelay = typeof timeoutDelay === 'number' ? timeoutDelay : defaultDelay
+
+  if (audioContext.state === 'suspended' &&
+      typeof audioContext.resume === 'function') {
+    // Safari 9 may start in a suspended state :(
+    audioContext.resume()
+    setTimeout(runDetection, 10)
+  } else {
+    runDetection()
+  }
+
+  function runDetection () {
+    var audio = new window.Audio()
+    var node = audioContext.createMediaElementSource(audio)
+    var analyser = audioContext.createAnalyser()
+    node.connect(analyser)
+
+    var interval, timeout
+    var ended = once(function (result) {
+      clearInterval(interval)
+      clearTimeout(timeout)
+      audio.pause()
+      // audio.src = ''
+      node.disconnect()
+      done(result)
+    })
+
+    audio.addEventListener('canplaythrough', once(function () {
+      audio.play()
+    }))
+
+    // when playback begins, we sum the frequency data
+    audio.addEventListener('play', once(function () {
+      var array = new Uint8Array(analyser.frequencyBinCount)
+      interval = setInterval(function () {
+        analyser.getByteFrequencyData(array)
+
+        // as soon as we hit non-zero, we stop
+        if (hasNonZero(array)) {
+          ended(true)
+        }
+      }, 1)
+    }))
+
+    var buffer = createNoise(1, 44100)
+    var bytes = bufferToWav(buffer)
+    resetTimeout()
+
+    try {
+      var blob = new window.Blob([ bytes ], { type: 'audio/wav' })
+      var url = window.URL.createObjectURL(blob)
+      audio.loop = true
+      audio.src = url
+      audio.load()
+    } catch (e) {
+      ended(false)
+    }
+
+    function resetTimeout () {
+      if (timeout) clearTimeout(timeout)
+      timeout = setTimeout(function () {
+        ended(false)
+      }, timeoutDelay)
+    }
+  }
+
+  function done (result) {
+    if (tempContext && typeof audioContext.close === 'function') {
+      audioContext.close()
+    }
+    cb(result)
+  }
+
+  function hasNonZero (array) {
+    for (var i = 0; i < array.length; i++) {
+      if (array[i] > 0) return true
+    }
+    return false
+  }
+
+  function createNoise (seconds, sampleRate) {
+    var totalSamples = Math.floor(sampleRate * seconds)
+    totalSamples += 4 - (totalSamples % 4) // byte-align
+
+    var samples = new Float32Array(totalSamples)
+    for (var i = 0; i < totalSamples; i++) {
+      samples[i] = 1 / 255
+    }
+
+    return {
+      duration: seconds,
+      length: totalSamples,
+      numberOfChannels: 1,
+      sampleRate: sampleRate,
+      getChannelData: function () {
+        return samples
+      }
+    }
+  }
+}
+
+}).call(this,require('_process'))
+
+},{"_process":20,"audiobuffer-to-wav":1,"once":17}],5:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -301,496 +574,55 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],2:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],3:[function(require,module,exports){
-(function (process){
-var once = require('once')
-var bufferToWav = require('audiobuffer-to-wav')
-
-module.exports = detectMediaElementSource
-function detectMediaElementSource (cb, audioContext, timeoutDelay, ignoreCache) {
-  if (typeof cb !== 'function') {
-    throw new TypeError('must specify a callback function')
-  }
-
-  var AudioCtor = window.AudioContext || window.webkitAudioContext
-  if (!AudioCtor ||
-      typeof window.Blob === 'undefined' ||
-      typeof window.URL === 'undefined' ||
-      typeof window.URL.createObjectURL !== 'function') {
-    // will not support our method, assume browser is too old
-    return process.nextTick(function () {
-      cb(false)
-    })
-  }
-
-  var tempContext = false
-  if (!audioContext) {
-    tempContext = true
-    audioContext = new AudioCtor()
-  }
-
-  var defaultDelay = /Safari/.test(navigator.userAgent) ? 550 : 250
-  timeoutDelay = typeof timeoutDelay === 'number' ? timeoutDelay : defaultDelay
-
-  if (audioContext.state === 'suspended' &&
-      typeof audioContext.resume === 'function') {
-    // Safari 9 may start in a suspended state :(
-    audioContext.resume()
-    setTimeout(runDetection, 10)
-  } else {
-    runDetection()
-  }
-
-  function runDetection () {
-    var audio = new window.Audio()
-    var node = audioContext.createMediaElementSource(audio)
-    var analyser = audioContext.createAnalyser()
-    node.connect(analyser)
-
-    var interval, timeout
-    var ended = once(function (result) {
-      clearInterval(interval)
-      clearTimeout(timeout)
-      audio.pause()
-      // audio.src = ''
-      node.disconnect()
-      done(result)
-    })
-
-    audio.addEventListener('canplaythrough', once(function () {
-      audio.play()
-    }))
-
-    // when playback begins, we sum the frequency data
-    audio.addEventListener('play', once(function () {
-      var array = new Uint8Array(analyser.frequencyBinCount)
-      interval = setInterval(function () {
-        analyser.getByteFrequencyData(array)
-
-        // as soon as we hit non-zero, we stop
-        if (hasNonZero(array)) {
-          ended(true)
-        }
-      }, 1)
-    }))
-
-    var buffer = createNoise(1, 44100)
-    var bytes = bufferToWav(buffer)
-    resetTimeout()
-
-    try {
-      var blob = new window.Blob([ bytes ], { type: 'audio/wav' })
-      var url = window.URL.createObjectURL(blob)
-      audio.loop = true
-      audio.src = url
-      audio.load()
-    } catch (e) {
-      ended(false)
-    }
-
-    function resetTimeout () {
-      if (timeout) clearTimeout(timeout)
-      timeout = setTimeout(function () {
-        ended(false)
-      }, timeoutDelay)
-    }
-  }
-
-  function done (result) {
-    if (tempContext && typeof audioContext.close === 'function') {
-      audioContext.close()
-    }
-    cb(result)
-  }
-
-  function hasNonZero (array) {
-    for (var i = 0; i < array.length; i++) {
-      if (array[i] > 0) return true
-    }
-    return false
-  }
-
-  function createNoise (seconds, sampleRate) {
-    var totalSamples = Math.floor(sampleRate * seconds)
-    totalSamples += 4 - (totalSamples % 4) // byte-align
-
-    var samples = new Float32Array(totalSamples)
-    for (var i = 0; i < totalSamples; i++) {
-      samples[i] = 1 / 255
-    }
-
-    return {
-      duration: seconds,
-      length: totalSamples,
-      numberOfChannels: 1,
-      sampleRate: sampleRate,
-      getChannelData: function () {
-        return samples
-      }
-    }
-  }
-}
-
-}).call(this,require('_process'))
-
-},{"_process":2,"audiobuffer-to-wav":4,"once":6}],4:[function(require,module,exports){
-module.exports = audioBufferToWav
-function audioBufferToWav (buffer, opt) {
-  opt = opt || {}
-
-  var numChannels = buffer.numberOfChannels
-  var sampleRate = buffer.sampleRate
-  var format = opt.float32 ? 3 : 1
-  var bitDepth = format === 3 ? 32 : 16
-
-  var result
-  if (numChannels === 2) {
-    result = interleave(buffer.getChannelData(0), buffer.getChannelData(1))
-  } else {
-    result = buffer.getChannelData(0)
-  }
-
-  return encodeWAV(result, format, sampleRate, numChannels, bitDepth)
-}
-
-function encodeWAV (samples, format, sampleRate, numChannels, bitDepth) {
-  var bytesPerSample = bitDepth / 8
-  var blockAlign = numChannels * bytesPerSample
-
-  var buffer = new ArrayBuffer(44 + samples.length * bytesPerSample)
-  var view = new DataView(buffer)
-
-  /* RIFF identifier */
-  writeString(view, 0, 'RIFF')
-  /* RIFF chunk length */
-  view.setUint32(4, 36 + samples.length * bytesPerSample, true)
-  /* RIFF type */
-  writeString(view, 8, 'WAVE')
-  /* format chunk identifier */
-  writeString(view, 12, 'fmt ')
-  /* format chunk length */
-  view.setUint32(16, 16, true)
-  /* sample format (raw) */
-  view.setUint16(20, format, true)
-  /* channel count */
-  view.setUint16(22, numChannels, true)
-  /* sample rate */
-  view.setUint32(24, sampleRate, true)
-  /* byte rate (sample rate * block align) */
-  view.setUint32(28, sampleRate * blockAlign, true)
-  /* block align (channel count * bytes per sample) */
-  view.setUint16(32, blockAlign, true)
-  /* bits per sample */
-  view.setUint16(34, bitDepth, true)
-  /* data chunk identifier */
-  writeString(view, 36, 'data')
-  /* data chunk length */
-  view.setUint32(40, samples.length * bytesPerSample, true)
-  if (format === 1) { // Raw PCM
-    floatTo16BitPCM(view, 44, samples)
-  } else {
-    writeFloat32(view, 44, samples)
-  }
-
-  return buffer
-}
-
-function interleave (inputL, inputR) {
-  var length = inputL.length + inputR.length
-  var result = new Float32Array(length)
-
-  var index = 0
-  var inputIndex = 0
-
-  while (index < length) {
-    result[index++] = inputL[inputIndex]
-    result[index++] = inputR[inputIndex]
-    inputIndex++
-  }
-  return result
-}
-
-function writeFloat32 (output, offset, input) {
-  for (var i = 0; i < input.length; i++, offset += 4) {
-    output.setFloat32(offset, input[i], true)
-  }
-}
-
-function floatTo16BitPCM (output, offset, input) {
-  for (var i = 0; i < input.length; i++, offset += 2) {
-    var s = Math.max(-1, Math.min(1, input[i]))
-    output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true)
-  }
-}
-
-function writeString (view, offset, string) {
-  for (var i = 0; i < string.length; i++) {
-    view.setUint8(offset + i, string.charCodeAt(i))
-  }
-}
-
-},{}],5:[function(require,module,exports){
-// Returns a wrapper function that returns a wrapped callback
-// The wrapper function should do some stuff, and return a
-// presumably different callback function.
-// This makes sure that own properties are retained, so that
-// decorations and such are not lost along the way.
-module.exports = wrappy
-function wrappy (fn, cb) {
-  if (fn && cb) return wrappy(fn)(cb)
-
-  if (typeof fn !== 'function')
-    throw new TypeError('need wrapper function')
-
-  Object.keys(fn).forEach(function (k) {
-    wrapper[k] = fn[k]
-  })
-
-  return wrapper
-
-  function wrapper() {
-    var args = new Array(arguments.length)
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i]
-    }
-    var ret = fn.apply(this, args)
-    var cb = args[args.length-1]
-    if (typeof ret === 'function' && ret !== cb) {
-      Object.keys(cb).forEach(function (k) {
-        ret[k] = cb[k]
-      })
-    }
-    return ret
-  }
-}
-
 },{}],6:[function(require,module,exports){
-var wrappy = require('wrappy')
-module.exports = wrappy(once)
-module.exports.strict = wrappy(onceStrict)
+var isFunction = require('is-function')
 
-once.proto = once(function () {
-  Object.defineProperty(Function.prototype, 'once', {
-    value: function () {
-      return once(this)
-    },
-    configurable: true
-  })
+module.exports = forEach
 
-  Object.defineProperty(Function.prototype, 'onceStrict', {
-    value: function () {
-      return onceStrict(this)
-    },
-    configurable: true
-  })
-})
+var toString = Object.prototype.toString
+var hasOwnProperty = Object.prototype.hasOwnProperty
 
-function once (fn) {
-  var f = function () {
-    if (f.called) return f.value
-    f.called = true
-    return f.value = fn.apply(this, arguments)
-  }
-  f.called = false
-  return f
+function forEach(list, iterator, context) {
+    if (!isFunction(iterator)) {
+        throw new TypeError('iterator must be a function')
+    }
+
+    if (arguments.length < 3) {
+        context = this
+    }
+    
+    if (toString.call(list) === '[object Array]')
+        forEachArray(list, iterator, context)
+    else if (typeof list === 'string')
+        forEachString(list, iterator, context)
+    else
+        forEachObject(list, iterator, context)
 }
 
-function onceStrict (fn) {
-  var f = function () {
-    if (f.called)
-      throw new Error(f.onceError)
-    f.called = true
-    return f.value = fn.apply(this, arguments)
-  }
-  var name = fn.name || 'Function wrapped with `once`'
-  f.onceError = name + " shouldn't be called more than once"
-  f.called = false
-  return f
+function forEachArray(array, iterator, context) {
+    for (var i = 0, len = array.length; i < len; i++) {
+        if (hasOwnProperty.call(array, i)) {
+            iterator.call(context, array[i], i, array)
+        }
+    }
 }
 
-},{"wrappy":5}],7:[function(require,module,exports){
+function forEachString(string, iterator, context) {
+    for (var i = 0, len = string.length; i < len; i++) {
+        // no such thing as a sparse string.
+        iterator.call(context, string.charAt(i), i, string)
+    }
+}
+
+function forEachObject(object, iterator, context) {
+    for (var k in object) {
+        if (hasOwnProperty.call(object, k)) {
+            iterator.call(context, object[k], k, object)
+        }
+    }
+}
+
+},{"is-function":14}],7:[function(require,module,exports){
 var EventEmitter = require('events').EventEmitter
   , inherits = require('inherits')
 
@@ -831,7 +663,7 @@ fps.prototype.tick = function() {
 }
 
 
-},{"events":1,"inherits":8}],8:[function(require,module,exports){
+},{"events":5,"inherits":8}],8:[function(require,module,exports){
 module.exports = inherits
 
 function inherits (c, p, proto) {
@@ -863,6 +695,63 @@ function inherits (c, p, proto) {
 //new Child
 
 },{}],9:[function(require,module,exports){
+(function (global){
+if (typeof window !== "undefined") {
+    module.exports = window;
+} else if (typeof global !== "undefined") {
+    module.exports = global;
+} else if (typeof self !== "undefined"){
+    module.exports = self;
+} else {
+    module.exports = {};
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],10:[function(require,module,exports){
+/*! npm.im/intervalometer */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+function intervalometer(cb, request, cancel, requestParameter) {
+	var requestId;
+	var previousLoopTime;
+	function loop(now) {
+		// must be requested before cb() because that might call .stop()
+		requestId = request(loop, requestParameter);
+
+		// called with "ms since last call". 0 on start()
+		cb(now - (previousLoopTime || now));
+
+		previousLoopTime = now;
+	}
+	return {
+		start: function start() {
+			if (!requestId) { // prevent double starts
+				loop(0);
+			}
+		},
+		stop: function stop() {
+			cancel(requestId);
+			requestId = null;
+			previousLoopTime = 0;
+		}
+	};
+}
+
+function frameIntervalometer(cb) {
+	return intervalometer(cb, requestAnimationFrame, cancelAnimationFrame);
+}
+
+function timerIntervalometer(cb, delay) {
+	return intervalometer(cb, setTimeout, clearTimeout, delay);
+}
+
+exports.intervalometer = intervalometer;
+exports.frameIntervalometer = frameIntervalometer;
+exports.timerIntervalometer = timerIntervalometer;
+},{}],11:[function(require,module,exports){
 module.exports = createAudioContext
 function createAudioContext (desiredSampleRate) {
   var AudioCtor = window.AudioContext || window.webkitAudioContext
@@ -891,34 +780,14 @@ function createAudioContext (desiredSampleRate) {
   return context
 }
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*! npm.im/iphone-inline-video */
 'use strict';
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var Symbol = _interopDefault(require('poor-mans-symbol'));
-
-function Intervalometer(cb) {
-	var rafId;
-	var previousLoopTime;
-	function loop(now) {
-		// must be requested before cb() because that might call .stop()
-		rafId = requestAnimationFrame(loop);
-		cb(now - (previousLoopTime || now)); // ms since last call. 0 on start()
-		previousLoopTime = now;
-	}
-	this.start = function () {
-		if (!rafId) { // prevent double starts
-			loop(0);
-		}
-	};
-	this.stop = function () {
-		cancelAnimationFrame(rafId);
-		rafId = null;
-		previousLoopTime = 0;
-	};
-}
+var intervalometer = require('intervalometer');
 
 function preventEvent(element, eventName, toggleProperty, preventWithProperty) {
 	function handler(e) {
@@ -962,8 +831,7 @@ function dispatchEventAsync(element, type) {
 }
 
 // iOS 10 adds support for native inline playback + silent autoplay
-// Also adds unprefixed css-grid. This check essentially excludes
-var isWhitelisted = /iPhone|iPod/i.test(navigator.userAgent) && document.head.style.grid === undefined;
+var isWhitelisted = /iPhone|iPod/i.test(navigator.userAgent) && !matchMedia('(-webkit-video-playable-inline)').matches;
 
 var ಠ = Symbol();
 var ಠevent = Symbol();
@@ -1017,7 +885,7 @@ function update(timeDiff) {
 	// console.log('update', player.video.readyState, player.video.networkState, player.driver.readyState, player.driver.networkState, player.driver.paused);
 	if (player.video.readyState >= player.video.HAVE_FUTURE_DATA) {
 		if (!player.hasAudio) {
-			player.driver.currentTime = player.video.currentTime + (timeDiff * player.video.playbackRate) / 1000;
+			player.driver.currentTime = player.video.currentTime + ((timeDiff * player.video.playbackRate) / 1000);
 			if (player.video.loop && isPlayerEnded(player)) {
 				player.driver.currentTime = 0;
 			}
@@ -1123,7 +991,7 @@ function addPlayer(video, hasAudio) {
 	player.paused = true; // track whether 'pause' events have been fired
 	player.hasAudio = hasAudio;
 	player.video = video;
-	player.updater = new Intervalometer(update.bind(player));
+	player.updater = intervalometer.frameIntervalometer(update.bind(player));
 
 	if (hasAudio) {
 		player.driver = getAudioFromVideo(video);
@@ -1233,7 +1101,7 @@ function enableInlineVideo(video, hasAudio, onlyWhitelisted) {
 	if (!hasAudio && video.autoplay) {
 		video.play();
 	}
-	if (navigator.platform === 'MacIntel' || navigator.platform === 'Windows') {
+	if (!/iPhone|iPod|iPad/.test(navigator.platform)) {
 		console.warn('iphone-inline-video is not guaranteed to work in emulated environments');
 	}
 }
@@ -1241,15 +1109,41 @@ function enableInlineVideo(video, hasAudio, onlyWhitelisted) {
 enableInlineVideo.isWhitelisted = isWhitelisted;
 
 module.exports = enableInlineVideo;
-},{"poor-mans-symbol":11}],11:[function(require,module,exports){
-'use strict';
+},{"intervalometer":10,"poor-mans-symbol":19}],13:[function(require,module,exports){
+/*global window*/
 
-var index = typeof Symbol === 'undefined' ? function (description) {
-	return '@' + (description || '@') + Math.random();
-} : Symbol;
+/**
+ * Check if object is dom node.
+ *
+ * @param {Object} val
+ * @return {Boolean}
+ * @api public
+ */
 
-module.exports = index;
-},{}],12:[function(require,module,exports){
+module.exports = function isNode(val){
+  if (!val || typeof val !== 'object') return false;
+  if (window && 'object' == typeof window.Node) return val instanceof window.Node;
+  return 'number' == typeof val.nodeType && 'string' == typeof val.nodeName;
+}
+
+},{}],14:[function(require,module,exports){
+module.exports = isFunction
+
+var toString = Object.prototype.toString
+
+function isFunction (fn) {
+  var string = toString.call(fn)
+  return string === '[object Function]' ||
+    (typeof fn === 'function' && string !== '[object RegExp]') ||
+    (typeof window !== 'undefined' &&
+     // IE8 and below
+     (fn === window.setTimeout ||
+      fn === window.alert ||
+      fn === window.confirm ||
+      fn === window.prompt))
+};
+
+},{}],15:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -11065,7 +10959,370 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],13:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+'use strict';
+/* eslint-disable no-unused-vars */
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (e) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (Object.getOwnPropertySymbols) {
+			symbols = Object.getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+},{}],17:[function(require,module,exports){
+var wrappy = require('wrappy')
+module.exports = wrappy(once)
+module.exports.strict = wrappy(onceStrict)
+
+once.proto = once(function () {
+  Object.defineProperty(Function.prototype, 'once', {
+    value: function () {
+      return once(this)
+    },
+    configurable: true
+  })
+
+  Object.defineProperty(Function.prototype, 'onceStrict', {
+    value: function () {
+      return onceStrict(this)
+    },
+    configurable: true
+  })
+})
+
+function once (fn) {
+  var f = function () {
+    if (f.called) return f.value
+    f.called = true
+    return f.value = fn.apply(this, arguments)
+  }
+  f.called = false
+  return f
+}
+
+function onceStrict (fn) {
+  var f = function () {
+    if (f.called)
+      throw new Error(f.onceError)
+    f.called = true
+    return f.value = fn.apply(this, arguments)
+  }
+  var name = fn.name || 'Function wrapped with `once`'
+  f.onceError = name + " shouldn't be called more than once"
+  f.called = false
+  return f
+}
+
+},{"wrappy":36}],18:[function(require,module,exports){
+var trim = require('trim')
+  , forEach = require('for-each')
+  , isArray = function(arg) {
+      return Object.prototype.toString.call(arg) === '[object Array]';
+    }
+
+module.exports = function (headers) {
+  if (!headers)
+    return {}
+
+  var result = {}
+
+  forEach(
+      trim(headers).split('\n')
+    , function (row) {
+        var index = row.indexOf(':')
+          , key = trim(row.slice(0, index)).toLowerCase()
+          , value = trim(row.slice(index + 1))
+
+        if (typeof(result[key]) === 'undefined') {
+          result[key] = value
+        } else if (isArray(result[key])) {
+          result[key].push(value)
+        } else {
+          result[key] = [ result[key], value ]
+        }
+      }
+  )
+
+  return result
+}
+},{"for-each":6,"trim":24}],19:[function(require,module,exports){
+'use strict';
+
+var index = typeof Symbol === 'undefined' ? function (description) {
+	return '@' + (description || '@') + Math.random();
+} : Symbol;
+
+module.exports = index;
+},{}],20:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],21:[function(require,module,exports){
+(function (global){
+module.exports =
+  global.performance &&
+  global.performance.now ? function now() {
+    return performance.now()
+  } : Date.now || function now() {
+    return +new Date
+  }
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],22:[function(require,module,exports){
 'use strict'
 
 var window = require('global/window')
@@ -11094,33 +11351,80 @@ function detect () {
   }
 }
 
-},{"global/window":14,"view-size":15}],14:[function(require,module,exports){
-(function (global){
-if (typeof window !== "undefined") {
-    module.exports = window;
-} else if (typeof global !== "undefined") {
-    module.exports = global;
-} else if (typeof self !== "undefined"){
-    module.exports = self;
-} else {
-    module.exports = {};
-}
+},{"global/window":9,"view-size":26}],23:[function(require,module,exports){
+var isDom = require('is-dom')
+var lookup = require('browser-media-mime-type')
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+module.exports.video = simpleMediaElement.bind(null, 'video')
+module.exports.audio = simpleMediaElement.bind(null, 'audio')
 
-},{}],15:[function(require,module,exports){
-'use strict'
+function simpleMediaElement (elementName, sources, opt) {
+  opt = opt || {}
 
-var window = require('global/window')
-
-module.exports = function viewportSize () {
-  return {
-    x: window.innerWidth,
-    y: window.innerHeight
+  if (!Array.isArray(sources)) {
+    sources = [ sources ]
   }
+
+  var media = opt.element || document.createElement(elementName)
+
+  if (opt.loop) media.setAttribute('loop', 'loop')
+  if (opt.muted) media.setAttribute('muted', 'muted')
+  if (opt.autoplay) media.setAttribute('autoplay', 'autoplay')
+  if (opt.controls) media.setAttribute('controls', 'controls')
+  if (opt.crossOrigin) media.setAttribute('crossorigin', opt.crossOrigin)
+  if (opt.preload) media.setAttribute('preload', opt.preload)
+  if (opt.poster) media.setAttribute('poster', opt.poster)
+  if (typeof opt.volume !== 'undefined') media.setAttribute('volume', opt.volume)
+
+  sources = sources.filter(Boolean)
+  sources.forEach(function (source) {
+    media.appendChild(createSourceElement(source))
+  })
+
+  return media
 }
 
-},{"global/window":14}],16:[function(require,module,exports){
+function createSourceElement (data) {
+  if (isDom(data)) return data
+  if (typeof data === 'string') {
+    data = { src: data }
+    if (data.src) {
+      var ext = extension(data.src)
+      if (ext) data.type = lookup(ext)
+    }
+  }
+
+  var source = document.createElement('source')
+  if (data.src) source.setAttribute('src', data.src)
+  if (data.type) source.setAttribute('type', data.type)
+  return source
+}
+
+function extension (data) {
+  var extIdx = data.lastIndexOf('.')
+  if (extIdx <= 0 || extIdx === data.length - 1) {
+    return null
+  }
+  return data.substring(extIdx + 1)
+}
+
+},{"browser-media-mime-type":2,"is-dom":13}],24:[function(require,module,exports){
+
+exports = module.exports = trim;
+
+function trim(str){
+  return str.replace(/^\s*|\s*$/g, '');
+}
+
+exports.left = function(str){
+  return str.replace(/^\s*/, '');
+};
+
+exports.right = function(str){
+  return str.replace(/\s*$/, '');
+};
+
+},{}],25:[function(require,module,exports){
 /*!
  * universal-ga v1.0.1
  * https://github.com/daxko/universal-ga 
@@ -11318,7 +11622,19 @@ module.exports = function viewportSize () {
   }
 
 })(this);
-},{}],17:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
+'use strict'
+
+var window = require('global/window')
+
+module.exports = function viewportSize () {
+  return {
+    x: window.innerWidth,
+    y: window.innerHeight
+  }
+}
+
+},{"global/window":9}],27:[function(require,module,exports){
 var AudioContext = window.AudioContext || window.webkitAudioContext
 
 module.exports = WebAudioAnalyser
@@ -11398,7 +11714,7 @@ WebAudioAnalyser.prototype.frequencies = function(output, channel) {
   return output
 }
 
-},{}],18:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 var buffer = require('./lib/buffer-source')
 var media = require('./lib/media-source')
 
@@ -11410,14 +11726,14 @@ function webAudioPlayer (src, opt) {
   else return media(src, opt)
 }
 
-},{"./lib/buffer-source":20,"./lib/media-source":23}],19:[function(require,module,exports){
+},{"./lib/buffer-source":30,"./lib/media-source":33}],29:[function(require,module,exports){
 module.exports = createAudioContext
 function createAudioContext () {
   var AudioCtor = window.AudioContext || window.webkitAudioContext
   return new AudioCtor()
 }
 
-},{}],20:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function (process){
 var canPlaySrc = require('./can-play-src')
 var createAudioContext = require('./audio-context')
@@ -11447,6 +11763,7 @@ function createBufferSource (src, opt) {
     playing = true
 
     if (opt.autoResume !== false) resume(emitter.context)
+    disposeBuffer()
     bufferNode = audioContext.createBufferSource()
     bufferNode.connect(emitter.node)
     bufferNode.onended = ended
@@ -11485,6 +11802,7 @@ function createBufferSource (src, opt) {
   }
 
   emitter.dispose = function () {
+    disposeBuffer()
     buffer = null
   }
 
@@ -11574,11 +11892,15 @@ function createBufferSource (src, opt) {
     playing = false
     audioCurrentTime = 0
   }
+
+  function disposeBuffer () {
+    if (bufferNode) bufferNode.disconnect()
+  }
 }
 
 }).call(this,require('_process'))
 
-},{"./audio-context":19,"./can-play-src":21,"./resume-context":24,"./xhr-audio":25,"_process":2,"events":1,"right-now":29}],21:[function(require,module,exports){
+},{"./audio-context":29,"./can-play-src":31,"./resume-context":34,"./xhr-audio":35,"_process":20,"events":5,"right-now":21}],31:[function(require,module,exports){
 var lookup = require('browser-media-mime-type')
 var audio
 
@@ -11628,7 +11950,7 @@ function extension (data) {
   return data.substring(extIdx + 1)
 }
 
-},{"browser-media-mime-type":26}],22:[function(require,module,exports){
+},{"browser-media-mime-type":2}],32:[function(require,module,exports){
 module.exports = addOnce
 function addOnce (element, event, fn) {
   function tmp (ev) {
@@ -11637,7 +11959,7 @@ function addOnce (element, event, fn) {
   }
   element.addEventListener(event, tmp, false)
 }
-},{}],23:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (process){
 var EventEmitter = require('events').EventEmitter
 var createAudio = require('simple-media-element').audio
@@ -11793,7 +12115,7 @@ function createMediaSource (src, opt) {
 
 }).call(this,require('_process'))
 
-},{"./audio-context":19,"./can-play-src":21,"./event-add-once":22,"./resume-context":24,"_process":2,"events":1,"object-assign":28,"simple-media-element":30}],24:[function(require,module,exports){
+},{"./audio-context":29,"./can-play-src":31,"./event-add-once":32,"./resume-context":34,"_process":20,"events":5,"object-assign":16,"simple-media-element":23}],34:[function(require,module,exports){
 module.exports = function (audioContext) {
   if (audioContext.state === 'suspended' &&
       typeof audioContext.resume === 'function') {
@@ -11801,7 +12123,7 @@ module.exports = function (audioContext) {
   }
 }
 
-},{}],25:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 var xhr = require('xhr')
 var xhrProgress = require('xhr-progress')
 
@@ -11835,223 +12157,42 @@ function xhrAudio (audioContext, src, cb, progress, decoding) {
   }
 }
 
-},{"xhr":33,"xhr-progress":32}],26:[function(require,module,exports){
-// sourced from:
-// http://www.leanbackplayer.com/test/h5mt.html
-// https://github.com/broofa/node-mime/blob/master/types.json
-var mimeTypes = require('./mime-types.json')
+},{"xhr":38,"xhr-progress":37}],36:[function(require,module,exports){
+// Returns a wrapper function that returns a wrapped callback
+// The wrapper function should do some stuff, and return a
+// presumably different callback function.
+// This makes sure that own properties are retained, so that
+// decorations and such are not lost along the way.
+module.exports = wrappy
+function wrappy (fn, cb) {
+  if (fn && cb) return wrappy(fn)(cb)
 
-var mimeLookup = {}
-Object.keys(mimeTypes).forEach(function (key) {
-  var extensions = mimeTypes[key]
-  extensions.forEach(function (ext) {
-    mimeLookup[ext] = key
-  })
-})
+  if (typeof fn !== 'function')
+    throw new TypeError('need wrapper function')
 
-module.exports = function lookup (ext) {
-  if (!ext) throw new TypeError('must specify extension string')
-  if (ext.indexOf('.') === 0) {
-    ext = ext.substring(1)
-  }
-  return mimeLookup[ext.toLowerCase()]
-}
-
-},{"./mime-types.json":27}],27:[function(require,module,exports){
-module.exports={
-  "audio/midi": ["mid", "midi", "kar", "rmi"],
-  "audio/mp4": ["mp4a", "m4a"],
-  "audio/mpeg": ["mpga", "mp2", "mp2a", "mp3", "m2a", "m3a"],
-  "audio/ogg": ["oga", "ogg", "spx"],
-  "audio/webm": ["weba"],
-  "audio/x-matroska": ["mka"],
-  "audio/x-mpegurl": ["m3u"],
-  "audio/wav": ["wav"],
-  "video/3gpp": ["3gp"],
-  "video/3gpp2": ["3g2"],
-  "video/mp4": ["mp4", "mp4v", "mpg4"],
-  "video/mpeg": ["mpeg", "mpg", "mpe", "m1v", "m2v"],
-  "video/ogg": ["ogv"],
-  "video/quicktime": ["qt", "mov"],
-  "video/webm": ["webm"],
-  "video/x-f4v": ["f4v"],
-  "video/x-fli": ["fli"],
-  "video/x-flv": ["flv"],
-  "video/x-m4v": ["m4v"],
-  "video/x-matroska": ["mkv", "mk3d", "mks"]
-}
-},{}],28:[function(require,module,exports){
-'use strict';
-/* eslint-disable no-unused-vars */
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (e) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (Object.getOwnPropertySymbols) {
-			symbols = Object.getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
-},{}],29:[function(require,module,exports){
-(function (global){
-module.exports =
-  global.performance &&
-  global.performance.now ? function now() {
-    return performance.now()
-  } : Date.now || function now() {
-    return +new Date
-  }
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{}],30:[function(require,module,exports){
-var isDom = require('is-dom')
-var lookup = require('browser-media-mime-type')
-
-module.exports.video = simpleMediaElement.bind(null, 'video')
-module.exports.audio = simpleMediaElement.bind(null, 'audio')
-
-function simpleMediaElement (elementName, sources, opt) {
-  opt = opt || {}
-
-  if (!Array.isArray(sources)) {
-    sources = [ sources ]
-  }
-
-  var media = opt.element || document.createElement(elementName)
-
-  if (opt.loop) media.setAttribute('loop', 'loop')
-  if (opt.muted) media.setAttribute('muted', 'muted')
-  if (opt.autoplay) media.setAttribute('autoplay', 'autoplay')
-  if (opt.controls) media.setAttribute('controls', 'controls')
-  if (opt.crossOrigin) media.setAttribute('crossorigin', opt.crossOrigin)
-  if (opt.preload) media.setAttribute('preload', opt.preload)
-  if (opt.poster) media.setAttribute('poster', opt.poster)
-  if (typeof opt.volume !== 'undefined') media.setAttribute('volume', opt.volume)
-
-  sources = sources.filter(Boolean)
-  sources.forEach(function (source) {
-    media.appendChild(createSourceElement(source))
+  Object.keys(fn).forEach(function (k) {
+    wrapper[k] = fn[k]
   })
 
-  return media
-}
+  return wrapper
 
-function createSourceElement (data) {
-  if (isDom(data)) return data
-  if (typeof data === 'string') {
-    data = { src: data }
-    if (data.src) {
-      var ext = extension(data.src)
-      if (ext) data.type = lookup(ext)
+  function wrapper() {
+    var args = new Array(arguments.length)
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i]
     }
+    var ret = fn.apply(this, args)
+    var cb = args[args.length-1]
+    if (typeof ret === 'function' && ret !== cb) {
+      Object.keys(cb).forEach(function (k) {
+        ret[k] = cb[k]
+      })
+    }
+    return ret
   }
-
-  var source = document.createElement('source')
-  if (data.src) source.setAttribute('src', data.src)
-  if (data.type) source.setAttribute('type', data.type)
-  return source
 }
 
-function extension (data) {
-  var extIdx = data.lastIndexOf('.')
-  if (extIdx <= 0 || extIdx === data.length - 1) {
-    return null
-  }
-  return data.substring(extIdx + 1)
-}
-
-},{"browser-media-mime-type":26,"is-dom":31}],31:[function(require,module,exports){
-/*global window*/
-
-/**
- * Check if object is dom node.
- *
- * @param {Object} val
- * @return {Boolean}
- * @api public
- */
-
-module.exports = function isNode(val){
-  if (!val || typeof val !== 'object') return false;
-  if (window && 'object' == typeof window.Node) return val instanceof window.Node;
-  return 'number' == typeof val.nodeType && 'string' == typeof val.nodeName;
-}
-
-},{}],32:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 var EventEmitter = require('events').EventEmitter
 
 module.exports = progress
@@ -12102,7 +12243,7 @@ function progress(xhr) {
   return emitter
 }
 
-},{"events":1}],33:[function(require,module,exports){
+},{"events":5}],38:[function(require,module,exports){
 "use strict";
 var window = require("global/window")
 var isFunction = require("is-function")
@@ -12339,134 +12480,7 @@ function getXml(xhr) {
 
 function noop() {}
 
-},{"global/window":34,"is-function":35,"parse-headers":38,"xtend":39}],34:[function(require,module,exports){
-(function (global){
-if (typeof window !== "undefined") {
-    module.exports = window;
-} else if (typeof global !== "undefined") {
-    module.exports = global;
-} else if (typeof self !== "undefined"){
-    module.exports = self;
-} else {
-    module.exports = {};
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{}],35:[function(require,module,exports){
-module.exports = isFunction
-
-var toString = Object.prototype.toString
-
-function isFunction (fn) {
-  var string = toString.call(fn)
-  return string === '[object Function]' ||
-    (typeof fn === 'function' && string !== '[object RegExp]') ||
-    (typeof window !== 'undefined' &&
-     // IE8 and below
-     (fn === window.setTimeout ||
-      fn === window.alert ||
-      fn === window.confirm ||
-      fn === window.prompt))
-};
-
-},{}],36:[function(require,module,exports){
-var isFunction = require('is-function')
-
-module.exports = forEach
-
-var toString = Object.prototype.toString
-var hasOwnProperty = Object.prototype.hasOwnProperty
-
-function forEach(list, iterator, context) {
-    if (!isFunction(iterator)) {
-        throw new TypeError('iterator must be a function')
-    }
-
-    if (arguments.length < 3) {
-        context = this
-    }
-    
-    if (toString.call(list) === '[object Array]')
-        forEachArray(list, iterator, context)
-    else if (typeof list === 'string')
-        forEachString(list, iterator, context)
-    else
-        forEachObject(list, iterator, context)
-}
-
-function forEachArray(array, iterator, context) {
-    for (var i = 0, len = array.length; i < len; i++) {
-        if (hasOwnProperty.call(array, i)) {
-            iterator.call(context, array[i], i, array)
-        }
-    }
-}
-
-function forEachString(string, iterator, context) {
-    for (var i = 0, len = string.length; i < len; i++) {
-        // no such thing as a sparse string.
-        iterator.call(context, string.charAt(i), i, string)
-    }
-}
-
-function forEachObject(object, iterator, context) {
-    for (var k in object) {
-        if (hasOwnProperty.call(object, k)) {
-            iterator.call(context, object[k], k, object)
-        }
-    }
-}
-
-},{"is-function":35}],37:[function(require,module,exports){
-
-exports = module.exports = trim;
-
-function trim(str){
-  return str.replace(/^\s*|\s*$/g, '');
-}
-
-exports.left = function(str){
-  return str.replace(/^\s*/, '');
-};
-
-exports.right = function(str){
-  return str.replace(/\s*$/, '');
-};
-
-},{}],38:[function(require,module,exports){
-var trim = require('trim')
-  , forEach = require('for-each')
-  , isArray = function(arg) {
-      return Object.prototype.toString.call(arg) === '[object Array]';
-    }
-
-module.exports = function (headers) {
-  if (!headers)
-    return {}
-
-  var result = {}
-
-  forEach(
-      trim(headers).split('\n')
-    , function (row) {
-        var index = row.indexOf(':')
-          , key = trim(row.slice(0, index)).toLowerCase()
-          , value = trim(row.slice(index + 1))
-
-        if (typeof(result[key]) === 'undefined') {
-          result[key] = value
-        } else if (isArray(result[key])) {
-          result[key].push(value)
-        } else {
-          result[key] = [ result[key], value ]
-        }
-      }
-  )
-
-  return result
-}
-},{"for-each":36,"trim":37}],39:[function(require,module,exports){
+},{"global/window":9,"is-function":14,"parse-headers":18,"xtend":39}],39:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -12606,7 +12620,27 @@ var init = function(PIXI, input){
 
         handdrawnanimal2: PIXI.Texture.fromImage(serverPath+folder+'SP_element_handdrawnanimal_002.png'),
 
-        handdrawnanimal3: PIXI.Texture.fromImage(serverPath+folder+'SP_element_handdrawnanimal_003.png')
+        handdrawnanimal3: PIXI.Texture.fromImage(serverPath+folder+'SP_element_handdrawnanimal_003.png'),
+
+        /* New assets for featured visuals */
+
+        crazyflower1: PIXI.Texture.fromImage(serverPath+folder+'SP_element_crazyflower_001.png'),
+
+        crazyflower2: PIXI.Texture.fromImage(serverPath+folder+'SP_element_crazyflower_002.png'),
+
+        crazyflower3: PIXI.Texture.fromImage(serverPath+folder+'SP_element_crazyflower_003.png'),
+
+        leaf1: PIXI.Texture.fromImage(serverPath+folder+'SP_element_leaf_001.png'),
+
+        leaf2: PIXI.Texture.fromImage(serverPath+folder+'SP_element_leaf_palm_001.png'),
+
+        flower1: PIXI.Texture.fromImage(serverPath+folder+'SP_element_pinkflower_circular.png'),
+
+        stone: PIXI.Texture.fromImage(serverPath+folder+'SP_element_stone_001.png'),
+
+        flower1: PIXI.Texture.fromImage(serverPath+folder+'SP_element_whiteflower.png'),
+
+        wingwave: PIXI.Texture.fromImage(serverPath+folder+'SP_element_wing_wave2.png')
 
     };
 
@@ -12657,7 +12691,11 @@ var init = function(PIXI, input){
 
         handdrawnanimal3: PIXI.Texture.fromImage(serverPath+folder+'SP_mask_handdrawnanimal_003.png'),
 
-        handdrawnanimal4: PIXI.Texture.fromImage(serverPath+folder+'SP_mask_handdrawnanimal_004.png')
+        handdrawnanimal4: PIXI.Texture.fromImage(serverPath+folder+'SP_mask_handdrawnanimal_004.png'),
+
+        /* New assets for featured visuals */
+        
+        animaltech: PIXI.Texture.fromImage(serverPath+folder+'sp_mask_animaltech_001.png')
 
     };
 
@@ -12706,8 +12744,19 @@ var init = function(PIXI, input){
 
         botanicorganic3: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_botanicorganic_LO_003.jpg'),
 
-        handdrawnanimal: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_handdrawnanimal_LO.jpg')
+        handdrawnanimal: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_handdrawnanimal_LO.jpg'),
 
+        /* New assets for featured visuals */
+
+        botanicorganic4: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_botanicorganic_background.jpg'),
+
+        botanicorganic5: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_botanicorganic_crazyness.png'),
+
+        handdrawnanimal2: PIXI.Texture.fromImage(serverPath+folder+'SP_pattern_handdrawnanimal.jpg'),
+
+        /* KEEP UNDOCUMENTED FOR NOW */
+
+        clouds: PIXI.Texture.fromImage(serverPath+folder+'clouds.jpg')
     };
 
     return textures;
@@ -13079,7 +13128,7 @@ function Ui() {
 };
 
 module.exports = Ui;
-},{"./sections.js":45,"./serverPath.js":46,"jquery":12,"screen-orientation":13}],48:[function(require,module,exports){
+},{"./sections.js":45,"./serverPath.js":46,"jquery":15,"screen-orientation":22}],48:[function(require,module,exports){
 var $ = require('jquery');
 
 var makeVideoPlayableInline = require('iphone-inline-video');
@@ -13341,7 +13390,7 @@ function Video() {
 
 
 module.exports = Video;
-},{"./serverPath.js":46,"iphone-inline-video":10,"jquery":12}],49:[function(require,module,exports){
+},{"./serverPath.js":46,"iphone-inline-video":12,"jquery":15}],49:[function(require,module,exports){
 
 var $ = require('jquery');
 
@@ -14564,7 +14613,7 @@ var fps = require('fps');
 
 })(window);
 
-},{"./js/DebugConsole.js":40,"./js/colors.js":41,"./js/graphics.js":42,"./js/maskers.js":43,"./js/patterns.js":44,"./js/sections.js":45,"./js/serverPath.js":46,"./js/ui.js":47,"./js/video.js":48,"detect-media-element-source":3,"fps":7,"ios-safe-audio-context":9,"jquery":12,"universal-ga":16,"web-audio-analyser":17,"web-audio-player":18}]},{},[49])
+},{"./js/DebugConsole.js":40,"./js/colors.js":41,"./js/graphics.js":42,"./js/maskers.js":43,"./js/patterns.js":44,"./js/sections.js":45,"./js/serverPath.js":46,"./js/ui.js":47,"./js/video.js":48,"detect-media-element-source":4,"fps":7,"ios-safe-audio-context":11,"jquery":15,"universal-ga":25,"web-audio-analyser":27,"web-audio-player":28}]},{},[49])
 
 
 //# sourceMappingURL=sp-framework.js.map

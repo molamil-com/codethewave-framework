@@ -1,0 +1,222 @@
+<!doctype html> <html class="no-js" lang><head><meta charset="utf-8"><meta http-equiv="x-ua-compatible" content="ie=edge"><title>Kaleidoscope</title><meta name="description" content><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="../../main.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script><script src="../../js/pixi.min.js"></script><script src="../../js/TweenMax.min.js"></script></head><body><!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]--><script src="../../sp-framework.js"></script><script>
+
+        var DEG2RAD = Math.PI / 180.0;
+        var RAD2DEG = 180.0 / Math.PI;
+        var TAU = Math.PI * 2;
+
+        var maxSections = 16;
+        var minSections = 6;
+        var sectionsStep = 2;
+        var currentSections = minSections;
+        var kaleidoscopeMasks = [];
+        var kaleidoscopeSprites = [];
+        var kaleidoscopeTexture;
+        var kaleidoscopeTextureFlipped;
+        var kaleidoscopeContainer;
+
+        var speed = new Vector2(2, 0);
+        var scrollOffset = new Vector2(0,0);
+
+        SPF.set({
+
+            at:"back",
+            load: function(PIXI, input) 
+            {
+                return [input.patterns.animaltech];
+            },
+
+            init: function(PIXI, input) 
+            {
+                kaleidoscopeTexture = input.patterns.animaltech;
+                kaleidoscopeContainer = new PIXI.Container();
+                input.container.addChild(kaleidoscopeContainer);
+                updateKaleidoscope(PIXI, input);
+            },
+
+            render:function(PIXI, input)
+            {
+                scrollOffset = scrollOffset.add(speed);
+                for(var i=0;i<kaleidoscopeSprites.length;i++)
+                {
+                    kaleidoscopeSprites[i].tilePosition.x = scrollOffset.x;
+                    kaleidoscopeSprites[i].tilePosition.y = scrollOffset.y;
+                }
+            },
+
+            resize: function(PIXI, input) 
+            {
+                updateKaleidoscope(PIXI, input);
+            },
+
+            mouseDownTouchStart: function(PIXI, input)
+            {
+                currentSections = (currentSections - minSections + sectionsStep) % (maxSections - minSections + sectionsStep) + minSections;
+                updateKaleidoscope(PIXI, input);
+            }
+        });
+
+        SPF.info({
+            debug: false,
+            title: "Kaleidoscope",
+            tip: "Click to change section count on Kaleidoscope",
+            firstName: "Patrik",
+            lastName: "Svensson",
+            email: "ps@molamil.com"
+        });
+
+        SPF.start();
+
+        //KALEIDOSCOPE
+        function addSection(PIXI, input, flip)
+        {
+            var sprite = new PIXI.extras.TilingSprite(kaleidoscopeTexture, 500, 500);
+            sprite.anchor.set(0.5, 0.5);
+            kaleidoscopeContainer.addChild(sprite);
+            kaleidoscopeSprites.push(sprite);
+
+            var mask = new PIXI.Graphics();
+            mask.clear();
+            kaleidoscopeContainer.addChild(mask);
+            kaleidoscopeMasks.push(mask);
+                
+        }
+        function removeSection(PIXI, input)
+        {
+            var sprite = kaleidoscopeSprites.shift();
+            var mask = kaleidoscopeMasks.shift();
+            sprite.parent.removeChild(sprite);
+            mask.parent.removeChild(mask);
+        }
+
+        function updateKaleidoscope(PIXI, input)
+        {
+            //Add
+            while(kaleidoscopeSprites.length < currentSections)
+            {
+                addSection(PIXI, input, 0 == kaleidoscopeSprites.length % 2);
+            }
+
+            //Remove
+            while(kaleidoscopeSprites.length > currentSections)
+            {
+                removeSection(PIXI, input);
+            }
+
+            //Draw
+            var center = new Vector2(input.width * 0.5, input.height * 0.5);
+            var length = Math.sqrt(input.width * input.width + input.height * input.height);//This is bigger than needed
+            for (var i = 0;i<currentSections; i++)
+            {
+                var t = i / (currentSections - 1.0);
+                var startAngle = i / (currentSections * 1.0) * TAU;
+                var endAngle = (i+1) / (currentSections * 1.0) * TAU;
+                
+                var angle = startAngle * 0.5 + endAngle * 0.5;
+                
+                //Sprite
+                var sprite = kaleidoscopeSprites[i];
+                sprite.width = sprite.height = length;
+                sprite.x = center.x;
+                sprite.y = center.y;
+                var flip = (0 == i % 2) ? 1 : -1;
+                sprite.scale.y = Math.abs(sprite.scale.y) * flip;
+                sprite.rotation = angle;
+
+                //Mask
+                var mask = kaleidoscopeMasks[i];
+                mask.clear();
+                mask.beginFill(input.colors[i]);
+                mask.drawPolygon([
+                        center.x, center.y,
+                        center.x + Math.cos(startAngle) * length, center.y + Math.sin(startAngle) * length,
+                        center.x + Math.cos(endAngle) * length, center.y + Math.sin(endAngle) * length,
+                        center.x, center.y
+                    ]);
+                mask.endFill();
+                
+                sprite.mask = mask;
+
+            }
+        }
+
+        //HELPERS
+        //Vector2 
+        function Vector2(x, y)
+        {
+            this.x = x || 0;
+            this.y = y || 0;
+        };
+
+        Vector2.prototype.x = null;
+        Vector2.prototype.y = null;
+        Vector2.prototype.add = function (v) {
+            return new Vector2(this.x + v.x, this.y + v.y);
+        };
+        Vector2.prototype.clone = function () {
+            return new Vector2(this.x, this.y);
+        };
+        Vector2.prototype.distance = function (v) {
+            var x = this.x - v.x;
+            var y = this.y - v.y;
+            return Math.sqrt(x * x + y * y);
+        };
+        Vector2.prototype.equals = function (toCompare) {
+            return this.x == toCompare.x && this.y == toCompare.y;
+        };
+        Vector2.prototype.interpolate = function (v, f) {
+            return new Vector2((this.x + v.x) * f, (this.y + v.y) * f);
+        };
+        Vector2.prototype.length = function () {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        };
+        Vector2.prototype.sqrLength = function () {
+            return this.x * this.x + this.y * this.y;
+        };
+        Vector2.prototype.normalize = function (thickness = 1) {
+            var l = this.length();
+            this.x = this.x / l * thickness;
+            this.y = this.y / l * thickness;
+        };
+        Vector2.prototype.offset = function (dx, dy) {
+            this.x += dx;
+            this.y += dy;
+        };
+        Vector2.prototype.subtract = function (v) {
+            return new Vector2(this.x - v.x, this.y - v.y);
+        };
+        Vector2.prototype.toString = function () {
+            return "(x=" + this.x + ", y=" + this.y + ")";
+        };
+
+        Vector2.interpolate = function (pt1, pt2, f) {
+            return new Vector2((pt1.x + pt2.x) * f, (pt1.y + pt2.y) * f);
+        };
+        Vector2.distance = function (pt1, pt2) {
+            var x = pt1.x - pt2.x;
+            var y = pt1.y - pt2.y;
+            return Math.sqrt(x * x + y * y);
+        };
+
+        SpriteAnimator = function(sprite)
+        {
+            this.sprite = sprite || null;
+        };
+
+        SpriteAnimator.prototype.sprite = null;
+        SpriteAnimator.prototype.speed = 0;
+        SpriteAnimator.prototype.maxSpeed = 0;
+        SpriteAnimator.prototype.acceleration = 0;
+        SpriteAnimator.prototype.rotationSpeed = 0;
+        SpriteAnimator.prototype.direction = new Vector2(0,0);
+        SpriteAnimator.prototype.update = function(deltaTime)
+        {
+            this.speed = Math.min(this.speed + this.acceleration, this.maxSpeed);
+            this.sprite.x += this.direction.x * this.speed;
+            this.sprite.y += this.direction.y * this.speed;
+            this.sprite.rotation += this.rotationSpeed;
+        };
+    </script></body></html>
