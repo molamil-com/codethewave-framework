@@ -33,14 +33,26 @@ function Video() {
     this.init = function(PIXI, dom, container, _renderer, resolution, input, callback, muted) {
 
         //
-        // SPF.log("serverPath video", serverPath);
+
+        SPF.log("document.location.hostname", document.location.hostname);
+
+        if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ||  document.location.hostname == "scarletpleasure.molamil.com"){
+            serverPath = "./";
+        }
+
+
+        if(document.location.hostname == "codethewave.com" ){
+            serverPath = "http://codethewave.com/";
+        }
+
+
+        //
+
+        SPF.log("serverPath", serverPath);
 
         // CREATE VIDEO ELEMENTS
 
-
-
-
-        if(document.location.hostname.indexOf("codepen") >1 && navigator.userAgent.search("Firefox") ){
+        if(document.location.hostname.indexOf("codepen") >=1 && navigator.userAgent.search("Firefox") ){
 
             videos = [
                 {file:"chroma01-w480.mp4", width:480, height:540},
@@ -78,6 +90,9 @@ function Video() {
         }
 
         var videoPath = serverPath+"video/"+selectedVideo["file"];
+
+
+        SPF.log("videoPath", videoPath);
 
         /*
         console.log("videos: ", videos);

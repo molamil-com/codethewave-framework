@@ -13152,14 +13152,26 @@ function Video() {
     this.init = function(PIXI, dom, container, _renderer, resolution, input, callback, muted) {
 
         //
-        // SPF.log("serverPath video", serverPath);
+
+        SPF.log("document.location.hostname", document.location.hostname);
+
+        if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ||  document.location.hostname == "scarletpleasure.molamil.com"){
+            serverPath = "./";
+        }
+
+
+        if(document.location.hostname == "codethewave.com" ){
+            serverPath = "http://codethewave.com/";
+        }
+
+
+        //
+
+        SPF.log("serverPath", serverPath);
 
         // CREATE VIDEO ELEMENTS
 
-
-
-
-        if(document.location.hostname.indexOf("codepen") >1 && navigator.userAgent.search("Firefox") ){
+        if(document.location.hostname.indexOf("codepen") >=1 && navigator.userAgent.search("Firefox") ){
 
             videos = [
                 {file:"chroma01-w480.mp4", width:480, height:540},
@@ -13197,6 +13209,9 @@ function Video() {
         }
 
         var videoPath = serverPath+"video/"+selectedVideo["file"];
+
+
+        SPF.log("videoPath", videoPath);
 
         /*
         console.log("videos: ", videos);
@@ -13406,7 +13421,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.031;
+    var version = 0.046;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13454,6 +13469,7 @@ var fps = require('fps');
         },
 
         active = false,
+        videoLoaded = true,
         siteActive = false,
         stage,
         domContainer,
@@ -13479,6 +13495,8 @@ var fps = require('fps');
 
         if (window.console && typeof window.console.log == "function")
             console.log("SP FRAMEWORK - ", version);
+
+        SPF.log("SP FRAMEWORK - ", version);
 
         input.width = getWindowCoords()[0];
         input.height = getWindowCoords()[1];
@@ -13596,6 +13614,8 @@ var fps = require('fps');
     function load(loaded){
 
 
+        videoLoaded = false;
+
         // Preloading all graphics
 
         var textures = [
@@ -13643,28 +13663,29 @@ var fps = require('fps');
         // Preloading video
         //
 
+
         var loadingVideo = new createVideo();
         loadingVideo.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
 
 
-            setTimeout(function(){
 
-                $("#BPSPVideo").remove();
-                loader.load();
+            input.loading = setInterval(function(){
 
-            },2000);
+               if(loadingVideo.getVideoSource().readyState == 4){
+
+                   clearInterval(input.loading);
+
+                   $("#BPSPVideo").remove();
+                   loader.load();
+                   videoLoaded = true;
+
+               }
+
+
+
+            },100);
 
         }, true);
-
-
-        /*
-        if(input.isTouchDevice) {
-            loadingVideo.getVideoSource().addEventListener('loadeddata', function () {
-                $("#BPSPVideo").remove();
-                loader.load();
-            }, false);
-        }
-        */
 
     };
 
@@ -13886,6 +13907,11 @@ var fps = require('fps');
 
     function canPlay(){
 
+        // console.log("videoLoaded:"+videoLoaded);
+
+        if(!videoLoaded)
+            return;
+
         siteActive = true;
 
         var audioContext = createAudioContext();
@@ -13957,8 +13983,8 @@ var fps = require('fps');
 
         };
 
-        startTracks();
 
+        startTracks();
 
     };
 
@@ -13968,7 +13994,8 @@ var fps = require('fps');
         // START LISTENING TRACKS!
         //
 
-        var videoElement = document.querySelector("video");
+        var videoElement = video.getVideoSource();
+
         var tracks = videoElement.textTracks;
 
         //
