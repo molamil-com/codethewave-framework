@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.024;
+    var version = 0.031;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -370,8 +370,14 @@ var fps = require('fps');
             target.click(function(){
 
                 playVideoAt($(this).data("starts"));
-                // pause();
-                // console.log("video.getPositionPercentage(): "+video.getPositionPercentage());
+
+
+                /*
+                console.log("video.duration: "+video.getVideoSource().duration);
+
+                pause();
+                console.log("video.getPositionPercentage(): "+video.getPositionPercentage());
+                */
 
             });
 
@@ -579,18 +585,20 @@ var fps = require('fps');
         //
 
         var videoElement = document.querySelector("video");
-
         var tracks = videoElement.textTracks;
+
+        //
 
         input.editing = null;
         var editingTrack = tracks[0]; // editing.vtt;
-
-
 
         // console.log("editingTrack: ",editingTrack.cues);
 
         editingTrack.oncuechange = function (){
             var cue = this.activeCues[0];
+
+            // console.log("editingTrack activeCues: ",this.activeCues.length);
+
             if(cue) {
                 var cueData = JSON.parse(cue.text);
                 input.editing = cueData;
@@ -613,8 +621,10 @@ var fps = require('fps');
 
         castTrack.oncuechange = function (){
 
-
             var cue = this.activeCues[0];
+
+            // console.log("castTrack activeCues: ",this.activeCues.length);
+
             if(cue) {
                 var cueData = JSON.parse(cue.text);
                 input.cast = cueData;
@@ -632,7 +642,11 @@ var fps = require('fps');
         // console.log("beatTrack: ",beatTrack.cues);
 
         beatTrack.oncuechange = function (){
+
             var cue = this.activeCues[0];
+
+            // console.log("beatTrack activeCues: ",this.activeCues.length);
+
             if(cue) {
                 var cueData = JSON.parse(cue.text);
                 input.beat = cueData;
@@ -642,6 +656,7 @@ var fps = require('fps');
             SPF.log("input.beat", JSON.stringify(input.beat));
         };
 
+        //
 
         input.styling = null;
         var stylingTrack = tracks[3]; // styling.vtt;
@@ -650,6 +665,9 @@ var fps = require('fps');
 
         stylingTrack.oncuechange = function (){
             var cue = this.activeCues[0];
+
+            // console.log("stylingTrack activeCues: ",this.activeCues.length);
+
             if(cue) {
                 var cueData = JSON.parse(cue.text);
                 input.styling = cueData;
@@ -660,6 +678,26 @@ var fps = require('fps');
         };
 
         //
+
+        input.pulse = null;
+        var pulseTrack = tracks[4]; // beat.vtt;
+
+        // console.log("pulseTrack: ",pulseTrack.cues);
+
+        pulseTrack.oncuechange = function (){
+
+            var cue = this.activeCues[0];
+
+            // console.log("pulseTrack activeCues: ",this.activeCues.length);
+
+            if(cue) {
+                var cueData = JSON.parse(cue.text);
+                input.pulse = cueData;
+            } else {
+                input.pulse = null;
+            }
+            SPF.log("input.pulse", JSON.stringify(input.pulse));
+        };
 
         resize();
 

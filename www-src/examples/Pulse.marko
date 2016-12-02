@@ -1,0 +1,132 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+
+    <head>
+
+        <meta charset="utf-8">
+
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>Pulse</title>
+
+        <meta name="description" content="">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="../main.css"/>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/detectizr/2.2.0/detectizr.min.js"></script>
+
+        <script src="../js/pixi.min.js"></script>
+
+        <script src="../js/TweenMax.min.js"></script>
+
+    </head>
+
+    <body>
+
+    <!--[if lt IE 8]>
+
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+
+    <![endif]-->
+
+    <script src="../sp-framework.js"></script>
+
+    <script>
+
+        var background, backgroundColor;
+
+        SPF.set({
+
+            at:"back",
+
+            init: function(PIXI, input) {
+                background = new PIXI.Graphics();
+                input.container.addChild(background);
+            }
+
+        });
+
+        var text;
+
+        var circle,circleContainer;
+
+        SPF.set({
+
+            at:"fore",
+
+            init: function(PIXI, input) {
+
+                circleContainer = new PIXI.Container();
+                circle =  new PIXI.Graphics();
+                circleContainer.addChild(circle);
+                input.container.addChild(circleContainer);
+
+                text = new PIXI.Text('', {fontFamily : 'Arial Black', fontSize: 200, fill :0xFFFFFF, align : 'center'});
+                text.anchor.set(0.5);
+                backgroundColor = 0xd4d4d4;
+                input.container.addChild(text);
+
+            },
+
+            resize: function(PIXI, input) {
+
+                text.position.set(input.width/2, input.height/2);
+
+                text.style.fontSize = input.width/22;
+
+                circle.clear();
+
+                circle.beginFill(0x000000, 1);
+                circle.drawCircle(0,0, (input.height/4));
+                circle.endFill();
+
+                circleContainer.position.set(input.width/2, input.height/2);
+
+            },
+
+            render: function(PIXI, input) {
+
+                if(input.pulse == null) {
+                    text.text = "";
+                    circle.scale.set(0);
+                } else {
+                    text.text = "PULSE";
+                    circle.scale.set(1);
+                }
+
+
+                background.clear();
+                background.beginFill(backgroundColor, 1);
+                background.drawRect(0,0,input.width,input.height);
+                background.endFill();
+
+            }
+
+
+        });
+
+
+
+        SPF.info({
+            debug: false,
+            title: "Pulse",
+            tip: "",
+            firstName: "Ramiro",
+            lastName: "Espada",
+            email: "re@ramiroespada.com"
+        });
+
+        SPF.start();
+
+    </script>
+
+    </body>
+
+</html>

@@ -103,6 +103,9 @@ function Video() {
         video += '<track kind="metadata" label="styling" src="' + serverPath + 'tracks/styling.vtt" default>';
         video += '</track>';
 
+        video += '<track kind="metadata" label="pulse" src="' + serverPath + 'tracks/pulse.vtt" default>';
+        video += '</track>';
+
         video += '</video>';
 
         $(dom).append(video);
