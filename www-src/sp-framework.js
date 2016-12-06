@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.047;
+    var version = 0.048;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -264,11 +264,10 @@ var fps = require('fps');
         // Preloading video
         //
 
-
         var loadingVideo = new createVideo();
+
+
         loadingVideo.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
-
-
 
             input.loading = setInterval(function(){
 
@@ -284,7 +283,7 @@ var fps = require('fps');
 
 
 
-            },100);
+            },500);
 
         }, true);
 
@@ -943,37 +942,41 @@ var fps = require('fps');
 
         var manager = new PIXI.interaction.InteractionManager(stage, renderer.view);
 
+
+        if(!stage.interactive){
+
+            stage.on('mousedown', function(){
+                mouseDownTouchStart();
+            });
+
+            stage.on('touchstart', function(){
+                mouseDownTouchStart();
+
+            });
+
+            stage.on('mouseup', function(){
+                mouseUpTouchEnd();
+            });
+
+            stage.on('touchend', function(){
+                mouseUpTouchEnd();
+            });
+
+            if (conf.at == 'fore') {
+
+                stage.mouseover = function(ev) {
+                    mouseOver();
+                }
+
+                stage.mouseout = function(ev) {
+                    mouseOut();
+                }
+
+            };
+
+        }
+
         stage.interactive = true;
-
-
-        stage.on('mousedown', function(){
-            mouseDownTouchStart();
-        });
-
-        stage.on('touchstart', function(){
-            mouseDownTouchStart();
-
-        });
-
-        stage.on('mouseup', function(){
-            mouseUpTouchEnd();
-        });
-
-        stage.on('touchend', function(){
-            mouseUpTouchEnd();
-        });
-
-        if (conf.at == 'fore') {
-
-            stage.mouseover = function(ev) {
-                mouseOver();
-            }
-
-            stage.mouseout = function(ev) {
-                mouseOut();
-            }
-
-        };
 
         input.width = getWindowCoords()[0];
         input.height = getWindowCoords()[1];
@@ -1010,12 +1013,12 @@ var fps = require('fps');
         if(video == null || video.getVideoSource() == null || video.getVideoMask() == null || midground == null){
             setTimeout(function(){
                 midgroundMask(maskMidground);
-            },1000);
+            },100);
             return;
         }
 
-
         if(maskMidground){
+
             if(midground.zIndex != 1){
 
                 if(midground.mask == null){
@@ -1025,12 +1028,13 @@ var fps = require('fps');
                 }
 
             }
+
         } else {
 
             if(midground.zIndex == 1){
 
                 if(midground.mask != null){
-                    midground.mask = false;
+                    midground.mask = null;
                     midground.zIndex = 3;
                     domContainer.updateLayersOrder();
                     video.getVideoSprite().mask = video.getVideoMask();

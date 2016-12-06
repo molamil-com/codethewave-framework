@@ -145,13 +145,19 @@ function Video() {
             }
         }
 
+        var callbackCalled = false;
+
         video.oncanplay = function() {
-            callback();
+            if(!callbackCalled)
+                callback();
+            callbackCalled = true;
         };
 
         // FOR SAFARI
         video.oncanplaythrough = function() {
-            callback();
+            if(!callbackCalled)
+                callback();
+            callbackCalled = true
         };
 
         renderer = _renderer;

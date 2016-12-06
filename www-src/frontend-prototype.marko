@@ -115,6 +115,8 @@
 
         var fs;
 
+        var masked;
+
         function visual1(){
 
             var tilingSpriteBack;
@@ -133,15 +135,12 @@
                     tilingSpriteBack.anchor.set(0.5);
                     input.container.addChild(tilingSpriteBack);
 
-                    SPF.midgroundMask(true);
-
-
+                    masked = true;
                 },
 
                 render: function(PIXI, input) {
 
-
-                    SPF.midgroundMask(true);
+                    SPF.midgroundMask(masked);
 
                     fs = input.audio.frequencies();
 
@@ -162,11 +161,38 @@
 
             });
 
-            SPF.set({at: 'back'
+            SPF.set({at: 'back',
+
+                mouseDownTouchStart:function(PIXI, input) {
+                    masked = false;
+                },
+
+                mouseUpTouchEnd:function(PIXI, input) {
+                    masked = true;
+                },
+
+
+                render: function(PIXI, input) {
+
+                }
 
             });
 
-            SPF.set({at: 'fore'});
+            SPF.set({at: 'fore',
+
+                render: function(PIXI, input) {
+
+                },
+
+                mouseDownTouchStart:function(PIXI, input) {
+                    // console.log("mouseDownTouchStart");
+                },
+
+                mouseUpTouchEnd:function(PIXI, input) {
+                    // console.log("mouseUpTouchEnd");
+                }});
+
+
 
             SPF.info({number:"01", debug:true, title:"VISUAL I", tip:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum rutrum sodales. Nullam mattis fermentum libero, non volutpat.", firstName:"Nikolaj", lastName:"Staus", email:"ns@molamil.com"});
 
