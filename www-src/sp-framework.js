@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.051;
+    var version = 0.055;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -613,12 +613,13 @@ var fps = require('fps');
             if(cue) {
                 var cueData = JSON.parse(cue.text);
                 input.editing = cueData;
+
+                if(isSite)
+                    $("body").attr("data-video-editing", ""+input.editing.id);
+
             } else {
                 input.editing = null;
             }
-
-            if(isSite)
-                $("body").attr("data-video-editing", ""+input.editing.id);
 
             SPF.log("input.editing", JSON.stringify(input.editing));
         };
@@ -664,8 +665,8 @@ var fps = require('fps');
                 var cueData = JSON.parse(cue.text);
                 input.beat = cueData;
 
-                if (window.console && typeof window.console.log == "function")
-                    console.log("BEAT startTime: "+cue.startTime);
+                // console.log("BEAT startTime: "+cue.startTime);
+
                 setTimeout(function(){
                     input.beat = null;
                 },100);
@@ -711,8 +712,8 @@ var fps = require('fps');
                 var cueData = JSON.parse(cue.text);
                 input.pulse = cueData;
 
-                if (window.console && typeof window.console.log == "function")
-                    console.log("PULSE startTime: "+cue.startTime);
+                // console.log("PULSE startTime: "+cue.startTime);
+
                 setTimeout(function(){
                     input.pulse = null;
                 },100);
@@ -729,7 +730,9 @@ var fps = require('fps');
         input.width =  getWindowCoords()[0];
         input.height = getWindowCoords()[1];
 
-        stage.hitArea = new PIXI.Rectangle(0, 0,  input.width, input.height);
+        // stage.hitArea = new PIXI.Rectangle(0, 0,  input.width, input.height);
+
+        stage.hitArea = new PIXI.Rectangle(0, 0, renderer.width/renderer.resolution, renderer.height/renderer.resolution);
 
         SPF.log("input.width", input.width);
 
@@ -951,23 +954,27 @@ var fps = require('fps');
 
         var manager = new PIXI.interaction.InteractionManager(stage, renderer.view);
 
-
         if(!stage.interactive){
 
             stage.on('mousedown', function(){
+
+                // console.log('mouseDownTouchStart');
                 mouseDownTouchStart();
             });
 
             stage.on('touchstart', function(){
+                // console.log('mouseDownTouchStart');
                 mouseDownTouchStart();
 
             });
 
             stage.on('mouseup', function(){
+                // console.log('mouseUpTouchEnd');
                 mouseUpTouchEnd();
             });
 
             stage.on('touchend', function(){
+                // console.log('mouseUpTouchEnd');
                 mouseUpTouchEnd();
             });
 
