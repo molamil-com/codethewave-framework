@@ -36,7 +36,7 @@ function Video() {
 
         SPF.log("document.location.hostname", document.location.hostname);
 
-        if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ||  document.location.hostname == "scarletpleasure.molamil.com"){
+        if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ){
             serverPath = "./";
         }
 

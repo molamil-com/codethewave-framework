@@ -13155,7 +13155,7 @@ function Video() {
 
         SPF.log("document.location.hostname", document.location.hostname);
 
-        if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ||  document.location.hostname == "scarletpleasure.molamil.com"){
+        if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ){
             serverPath = "./";
         }
 
@@ -13427,7 +13427,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.048;
+    var version = 0.049;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
