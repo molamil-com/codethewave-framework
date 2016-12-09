@@ -37,7 +37,7 @@ function Video() {
         SPF.log("document.location.hostname", document.location.hostname);
 
         if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ){
-            serverPath = "./";
+           serverPath = "./";
         }
 
 
@@ -45,8 +45,10 @@ function Video() {
             serverPath = "http://codethewave.com/";
         }
 
+        if(String(document.location.pathname).indexOf("examples") >=1){
+            serverPath = "../";
+        }
 
-        //
 
         SPF.log("serverPath", serverPath);
 

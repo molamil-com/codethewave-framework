@@ -82,7 +82,7 @@
 
                 circle.clear();
 
-                circle.beginFill(0x000000, 1);
+                circle.beginFill(0x00FF00, 1);
                 circle.drawCircle(0,0, (input.height/4));
                 circle.endFill();
 
@@ -95,11 +95,12 @@
                 if(input.beat == null) {
                     text.text = "";
                     circle.scale.set(0);
+                    backgroundColor = 0xd4d4d4;
                 } else {
                     text.text = "BEAT";
                     circle.scale.set(1);
+                    backgroundColor = 0xFF0000;
                 }
-
 
                 background.clear();
                 background.beginFill(backgroundColor, 1);

@@ -13156,7 +13156,7 @@ function Video() {
         SPF.log("document.location.hostname", document.location.hostname);
 
         if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ){
-            serverPath = "./";
+           serverPath = "./";
         }
 
 
@@ -13164,8 +13164,10 @@ function Video() {
             serverPath = "http://codethewave.com/";
         }
 
+        if(String(document.location.pathname).indexOf("examples") >=1){
+            serverPath = "../";
+        }
 
-        //
 
         SPF.log("serverPath", serverPath);
 
@@ -13427,7 +13429,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.049;
+    var version = 0.051;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -14057,6 +14059,8 @@ var fps = require('fps');
 
         // console.log("beatTrack: ",beatTrack.cues);
 
+        var beatActive = false;
+
         beatTrack.oncuechange = function (){
 
             var cue = this.activeCues[0];
@@ -14066,8 +14070,12 @@ var fps = require('fps');
             if(cue) {
                 var cueData = JSON.parse(cue.text);
                 input.beat = cueData;
-            } else {
-                input.beat = null;
+
+                if (window.console && typeof window.console.log == "function")
+                    console.log("BEAT startTime: "+cue.startTime);
+                setTimeout(function(){
+                    input.beat = null;
+                },100);
             }
             SPF.log("input.beat", JSON.stringify(input.beat));
         };
@@ -14109,8 +14117,12 @@ var fps = require('fps');
             if(cue) {
                 var cueData = JSON.parse(cue.text);
                 input.pulse = cueData;
-            } else {
-                input.pulse = null;
+
+                if (window.console && typeof window.console.log == "function")
+                    console.log("PULSE startTime: "+cue.startTime);
+                setTimeout(function(){
+                    input.pulse = null;
+                },100);
             }
             SPF.log("input.pulse", JSON.stringify(input.pulse));
         };
@@ -14297,7 +14309,6 @@ var fps = require('fps');
                     audio.volume = video.getVideoSource().volume;
                 }
             }
-
             renderer.render(stage);
 
             requestAnimationFrame(animate);
