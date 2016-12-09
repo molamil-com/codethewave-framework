@@ -57,8 +57,7 @@
 
             render: function(PIXI, input) {
 
-
-                if(input.beat == null) {
+                if(input.pulse == null) {
                     text.text = "";
                     circle.scale.set(0);
                     backgroundColor = 0xd4d4d4;
@@ -67,6 +66,7 @@
                     circle.scale.set(1);
                     backgroundColor = 0xFF0000;
                 }
+
                 background.clear();
                 background.beginFill(backgroundColor, 1);
                 background.drawRect(0,0,input.width,input.height);
