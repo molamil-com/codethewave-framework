@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.055;
+    var version = 0.057;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -376,13 +376,12 @@ var fps = require('fps');
 
                 playVideoAt($(this).data("starts"));
 
-
-                /*
+/*
                 console.log("video.duration: "+video.getVideoSource().duration);
 
                 pause();
                 console.log("video.getPositionPercentage(): "+video.getPositionPercentage());
-                */
+*/
 
             });
 
@@ -885,22 +884,37 @@ var fps = require('fps');
                 ui.render(video.getPositionPercentage());
 
 
-            if(isSite){
+            if(video){
 
-                $("body").attr("data-video-duration", ""+video.getVideoSource().duration);
-                $("body").attr("data-video-time", ""+video.getVideoSource().currentTime);
-                $("body").attr("data-video-percentage", ""+video.getPositionPercentage());
+                input.currentTime = video.getVideoSource().currentTime;
+                input.duration = video.getVideoSource().duration;
+                input.percentagePlayed = Math.round(video.getPositionPercentage());
 
-                if(video.getPositionPercentage() == 100){
-                    $("body").attr("data-current-section", "none");
-                }
+                SPF.log("input.currentTime", input.currentTime);
+                SPF.log("input.duration", input.duration);
+                SPF.log("input.percentagePlayed", input.percentagePlayed);
 
-            };
+
+                if(isSite){
+
+                    $("body").attr("data-video-duration", ""+input.currentTime);
+                    $("body").attr("data-video-time", ""+input.duration);
+                    $("body").attr("data-video-percentage", ""+input.percentagePlayed);
+
+                    if(video.getPositionPercentage() == 100){
+                        $("body").attr("data-current-section", "none");
+                    }
+
+                };
+
+            }
 
 
 
             if(audio){
                 if(video){
+
+
                     audio.currentTime = video.getVideoSource().currentTime;
                     audio.volume = video.getVideoSource().volume;
                 }

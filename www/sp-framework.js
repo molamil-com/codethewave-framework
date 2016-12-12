@@ -12523,8 +12523,8 @@ module.exports = function(key, value, color){
     if(typeof(keys[key]) == 'undefined'){
         var r = document.createElement('p');
         r.style.color = color;
-        r.style.fontSize = "8px";
-        r.style.lineHeight = "8px";
+        r.style.fontSize = "9px";
+        r.style.lineHeight = "9px";
         el.appendChild(r);
         keys[key] = r;
     }
@@ -12764,6 +12764,7 @@ var init = function(){
 
     var sections = [
 
+
         { "id":"intro", "label":"Intro", "label-min":"I", percentage:"3.3", starts:"0", ends:"6900" },
 
         { "id":"verse1", "label":"Verse I", "label-min":"V",percentage:"16.3", starts:"6900", ends:"41075" },
@@ -12786,7 +12787,6 @@ var init = function(){
 
         { "id":"outro", "label":"O",  "label-min":"O", percentage:"2", starts:"203584", ends:"208000" }
 
-
     ];
 
     return sections;
@@ -12801,6 +12801,16 @@ module.exports = {
 
 /*
 
+ 00:00:000 verse1 = 0
+ 00:40:220 preChorus1 = 40220
+ 00:57:190 chorus1 = 57190
+ 01:14:160 verse2 = 58199
+ 01:48:100 preChorus2 = 108100
+ 02:05:190 chorus2 = 125190
+ 02:23:220 bridge = 143220
+ 02:40:000 preChorus3 = 160000
+ 02:56:220 choru3 = 176220
+ 03:14:140 outro = 194140
 
 
  --------------------------------------------------------
@@ -13429,7 +13439,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.055;
+    var version = 0.057;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13783,13 +13793,12 @@ var fps = require('fps');
 
                 playVideoAt($(this).data("starts"));
 
-
-                /*
+/*
                 console.log("video.duration: "+video.getVideoSource().duration);
 
                 pause();
                 console.log("video.getPositionPercentage(): "+video.getPositionPercentage());
-                */
+*/
 
             });
 
@@ -14292,22 +14301,37 @@ var fps = require('fps');
                 ui.render(video.getPositionPercentage());
 
 
-            if(isSite){
+            if(video){
 
-                $("body").attr("data-video-duration", ""+video.getVideoSource().duration);
-                $("body").attr("data-video-time", ""+video.getVideoSource().currentTime);
-                $("body").attr("data-video-percentage", ""+video.getPositionPercentage());
+                input.currentTime = video.getVideoSource().currentTime;
+                input.duration = video.getVideoSource().duration;
+                input.percentagePlayed = Math.round(video.getPositionPercentage());
 
-                if(video.getPositionPercentage() == 100){
-                    $("body").attr("data-current-section", "none");
-                }
+                SPF.log("input.currentTime", input.currentTime);
+                SPF.log("input.duration", input.duration);
+                SPF.log("input.percentagePlayed", input.percentagePlayed);
 
-            };
+
+                if(isSite){
+
+                    $("body").attr("data-video-duration", ""+input.currentTime);
+                    $("body").attr("data-video-time", ""+input.duration);
+                    $("body").attr("data-video-percentage", ""+input.percentagePlayed);
+
+                    if(video.getPositionPercentage() == 100){
+                        $("body").attr("data-current-section", "none");
+                    }
+
+                };
+
+            }
 
 
 
             if(audio){
                 if(video){
+
+
                     audio.currentTime = video.getVideoSource().currentTime;
                     audio.volume = video.getVideoSource().volume;
                 }
