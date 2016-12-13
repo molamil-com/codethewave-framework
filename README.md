@@ -4,7 +4,7 @@
 
 This is the JavaScript framework used to produce the graphics which users can choose between on [CodeTheWave.com](http://www.codethewave.com).
 
-A jury will select the best contributions to be included on [CodeTheWave.com](http://www.codethewave.com) but even if your contribution isn't selected you can still share your contribution yourself.
+A jury will select the best contributions to be included on [CodeTheWave.com](http://www.codethewave.com) but even if your contribution isn't selected you can still share your contribution yourself. We will only include visuals which works and adapts to different screen sizes and don't contain errors.
 
 
 ## What it looks like
