@@ -40,6 +40,9 @@ Library is located at http://scarletpleasure.molamil.com/sp-framework.js
         * [input.cast](#inputcast)
         * [input.beat](#inputbeat)
         * [input.styling](#inputstyling)
+        * [input.currentTime](#inputcurrenttime)
+        * [input.duration](#inputduration)
+        * [input.percentagePlayed](#inputpercentageplayed)
     * [Helpers](#helpers)
         * [midgroundMask](#midgroundmask)
         * [fullscreenSprite](#fullscreensprite)
@@ -666,6 +669,25 @@ The _id_ value can be one of the following:
 ```
 
 ====
+
+
+#### input.currentTime
+
+Returns the current position in seconds.
+
+====
+
+
+#### input.duration
+
+Returns the video length in seconds.
+
+====
+
+
+#### input.percentagePlayed
+
+Returns how much of the video has been played in a percentage between 0 and 100.
 
 
 ### Helpers
