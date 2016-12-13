@@ -39,6 +39,7 @@ Library is located at http://scarletpleasure.molamil.com/sp-framework.js
         * [input.editing](#inputediting)
         * [input.cast](#inputcast)
         * [input.beat](#inputbeat)
+        * [input.pulse](#inputpulse)
         * [input.styling](#inputstyling)
         * [input.currentTime](#inputcurrenttime)
         * [input.duration](#inputduration)
@@ -639,7 +640,7 @@ The _id_ value can be one of the following:
 
 #### input.beat
 
-Returns an Object stating if the music is currently on beat.
+Returns an Object stating if the music is currently on beat (Music talk: -2-4).
 
 ```javascript
 { "id": null }
@@ -653,6 +654,27 @@ The _id_ value can be one of the following:
 
   <dt>null</dt>
   <dd>The sound is off beat.</dd>
+</dl>
+
+====
+
+
+#### input.pulse
+
+Returns an Object stating if the music is currently on pulse (Music talk: 1-2-3-4).
+
+```javascript
+{ "id": null }
+```
+
+The _id_ value can be one of the following:
+
+<dl>
+  <dt>on</dt>
+  <dd>The sound is on pulse.</dd>
+
+  <dt>null</dt>
+  <dd>The sound is off pulse.</dd>
 </dl>
 
 ====
