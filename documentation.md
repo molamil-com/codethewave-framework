@@ -639,19 +639,19 @@ The _id_ value can be one of the following:
 
 #### input.beat
 
-Returns an Object stating if the music is currently onBeat or offBeat.
+Returns an Object stating if the music is currently on beat.
 
 ```javascript
-{ "id": "singer" }
+{ "id": null }
 ```
 
 The _id_ value can be one of the following:
 
 <dl>
-  <dt>onBeat</dt>
+  <dt>on</dt>
   <dd>The sound is on beat.</dd>
 
-  <dt>offBeat</dt>
+  <dt>null</dt>
   <dd>The sound is off beat.</dd>
 </dl>
 
