@@ -642,7 +642,6 @@ The _id_ value can be one of the following:
   <dd>The sound is off beat.</dd>
 </dl>
 
-
 ====
 
 
@@ -666,7 +665,6 @@ The _id_ value can be one of the following:
   <dt>color</dt>
   <dd>Band members are wearing colors.</dd>
 </dl>
-```
 
 ====
 
