@@ -464,7 +464,10 @@ Returns an object with one or more PIXI.Texture instances. The available pattern
 * input.patterns.botanicorganic1
 * input.patterns.botanicorganic2
 * input.patterns.botanicorganic3
+* input.patterns.botanicorganic4
+* input.patterns.botanicorganic5
 * input.patterns.handdrawnanimal
+* input.patterns.handdrawnanimal2
 
 
 ====
@@ -481,6 +484,7 @@ Returns an object with one or more PIXI.Texture instances. The available maskers
 * input.maskers.handdrawnanimal2
 * input.maskers.handdrawnanimal3
 * input.maskers.handdrawnanimal4
+* input.maskers.animaltech
 
 
 ====
@@ -498,6 +502,15 @@ Returns an object with one or more PIXI.Texture instances. The available graphic
 * input.graphics.handdrawnanimal1
 * input.graphics.handdrawnanimal2
 * input.graphics.handdrawnanimal3
+* input.graphics.crazyflower1
+* input.graphics.crazyflower2
+* input.graphics.crazyflower3
+* input.graphics.leaf1
+* input.graphics.leaf2
+* input.graphics.flower1
+* input.graphics.flower2
+* input.graphics.stone
+* input.graphics.wingwave
 
 
 ====
