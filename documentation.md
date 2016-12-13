@@ -63,7 +63,7 @@ Midground layer also has the capability of being masked by the band's video if a
 
 The framework will provide a number graphics, inputs and metadata for you to be able to quickly start building your own SPVisual.
 
-We are using PIXI as the main engine for drawing graphics into canvas but if you prefer to do you own thing on a separate canvas you can of course do and use PIXI for drawing that canvas.
+We are using PIXI as the main engine for drawing graphics into canvas but if you prefer to do you own thing on a separate canvas you can of course do and use PIXI for drawing that canvas. You can find the awesome PIXI library here: [http://pixijs.github.io/docs](http://pixijs.github.io/docs)
 
 
 ## A few rules to follow to improve your chances of having your graphics selected
