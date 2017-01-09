@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.057;
+    var version = 0.058;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 

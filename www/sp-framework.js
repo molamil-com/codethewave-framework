@@ -12765,27 +12765,27 @@ var init = function(){
     var sections = [
 
 
-        { "id":"intro", "label":"Intro", "label-min":"I", percentage:"3.3", starts:"0", ends:"6900" },
+        { "id":"intro", "label":"Intro", "label-min":"I", percentage:"4.2", starts:"0", ends:"8675" },
 
-        { "id":"verse1", "label":"Verse I", "label-min":"V",percentage:"16.3", starts:"6900", ends:"41075" },
+        { "id":"verse1", "label":"Verse I", "label-min":"V", percentage:"16.6", starts:"8675", ends:"42937" },
 
-        { "id":"preChorus1", "label":"Pre Chorus", "label-min":"PC", percentage:"8.2", starts:"41075", ends:"58199" },
+        { "id":"preChorus1", "label":"Pre Chorus", "label-min":"PC", percentage:"8.3", starts:"42937", ends:"60057" },
 
-        { "id":"chorus1", "label":"Chorus",  "label-min":"C", percentage:"8.2", starts:"58199", ends:"75231" },
+        { "id":"chorus1", "label":"Chorus", "label-min":"C", percentage:"8.4", starts:"60057", ends:"77258" },
 
-        { "id":"verse2", "label":"Verse II",  "label-min":"V", percentage:"16.3", starts:"75231", ends:"109480" },
+        { "id":"verse2", "label":"Verse II", "label-min":"V", percentage:"16.6", starts:"77258", ends:"111500" },
 
-        { "id":"preChorus2", "label":"Pre Chorus",  "label-min":"PC", percentage:"8.6", starts:"109480", ends:"126769" },
+        { "id":"preChorus2", "label":"Pre Chorus", "label-min":"PC", percentage:"8.3", starts:"111500", ends:"128659" },
 
-        { "id":"chorus2", "label":"Chorus",  "label-min":"C", percentage:"8.2", starts:"126769", ends:"143751" },
+        { "id":"chorus2", "label":"Chorus", "label-min":"C", percentage:"8.4", starts:"128659", ends:"145830" },
 
-        { "id":"bridge", "label":"Bridge",  "label-min":"B", percentage:"8.2", starts:"143751", ends:"161000" },
+        { "id":"bridge", "label":"Bridge", "label-min":"B", percentage:"8.3", starts:"145830", ends:"162954" },
 
-        { "id":"preChorus3", "label":"Pre Chorus",  "label-min":"PC", percentage:"8.2", starts:"161000", ends:"178129" },
+        { "id":"chorus3", "label":"Chorus", "label-min":"C", percentage:"8.3", starts:"162954", ends:"180108" },
 
-        { "id":"chorus3", "label":"Chorus",  "label-min":"C", percentage:"12.5", starts:"178129", ends:"203584" },
+        { "id":"outro", "label":"Outro", "label-min":"O", percentage:"12.6", starts:"180108", ends:"206000" }
 
-        { "id":"outro", "label":"O",  "label-min":"O", percentage:"2", starts:"203584", ends:"208000" }
+
 
     ];
 
@@ -12869,6 +12869,10 @@ module.exports = {
 
 
  */
+
+
+
+
 },{}],46:[function(require,module,exports){
 
 module.exports = {
@@ -13439,7 +13443,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.057;
+    var version = 0.058;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
