@@ -39,7 +39,11 @@ Library is located at http://scarletpleasure.molamil.com/sp-framework.js
         * [input.editing](#inputediting)
         * [input.cast](#inputcast)
         * [input.beat](#inputbeat)
+        * [input.pulse](#inputpulse)
         * [input.styling](#inputstyling)
+        * [input.currentTime](#inputcurrenttime)
+        * [input.duration](#inputduration)
+        * [input.percentagePlayed](#inputpercentageplayed)
     * [Helpers](#helpers)
         * [midgroundMask](#midgroundmask)
         * [fullscreenSprite](#fullscreensprite)
@@ -59,7 +63,7 @@ Midground layer also has the capability of being masked by the band's video if a
 
 The framework will provide a number graphics, inputs and metadata for you to be able to quickly start building your own SPVisual.
 
-We are using PIXI as the main engine for drawing graphics into canvas but if you prefer to do you own thing on a separate canvas you can of course do and use PIXI for drawing that canvas.
+We are using PIXI as the main engine for drawing graphics into canvas but if you prefer to do you own thing on a separate canvas you can of course do and use PIXI for drawing that canvas. You can find the awesome PIXI library here: [http://pixijs.github.io/docs](http://pixijs.github.io/docs)
 
 
 ## A few rules to follow to improve your chances of having your graphics selected
@@ -461,7 +465,10 @@ Returns an object with one or more PIXI.Texture instances. The available pattern
 * input.patterns.botanicorganic1
 * input.patterns.botanicorganic2
 * input.patterns.botanicorganic3
+* input.patterns.botanicorganic4
+* input.patterns.botanicorganic5
 * input.patterns.handdrawnanimal
+* input.patterns.handdrawnanimal2
 
 
 ====
@@ -478,6 +485,7 @@ Returns an object with one or more PIXI.Texture instances. The available maskers
 * input.maskers.handdrawnanimal2
 * input.maskers.handdrawnanimal3
 * input.maskers.handdrawnanimal4
+* input.maskers.animaltech
 
 
 ====
@@ -495,6 +503,15 @@ Returns an object with one or more PIXI.Texture instances. The available graphic
 * input.graphics.handdrawnanimal1
 * input.graphics.handdrawnanimal2
 * input.graphics.handdrawnanimal3
+* input.graphics.crazyflower1
+* input.graphics.crazyflower2
+* input.graphics.crazyflower3
+* input.graphics.leaf1
+* input.graphics.leaf2
+* input.graphics.flower1
+* input.graphics.flower2
+* input.graphics.stone
+* input.graphics.wingwave
 
 
 ====
@@ -623,22 +640,42 @@ The _id_ value can be one of the following:
 
 #### input.beat
 
-Returns an Object stating if the music is currently onBeat or offBeat.
+Returns an Object stating if the music is currently on beat (Music talk: -2-4).
 
 ```javascript
-{ "id": "singer" }
+{ "id": null }
 ```
 
 The _id_ value can be one of the following:
 
 <dl>
-  <dt>onBeat</dt>
+  <dt>on</dt>
   <dd>The sound is on beat.</dd>
 
-  <dt>offBeat</dt>
+  <dt>null</dt>
   <dd>The sound is off beat.</dd>
 </dl>
+
+====
+
+
+#### input.pulse
+
+Returns an Object stating if the music is currently on pulse (Music talk: 1-2-3-4).
+
+```javascript
+{ "id": null }
 ```
+
+The _id_ value can be one of the following:
+
+<dl>
+  <dt>on</dt>
+  <dd>The sound is on pulse.</dd>
+
+  <dt>null</dt>
+  <dd>The sound is off pulse.</dd>
+</dl>
 
 ====
 
@@ -663,9 +700,27 @@ The _id_ value can be one of the following:
   <dt>color</dt>
   <dd>Band members are wearing colors.</dd>
 </dl>
-```
 
 ====
+
+
+#### input.currentTime
+
+Returns the current position in seconds.
+
+====
+
+
+#### input.duration
+
+Returns the video length in seconds.
+
+====
+
+
+#### input.percentagePlayed
+
+Returns how much of the video has been played in a percentage between 0 and 100.
 
 
 ### Helpers

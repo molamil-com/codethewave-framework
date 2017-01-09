@@ -47,11 +47,11 @@ var init = function(PIXI, input){
 
         leaf2: PIXI.Texture.fromImage(serverPath+folder+'SP_element_leaf_palm_001.png'),
 
-        flower1: PIXI.Texture.fromImage(serverPath+folder+'SP_element_pinkflower_circular.png'),
-
         stone: PIXI.Texture.fromImage(serverPath+folder+'SP_element_stone_001.png'),
 
         flower1: PIXI.Texture.fromImage(serverPath+folder+'SP_element_whiteflower.png'),
+
+        flower2: PIXI.Texture.fromImage(serverPath+folder+'SP_element_pinkflower_circular.png'),
 
         wingwave: PIXI.Texture.fromImage(serverPath+folder+'SP_element_wing_wave2.png')
 

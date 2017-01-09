@@ -4,7 +4,7 @@
 
 This is the JavaScript framework used to produce the graphics which users can choose between on [CodeTheWave.com](http://www.codethewave.com).
 
-A jury will select the best contributions to be included on [CodeTheWave.com](http://www.codethewave.com) but even if your contribution isn't selected you can still share your contribution yourself.
+A jury will select the best contributions to be included on [CodeTheWave.com](http://www.codethewave.com) but even if your contribution isn't selected you can still share your contribution yourself. We will only include visuals which works and adapts to different screen sizes and don't contain errors.
 
 
 ## What it looks like
@@ -13,15 +13,15 @@ You can see an example running on [CodePen](http://codepen.io/ramiroespada/pen/A
 
 The music video is divided into 10 different parts:
 
-1. Intro
-2. Verse 1
-3. Pre chorus
-4. Chorus
-5. Verse 2
-6. Pre chorus
-7. Chorus
-8. Bridge
-9. Chorus
+1. Verse 1
+2. Pre-chorus 1
+3. Chorus 1
+4. Verse 2
+5. Pre-chorus 2
+6. Chorus 2
+7. Bridge
+8. Pre-chorus 3
+9. Chorus 3
 10. Outro
 
 When creating a personal music video on [CodeTheWave.com](http://www.codethewave.com) the user will select a different script for each part. A unique url is then generated for each combination of graphics/sections and the user can share their video.
