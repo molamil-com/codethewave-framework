@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.058;
+    var version = 0.060;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -545,7 +545,7 @@ var fps = require('fps');
 
         if (input.isTouchDevice && input.isTouchDevice[0] != "android") {
 
-            audio = createPlayer(serverPath + "audio/TheWaveInstrumental.mp3", {
+            audio = createPlayer(serverPath + "audio/TheWave.mp3", {
                 crossOrigin: "anonymous",
                 context: audioContext,
                 buffer: shouldBuffer,

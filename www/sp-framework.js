@@ -12620,11 +12620,11 @@ var init = function(PIXI, input){
 
         leaf2: PIXI.Texture.fromImage(serverPath+folder+'SP_element_leaf_palm_001.png'),
 
-        flower1: PIXI.Texture.fromImage(serverPath+folder+'SP_element_pinkflower_circular.png'),
-
         stone: PIXI.Texture.fromImage(serverPath+folder+'SP_element_stone_001.png'),
 
         flower1: PIXI.Texture.fromImage(serverPath+folder+'SP_element_whiteflower.png'),
+
+        flower2: PIXI.Texture.fromImage(serverPath+folder+'SP_element_pinkflower_circular.png'),
 
         wingwave: PIXI.Texture.fromImage(serverPath+folder+'SP_element_wing_wave2.png')
 
@@ -13169,9 +13169,12 @@ function Video() {
 
         SPF.log("document.location.hostname", document.location.hostname);
 
+
+        /*
         if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ){
            serverPath = "./";
         }
+        */
 
 
         if(document.location.hostname == "codethewave.com" ){
@@ -13190,17 +13193,17 @@ function Video() {
         if(document.location.hostname.indexOf("codepen") >=1 && navigator.userAgent.search("Firefox") ){
 
             videos = [
-                {file:"chroma01-w480.mp4", width:480, height:540},
-                {file:"chroma01-w960.mp4", width:960, height:1080}
+                {file:"final-chroma01-w480.mp4", width:480, height:540},
+                {file:"final-chroma01--w960.mp4", width:960, height:1080}
             ];
 
         } else {
 
             videos = [
-                {file:"chroma01-w480.mp4", width:480, height:540},
-                {file:"chroma01-w960.mp4", width:960, height:1080},
-                {file:"chroma01-w1440.mp4", width:1440, height:1620},
-                {file:"chroma01-w1920.mp4", width:1920, height:2160}
+                {file:"final-chroma01-w480.mp4", width:480, height:540},
+                {file:"final-chroma01-w960.mp4", width:960, height:1080},
+                {file:"final-chroma01-w1440.mp4", width:1440, height:1620},
+                {file:"final-chroma01-w1920.mp4", width:1920, height:2160}
             ];
 
         }
@@ -13443,7 +13446,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.058;
+    var version = 0.060;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13966,7 +13969,7 @@ var fps = require('fps');
 
         if (input.isTouchDevice && input.isTouchDevice[0] != "android") {
 
-            audio = createPlayer(serverPath + "audio/TheWaveInstrumental.mp3", {
+            audio = createPlayer(serverPath + "audio/TheWave.mp3", {
                 crossOrigin: "anonymous",
                 context: audioContext,
                 buffer: shouldBuffer,

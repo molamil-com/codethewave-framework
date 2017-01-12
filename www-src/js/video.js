@@ -36,9 +36,12 @@ function Video() {
 
         SPF.log("document.location.hostname", document.location.hostname);
 
+
+        /*
         if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ){
            serverPath = "./";
         }
+        */
 
 
         if(document.location.hostname == "codethewave.com" ){
@@ -57,17 +60,17 @@ function Video() {
         if(document.location.hostname.indexOf("codepen") >=1 && navigator.userAgent.search("Firefox") ){
 
             videos = [
-                {file:"chroma01-w480.mp4", width:480, height:540},
-                {file:"chroma01-w960.mp4", width:960, height:1080}
+                {file:"final-chroma01-w480.mp4", width:480, height:540},
+                {file:"final-chroma01--w960.mp4", width:960, height:1080}
             ];
 
         } else {
 
             videos = [
-                {file:"chroma01-w480.mp4", width:480, height:540},
-                {file:"chroma01-w960.mp4", width:960, height:1080},
-                {file:"chroma01-w1440.mp4", width:1440, height:1620},
-                {file:"chroma01-w1920.mp4", width:1920, height:2160}
+                {file:"final-chroma01-w480.mp4", width:480, height:540},
+                {file:"final-chroma01-w960.mp4", width:960, height:1080},
+                {file:"final-chroma01-w1440.mp4", width:1440, height:1620},
+                {file:"final-chroma01-w1920.mp4", width:1920, height:2160}
             ];
 
         }
