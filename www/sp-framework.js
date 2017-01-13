@@ -13194,7 +13194,7 @@ function Video() {
 
             videos = [
                 {file:"final-chroma01-w480.mp4", width:480, height:540},
-                {file:"final-chroma01--w960.mp4", width:960, height:1080}
+                {file:"final-chroma01-w960.mp4", width:960, height:1080}
             ];
 
         } else {
@@ -13446,7 +13446,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.060;
+    var version = 0.061;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
