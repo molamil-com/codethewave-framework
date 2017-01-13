@@ -30,7 +30,9 @@ function Video() {
 
     var videos;
 
-    this.init = function(PIXI, dom, container, _renderer, resolution, input, callback, muted) {
+    var loaded;
+
+    this.init = function(PIXI, dom, container, _renderer, resolution, input, callback, muted, preload) {
 
         //
 
@@ -38,7 +40,7 @@ function Video() {
 
 
         /*
-        if(document.location.hostname == "192.168.0.26" || document.location.hostname == "localhost" ){
+        if(document.location.hostname == "192.168.0.13" || document.location.hostname == "localhost" ){
            serverPath = "./";
         }
         */
@@ -75,7 +77,6 @@ function Video() {
 
         }
 
-
         var selectedVideo = videos[0];
 
         for(var i=0;i<videos.length;i++){
@@ -107,7 +108,11 @@ function Video() {
         */
 
 
-        video = '<video crossOrigin="anonymous" id="BPSPVideo" controls autobuffer loop autoplay webkit-playsinline playsinline >';
+        video = '<video crossOrigin="anonymous" id="BPSPVideo" controls autobuffer loop autoplay webkit-playsinline playsinline>';
+
+        if(preload){
+            video = '<video crossOrigin="anonymous" id="BPSPVideo" controls autobuffer loop autoplay webkit-playsinline playsinline preload="auto">';
+        }
 
         video += '<source src="' + videoPath + '" > ';
 
@@ -164,6 +169,15 @@ function Video() {
                 callback();
             callbackCalled = true
         };
+
+
+        loaded = false;
+        video.onloadeddata = function() {
+
+            loaded = true;
+        };
+
+
 
         renderer = _renderer;
 
@@ -251,6 +265,10 @@ function Video() {
     this.getPositionPercentage = function(){
         return  (100/video.duration)*video.currentTime;
     };
+
+    this.getLoaded = function(){
+        return loaded;
+    }
 
     this.resize = function(input){
 

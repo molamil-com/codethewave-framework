@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.061;
+    var version = 0.062;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -214,6 +214,7 @@ var fps = require('fps');
 
     function load(loaded){
 
+        var debug = Boolean(getURLVars()["isDebug"]);
 
         videoLoaded = false;
 
@@ -267,25 +268,47 @@ var fps = require('fps');
         var loadingVideo = new createVideo();
 
 
+        var timer = 1500;
+        if(SPF.isTouchDevice() == "ios"){
+            timer = 8000;
+        };
+
         loadingVideo.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
 
             input.loading = setInterval(function(){
 
-               if(loadingVideo.getVideoSource().readyState == 4){
+                if(SPF.isTouchDevice() == "ios"){
 
-                   clearInterval(input.loading);
+                    if(loadingVideo.getVideoSource().readyState == 4 && loadingVideo.getLoaded() && loadingVideo.getVideoSource().buffered.end(0) >= loadingVideo.getVideoSource().duration){
 
-                   $("#BPSPVideo").remove();
-                   loader.load();
-                   videoLoaded = true;
+                        clearInterval(input.loading);
 
-               }
+                        $("#BPSPVideo").remove();
+                        loader.load();
+                        videoLoaded = true;
+                    }
+
+
+                } else {
+
+                    if(loadingVideo.getVideoSource().readyState == 4){
+
+                        clearInterval(input.loading);
+
+                        $("#BPSPVideo").remove();
+                        loader.load();
+                        videoLoaded = true;
+
+                    }
+
+                }
 
 
 
-            },500);
 
-        }, true);
+            }, timer);
+
+        }, true, true);
 
     };
 
@@ -325,7 +348,7 @@ var fps = require('fps');
                 videoReady();
             }
 
-        },false);
+        },false, false);
 
         if(!input.isTouchDevice){
             video.create(PIXI, domContainer, videoground, renderer, resolution, input);
@@ -1023,6 +1046,12 @@ var fps = require('fps');
 
         tip = conf.tip;
 
+        var debug = getURLVars()["isDebug"];
+
+        if(debug != null){
+            conf.debug = debug;
+        }
+
         $("#SPFDebug").css("display","none");
         if(Boolean(conf.debug))
             $("#SPFDebug").css("display","block");
@@ -1242,6 +1271,33 @@ var fps = require('fps');
         }
     };
 
+    function isChrome() {
+        var ua = navigator.userAgent.toLowerCase();
+
+        if (ua.indexOf('chrome') != -1) {
+            if (ua.indexOf('safari') > -1) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    };
+
+    function getURLVars(){
+
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            var hash = value.indexOf("#");
+            if(hash >= 1){
+                value = value.slice(0,hash);
+            }
+            vars[key] = value;
+        });
+
+        return vars;
+
+    };
+
     function isTouchDevice() {
 
         var deviceAgent = navigator.userAgent.toLowerCase();
@@ -1288,6 +1344,9 @@ var fps = require('fps');
         start:start,
         play:play,
         pause:pause,
+        isSafari:isSafari,
+        isChrome:isChrome,
+        isTouchDevice:isTouchDevice,
         playSection:playSection,
         startFrontend:startFrontend,
         getVideoSprite:getVideoSprite,
