@@ -13722,7 +13722,7 @@ var fps = require('fps');
 
             input.loading = setInterval(function(){
 
-                console.log("SPF.isTouchDevice(): "+SPF.isTouchDevice());
+                // console.log("SPF.isTouchDevice(): "+SPF.isTouchDevice());
 
                 if(SPF.isTouchDevice() == "ios"){
 
@@ -14474,13 +14474,10 @@ var fps = require('fps');
                 stage.mouseout = function(ev) {
                     mouseOut();
                 }
-
             };
-
         }
 
         stage.interactive = true;
-
         input.width = getWindowCoords()[0];
         input.height = getWindowCoords()[1];
 
