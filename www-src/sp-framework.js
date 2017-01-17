@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.063;
+    var version = 0.065;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -269,39 +269,57 @@ var fps = require('fps');
 
         var loadingVideo = new createVideo();
 
-
-        var timer = 1500;
-        if(SPF.isTouchDevice() == "ios"){
-            timer = 8000;
-        };
-
+        var timer = 500;
 
         loadingVideo.init(PIXI, domContainer, videoground, renderer, resolution, input, function(){
+
+            var vid = document.getElementById('BPSPVideo');
+
+            vid.play();
+
+            var debug = Boolean(getURLVars()["isDebug"]);
+
+            var prevPercent;
 
             input.loading = setInterval(function(){
 
                 // console.log("SPF.isTouchDevice(): "+SPF.isTouchDevice());
 
+                if(debug)
+                    console.log("video readyState: "+vid.readyState);
+
                 if(SPF.isTouchDevice() == "ios"){
 
-                    // console.log("loadingVideo.getVideoSource().readyState: "+loadingVideo.getVideoSource().readyState);
+                    if(vid.readyState == 4){
 
-                    // console.log("loadingVideo.getVideoSource().buffered.end(0): "+ loadingVideo.getVideoSource().buffered.end(0));
+                        var videoDuration = vid.duration;
+                        var buffered = vid.buffered.end(0);
+                        var percent = 100 * buffered / videoDuration;
 
-                    // console.log("loadingVideo.getVideoSource().duration: "+ loadingVideo.getVideoSource().duration);
+                        if(prevPercent == percent){
+                            vid.pause();
+                            vid.play(buffered+1);
+                        }
 
-                    if(loadingVideo.getVideoSource().readyState == 4 && loadingVideo.getVideoSource().buffered.end(0) >= loadingVideo.getVideoSource().duration/2){
+                        prevPercent = percent;
 
-                        clearInterval(input.loading);
+                        if(debug)
+                            console.log("video loaded - percent: "+percent);
 
-                        $("#BPSPVideo").remove();
-                        loader.load();
-                        videoLoaded = true;
+                        // if (buffered >= videoDuration) {
+
+                        if (percent >= 50) {
+                            clearInterval(input.loading);
+                            $("#BPSPVideo").remove();
+                            loader.load();
+                            videoLoaded = true;
+                        }
+
                     }
 
                 } else {
 
-                    if(loadingVideo.getVideoSource().readyState == 4){
+                    if(vid.readyState == 4){
 
                         clearInterval(input.loading);
 
@@ -884,10 +902,11 @@ var fps = require('fps');
 
 
             if(isTouchDevice()){
+
                 if(input.frameRate < 18) {
                     fpsPoor = true;
                     SPF.log("fpsPoor", fpsPoor);
-                };
+                }
 
                 if(video != null){
                     if(fpsPoor){

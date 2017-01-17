@@ -77,6 +77,13 @@ function Video() {
 
         }
 
+
+        if(SPF.isTouchDevice() == "ios"){
+            videos = [
+                {file:"final-chroma01-w480.mp4", width:480, height:540}
+            ];
+        }
+
         var selectedVideo = videos[0];
 
         for(var i=0;i<videos.length;i++){
@@ -106,7 +113,6 @@ function Video() {
         console.log("selectedVideo", JSON.stringify(selectedVideo));
         console.log("videoPath", videoPath);
         */
-
 
         video = '<video crossOrigin="anonymous" id="BPSPVideo" controls autobuffer loop autoplay webkit-playsinline playsinline>';
 
@@ -169,15 +175,6 @@ function Video() {
                 callback();
             callbackCalled = true
         };
-
-
-        loaded = false;
-        video.onloadeddata = function() {
-
-            loaded = true;
-        };
-
-
 
         renderer = _renderer;
 
