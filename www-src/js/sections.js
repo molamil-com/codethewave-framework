@@ -4,25 +4,26 @@ var init = function(){
     var sections = [
 
 
-        { "id":"intro", "label":"Intro", "label-min":"I", percentage:"4.2", starts:"0", ends:"8675" },
+        { "id":"verse1", "label":"Verse I", "label-min":"V", percentage:"19.4", starts:"0", ends:"40220" },
 
-        { "id":"verse1", "label":"Verse I", "label-min":"V", percentage:"16.6", starts:"8675", ends:"42937" },
+        { "id":"preChorus1", "label":"Pre Chorus I", "label-min":"PC", percentage:"8.2", starts:"40220", ends:"57190" },
 
-        { "id":"preChorus1", "label":"Pre Chorus", "label-min":"PC", percentage:"8.3", starts:"42937", ends:"60057" },
+        { "id":"chorus1", "label":"Chorus I", "label-min":"C", percentage:"8.2", starts:"57190", ends:"74160" },
 
-        { "id":"chorus1", "label":"Chorus", "label-min":"C", percentage:"8.4", starts:"60057", ends:"77258" },
+        { "id":"verse2", "label":"Verse II", "label-min":"V", percentage:"16.3", starts:"74160", ends:"108100" },
 
-        { "id":"verse2", "label":"Verse II", "label-min":"V", percentage:"16.6", starts:"77258", ends:"111500" },
+        { "id":"preChorus2", "label":"Pre Chorus II", "label-min":"PC", percentage:"8.2", starts:"108100", ends:"125190" },
 
-        { "id":"preChorus2", "label":"Pre Chorus", "label-min":"PC", percentage:"8.3", starts:"111500", ends:"128659" },
+        { "id":"chorus2", "label":"Chorus II", "label-min":"C", percentage:"8.6", starts:"125190", ends:"143220" },
 
-        { "id":"chorus2", "label":"Chorus", "label-min":"C", percentage:"8.4", starts:"128659", ends:"145830" },
+        { "id":"bridge", "label":"Bridge", "label-min":"B", percentage:"8.1", starts:"143220", ends:"160000" },
 
-        { "id":"bridge", "label":"Bridge", "label-min":"B", percentage:"8.3", starts:"145830", ends:"162954" },
+        { "id":"preChorus3", "label":"Pre Chorus III", "label-min":"PC", percentage:"7.8", starts:"160000", ends:"176220" },
 
-        { "id":"chorus3", "label":"Chorus", "label-min":"C", percentage:"8.3", starts:"162954", ends:"180108" },
+        { "id":"chorus3", "label":"Chorus III", "label-min":"C", percentage:"8.6", starts:"176220", ends:"194140" },
 
-        { "id":"outro", "label":"Outro", "label-min":"O", percentage:"12.6", starts:"180108", ends:"206000" }
+        { "id":"outro", "label":"Outro", "label-min":"O", percentage:"6.6", starts:"194140", ends:"208000" }
+
 
 
 
@@ -40,10 +41,14 @@ module.exports = {
 
 /*
 
+
+
+
+
  00:00:000 verse1 = 0
  00:40:220 preChorus1 = 40220
  00:57:190 chorus1 = 57190
- 01:14:160 verse2 = 58199
+ 01:14:160 verse2 = 74160
  01:48:100 preChorus2 = 108100
  02:05:190 chorus2 = 125190
  02:23:220 bridge = 143220
@@ -51,6 +56,18 @@ module.exports = {
  02:56:220 choru3 = 176220
  03:14:140 outro = 194140
 
+
+
+ 00:00:00 Verse
+ 00:40:22 Pre Chorus
+ 00:57:19 Chorus
+ 01:14:16 Verse
+ 01:48:10 Pre Chorus
+ 02:05:19 Chorus
+ 02:23:22 Bridge
+ 02:40:00 Pre Chorus
+ 02:56:22 Chorus
+ 03:14:14 Outro
 
  --------------------------------------------------------
 
@@ -104,7 +121,8 @@ module.exports = {
 
 --------------------------------------------------------
 
- total = 3:26.000 - 206000
+ total = 3:28.000 - 208000
+
 
 
  */
