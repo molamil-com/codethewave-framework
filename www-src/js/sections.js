@@ -4,7 +4,9 @@ var init = function(){
     var sections = [
 
 
-        { "id":"verse1", "label":"Verse I", "label-min":"V", percentage:"19.4", starts:"0", ends:"40220" },
+        { "id":"intro", "label":"Intro", "label-min":"I", percentage:"2.4", starts:"0", ends:"5120" },
+
+        { "id":"verse1", "label":"Verse I", "label-min":"V", percentage:"17.4", starts:"5120", ends:"40220" },
 
         { "id":"preChorus1", "label":"Pre Chorus I", "label-min":"PC", percentage:"8.2", starts:"40220", ends:"57190" },
 
@@ -25,8 +27,6 @@ var init = function(){
         { "id":"outro", "label":"Outro", "label-min":"O", percentage:"6.6", starts:"194140", ends:"208000" }
 
 
-
-
     ];
 
     return sections;
@@ -45,7 +45,8 @@ module.exports = {
 
 
 
- 00:00:000 verse1 = 0
+ 00:00:000 intro = 0
+ 00:05:120 verse1 = 5120
  00:40:220 preChorus1 = 40220
  00:57:190 chorus1 = 57190
  01:14:160 verse2 = 74160

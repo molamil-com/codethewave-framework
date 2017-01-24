@@ -6,8 +6,8 @@ function Video() {
 
     var serverPath = require("./serverPath.js").serverPath;
 
-    var videoWidth = 1920;
-    var videoHeight = 2160;
+    var videoWidth = 960;
+    var videoHeight = 1080;
 
     var videoRenderTexture;
     var videoContainer;
@@ -36,18 +36,20 @@ function Video() {
 
         //
 
+       // input.isTouchDevice = false;
+
+
         SPF.log("document.location.hostname", document.location.hostname);
 
 
-        /*
-        if(document.location.hostname == "192.168.0.13" || document.location.hostname == "localhost" ){
+        if(document.location.hostname == "192.168.0.13"){
            serverPath = "./";
         }
-        */
 
 
         if(document.location.hostname == "codethewave.com" ){
-            serverPath = "http://codethewave.com/";
+            // serverPath = "http://codethewave.com/";
+            serverPath = "./";
         }
 
         if(String(document.location.pathname).indexOf("examples") >=1){
@@ -59,20 +61,27 @@ function Video() {
 
         // CREATE VIDEO ELEMENTS
 
+        /*
+        final-chroma02-w480-h270.mp4
+        final-chroma02-w960-h540.mp4
+        final-chroma02-w1280-h720.mp4
+        final-chroma02-w1920-h1080.mp4
+        */
+
         if(document.location.hostname.indexOf("codepen") >=1 && navigator.userAgent.search("Firefox") ){
 
             videos = [
-                {file:"final-chroma01-w480.mp4", width:480, height:540},
-                {file:"final-chroma01-w960.mp4", width:960, height:1080}
+                {file:"final-chroma02-w480-h270.mp4", width:480, height:540},
+                {file:"final-chroma02-w960-h540.mp4", width:960, height:1080}
             ];
 
         } else {
 
             videos = [
-                {file:"final-chroma01-w480.mp4", width:480, height:540},
-                {file:"final-chroma01-w960.mp4", width:960, height:1080},
-                {file:"final-chroma01-w1440.mp4", width:1440, height:1620},
-                {file:"final-chroma01-w1920.mp4", width:1920, height:2160}
+                {file:"final-chroma02-w480-h270.mp4", width:480, height:540},
+                {file:"final-chroma02-w960-h540.mp4", width:960, height:1080},
+                {file:"final-chroma02-w1280-h720.mp4", width:1280, height:1440},
+                {file:"final-chroma02-w1920-h1080.mp4", width:1920, height:2160}
             ];
 
         }
@@ -80,9 +89,12 @@ function Video() {
 
         if(SPF.isTouchDevice() == "ios"){
             videos = [
-                {file:"final-chroma01-w480.mp4", width:480, height:540}
+                {file:"final-chroma02-w480-h270.mp4", width:480, height:540}
             ];
         }
+
+
+
 
         var selectedVideo = videos[0];
 
@@ -91,9 +103,11 @@ function Video() {
             var v = videos[i];
 
             if (input.isTouchDevice) {
+
                 if(input.width/2 >= v["width"] ){
-                    selectedVideo = v;
-                }
+                    selectedVideo = v;}
+
+
             } else {
                 if(input.width >= v["width"] ){
                     selectedVideo = v;
@@ -106,6 +120,10 @@ function Video() {
 
 
         SPF.log("videoPath", videoPath);
+
+        if (window.console && typeof window.console.log == "function"){
+            console.log(videoPath);
+        }
 
         /*
         console.log("videos: ", videos);
@@ -141,6 +159,7 @@ function Video() {
 
         $(dom).append(video);
 
+
         if(input.isTouchDevice){
             if(input.isTouchDevice[0] == "android"){
                 $("#BPSPVideo").css({"position": "absolute", "display": "block", top: 0, left: 0, width: "100%", height:"100%"});
@@ -148,6 +167,8 @@ function Video() {
         } else {
             $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
         }
+
+
         video = document.getElementById('BPSPVideo');
 
         video.setAttribute('crossOrigin', 'anonymous');
@@ -160,6 +181,7 @@ function Video() {
                 video.volume = 1;
             }
         }
+
 
         var callbackCalled = false;
 
@@ -178,10 +200,13 @@ function Video() {
 
         renderer = _renderer;
 
+        /*
         if (input.isTouchDevice) {
             videoWidth = Math.ceil(videoWidth / 2);
             videoHeight = Math.ceil(videoHeight / 2);
         }
+        */
+
         // CREATE PIXI TEXTURES
 
         mainContainer = new PIXI.Container();
@@ -200,7 +225,9 @@ function Video() {
 
     };
 
-    this.create = function(PIXI, dom, container, _renderer, resolution, input){
+    this.create = function(PIXI, dom, container, _renderer, resolution, input, callback){
+
+
 
         videoRenderTexture = new PIXI.RenderTexture.create(videoWidth, videoHeight*input.resolution);
         videoMask = new PIXI.Sprite(videoRenderTexture);
@@ -212,12 +239,15 @@ function Video() {
 
         videoSource = videoTexture.baseTexture.source;
         videoSource.crossOrigin = "anonymous";
-        videoSource.loop = true;
+        videoSource.loop = false;
 
         videoSprite.texture = videoTexture;
         videoSpriteMask.texture = videoTexture;
 
-        videoSprite.mask = videoMask;
+       videoSprite.mask = videoMask;
+
+        var resolution = 1; // input.resolution;
+
         videoSprite.scale.set((1)/resolution);
         videoSpriteMask.scale.set((1)/resolution);
 
@@ -227,6 +257,10 @@ function Video() {
 
         video.pause();
 
+        if(callback != null){
+
+            callback();
+        }
     };
 
     this.render = function(realTime, input) {
@@ -236,7 +270,6 @@ function Video() {
             if(realTime){
                 renderer.render(videoContainer, videoRenderTexture);
             } else {
-
                 videoTexture.baseTexture.autoUpdate = true;
                 videoTexture.baseTexture.update();
                 videoTexture.baseTexture.autoUpdate = false;
@@ -269,18 +302,21 @@ function Video() {
 
     this.resize = function(input){
 
-
         var w =  input.width;
         var h =  input.height;
 
-
+        var resolution = 1; // input.resolution;
 
         if(videoSpriteMask) {
 
-            videoSpriteMask.y = -Math.round(videoHeight / (2));
+            if(input.resolution == 2 && input.isTouchDevice){
+                videoSpriteMask.y = -(videoHeight/4);
+            }else {
+                videoSpriteMask.y = -(videoHeight/2);
+            }
 
             mainContainer.width = ((w * ( h / w)) * (2));
-            mainContainer.height = (h * 2) * input.resolution;
+            mainContainer.height = (h * 2) * resolution;
 
 
             if( mainContainer.width < w){
@@ -289,12 +325,13 @@ function Video() {
 
                 mainContainer.width = w;
 
-                mainContainer.height = (h*input.resolution)*ratio;
+                mainContainer.height = (h*resolution)*ratio;
 
             }
+
             mainContainer.position.x = ((w) / 2) - (mainContainer.width / 2);
 
-            mainContainer.position.y = ((h*input.resolution) / 2)- (mainContainer.height / 4);
+            mainContainer.position.y = ((h*resolution) / 2)- (mainContainer.height / 4);
 
         }
     };

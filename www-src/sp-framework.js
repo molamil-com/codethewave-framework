@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.066;
+    var version = 0.074;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -157,7 +157,6 @@ var fps = require('fps');
 
         SPF.log("isTouchDevice", input.isTouchDevice);
 
-
         if(input.isTouchDevice){
 
             domContainer.addEventListener("touchmove", function(e){
@@ -167,7 +166,7 @@ var fps = require('fps');
 
             }, true);
 
-            window.addEventListener('deviceorientation',  orientationHandler, false);
+            // window.addEventListener('deviceorientation',  orientationHandler, false);
             window.addEventListener('MozOrientation',     orientationHandler, false);
         }
 
@@ -340,8 +339,8 @@ var fps = require('fps');
 
     function startFrontend(view, cover){
 
-
-        domContainer.removeChild(renderer.view);
+        if(domContainer != null && renderer != null && renderer.view != null )
+            domContainer.removeChild(renderer.view);
 
         domCover = cover;
 
@@ -495,12 +494,20 @@ var fps = require('fps');
                 domCover.removeEventListener("click", touchDeviceStart, false);
 
                 if (input.isTouchDevice){
-                    video.create(PIXI, domContainer, videoground, renderer, resolution, input);
+                    video.create(PIXI, domContainer, videoground, renderer, resolution, input, function(){
+
+                        playVideoAt(currentTime);
+                        play();
+                        canPlay();
+
+                    });
+                } else {
+                    playVideoAt(currentTime);
+                    play();
+                    canPlay();
+
                 }
 
-                playVideoAt(currentTime);
-                play();
-                canPlay();
 
             }, false);
 
@@ -544,6 +551,9 @@ var fps = require('fps');
         $("body").attr("data-video-paused", "true");
         siteActive = false;
         video.getVideoSource().pause();
+
+        if(audio)
+            audio.pause();
     };
 
     function play(){
@@ -551,6 +561,9 @@ var fps = require('fps');
         $("body").attr("data-video-paused", "false");
         video.getVideoSource().play();
         siteActive = true;
+
+        if(audio)
+            audio.play();
     }
 
     function canPlay(){
@@ -598,7 +611,7 @@ var fps = require('fps');
                 crossOrigin: "anonymous",
                 context: audioContext,
                 buffer: shouldBuffer,
-                loop: true
+                loop: false
             });
 
             audioUtil = createAnalyser(audio.node, audio.context, {
@@ -929,6 +942,7 @@ var fps = require('fps');
                 if(video)
                     video.render(true, input);
             }
+
 
             if(ui != null)
                 ui.render(video.getPositionPercentage());
@@ -1355,7 +1369,7 @@ var fps = require('fps');
             }
         }
 
-        return  isTouchDevice;
+        return isTouchDevice;
     }
 
     // -- EXPORTS
