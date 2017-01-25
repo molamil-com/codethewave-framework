@@ -123,6 +123,7 @@ var fps = require('fps');
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
             transparent: false,
+            resolution:1,
             backgroundColor: conf.color
         }, false);
 

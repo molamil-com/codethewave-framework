@@ -13167,6 +13167,7 @@ function Video() {
     var videoMask;
 
     var videoSprite;
+    var videoTexture;
     var videoTexture1;
     var videoTexture2;
     var videoSource;
@@ -13189,7 +13190,6 @@ function Video() {
 
     this.init = function(PIXI, dom, container, _renderer, resolution, input, callback, muted, preload) {
 
-        //
 
        // input.isTouchDevice = false;
 
@@ -13316,7 +13316,7 @@ function Video() {
         $(dom).append(video);
 
         if(input.isTouchDevice && input.isTouchDevice[0] == "android"){
-                $("#BPSPVideo").css({"position": "absolute", "display": "block", "opacity":0, top: 0, left: 0, width: videoWidth, height:videoHeight});
+                $("#BPSPVideo").css({"position": "absolute", "display": "block", top: 0, left: -videoWidth, width: videoWidth, height:videoHeight});
 
         } else {
             $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
@@ -13366,12 +13366,12 @@ function Video() {
 
         videoSprite = new PIXI.Sprite();
         videoSprite.width = videoWidth;
-        videoSprite.height = videoHeight/2;
+        videoSprite.height = videoHeight;
         videoSprite.y = 0;
 
         videoSpriteMask = new PIXI.Sprite();
         videoSpriteMask.width = videoWidth;
-        videoSpriteMask.height = videoHeight/2;
+        videoSpriteMask.height = videoHeight;
         videoSpriteMask.y = 0;
 
         videoContainer = new PIXI.Container();
@@ -13388,18 +13388,13 @@ function Video() {
         video.setAttribute('webkit-playsinline', 'webkit-playsinline');
         video.setAttribute('playsinline', 'playsinline');
 
-        videoTexture1 = PIXI.Texture.fromVideo(video,PIXI.SCALE_MODES.NEAREST);
+        videoTexture1 = PIXI.Texture.fromVideo(video);
 
-        videoTexture2 = PIXI.Texture.fromVideo(video,PIXI.SCALE_MODES.NEAREST);
+        videoTexture2 = PIXI.Texture.fromVideo(video);
 
         videoSource = videoTexture1.baseTexture.source;
         videoSource.crossOrigin = "anonymous";
         videoSource.loop = false;
-
-
-        videoSprite.texture = videoTexture1;
-
-        videoSpriteMask.texture = videoTexture2;
 
         videoSprite.mask = videoMask;
 
@@ -13407,6 +13402,10 @@ function Video() {
         mainContainer.addChild(videoMask);
 
         container.addChild(mainContainer);
+
+
+        videoSprite.texture = videoTexture1;
+        videoSpriteMask.texture = videoTexture2;
 
         video.pause();
 
@@ -13423,7 +13422,7 @@ function Video() {
 
     this.render = function(input) {
 
-        if(videoRenderTexture){
+        if(videoRenderTexture && video){
             videoTexture1.baseTexture.update();
             videoTexture2.baseTexture.update();
             renderer.render(videoContainer, videoRenderTexture);
@@ -13453,20 +13452,21 @@ function Video() {
 
     this.resize = function(input){
 
-        if(videoTexture1){
+
+        if(videoTexture1 && video){
+
 
             if(videoTexture1.width >1)
-                videoSprite.texture.frame = new PIXI.Rectangle(0, 0, videoWidth, videoHeight/2);
-
+                videoSprite.texture.frame = new PIXI.Rectangle(0, 0, videoTexture1.width, videoTexture1.height/2);
 
 
             if(videoTexture2.width >1)
-                videoSpriteMask.texture.frame = new PIXI.Rectangle(0, videoHeight/2, videoWidth, videoHeight/2);
-
+                videoSpriteMask.texture.frame = new PIXI.Rectangle(0, videoTexture2.height/2, videoTexture2.width, videoTexture2.height/2);
 
         } else {
             return;
         }
+
 
         var w =  input.width;
         var h =  input.height;
@@ -13625,6 +13625,7 @@ var fps = require('fps');
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
             transparent: false,
+            resolution:1,
             backgroundColor: conf.color
         }, false);
 
