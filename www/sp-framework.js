@@ -13188,6 +13188,7 @@ function Video() {
 
     var loaded;
 
+
     this.init = function(PIXI, dom, container, _renderer, resolution, input, callback, muted, preload) {
 
 
@@ -13422,6 +13423,7 @@ function Video() {
 
     this.render = function(input) {
 
+
         if(videoRenderTexture && video){
             videoTexture1.baseTexture.update();
             videoTexture2.baseTexture.update();
@@ -13453,19 +13455,7 @@ function Video() {
     this.resize = function(input){
 
 
-        if(videoTexture1 && video){
-
-
-            if(videoTexture1.width >1)
-                videoSprite.texture.frame = new PIXI.Rectangle(0, 0, videoTexture1.width, videoTexture1.height/2);
-
-
-            if(videoTexture2.width >1)
-                videoSpriteMask.texture.frame = new PIXI.Rectangle(0, videoTexture2.height/2, videoTexture2.width, videoTexture2.height/2);
-
-        } else {
-            return;
-        }
+        videoSpriteMask.position.y = -(videoHeight/2);
 
 
         var w =  input.width;
@@ -13477,18 +13467,17 @@ function Video() {
             mainContainer.width =  w;
             ratio = w/videoWidth;
 
-            mainContainer.height = (videoHeight/4)*ratio;
+            mainContainer.height = (videoHeight)*ratio;
 
-
-            if(mainContainer.height < h/2) {
-                mainContainer.height = h/2;
-                ratio = (h/2)/(videoHeight/4);
+            if(mainContainer.height < h*2) {
+                mainContainer.height = h*2;
+                ratio = (h*2)/(videoHeight);
                 mainContainer.width = videoWidth*ratio;
             }
 
-
             mainContainer.position.x = w/2  - mainContainer.width/2;
-            mainContainer.position.y = h/2 -  mainContainer.height;
+            mainContainer.position.y = h/2 -  mainContainer.height/4;
+
 
         }
 
@@ -13524,7 +13513,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.076;
+    var version = 0.78;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
