@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.075;
+    var version = 0.076;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -126,7 +126,6 @@ var fps = require('fps');
             resolution:1,
             backgroundColor: conf.color
         }, false);
-
 
         // Create the layers
 
