@@ -919,14 +919,16 @@ var fps = require('fps');
 
             if(isTouchDevice()){
 
+                /*
                 if(input.frameRate < 20) {
 
-                    fpsPoor = true;
+                    fpsPoor = false;
                     SPF.log("fpsPoor", fpsPoor);
 
                     if(video != null)
                         video.stopMotion();
                 }
+                */
 
 
                 if(video != null){
