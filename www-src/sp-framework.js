@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.074;
+    var version = 0.075;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -112,10 +112,13 @@ var fps = require('fps');
 
         domContainer = conf.container || document.body;
 
-        resolution = Math.floor(window.devicePixelRatio);
+        resolution = window.devicePixelRatio;
 
-        if(resolution >1)
+        if(resolution >1) {
             resolution = 2;
+        } else {
+            resolution = 1;
+        }
 
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
@@ -274,7 +277,8 @@ var fps = require('fps');
 
             var vid = document.getElementById('BPSPVideo');
 
-            vid.play();
+            if(!isTouchDevice())
+                vid.play();
 
             var debug = Boolean(getURLVars()["isDebug"]);
 
@@ -459,8 +463,7 @@ var fps = require('fps');
 
     function videoReady(){
 
-
-        $("#BPSPVideo").css({ "display": "none"});
+        // $("#BPSPVideo").css({ "display": "none"});
 
         isVideoReady = true;
 
@@ -916,31 +919,38 @@ var fps = require('fps');
 
             if(isTouchDevice()){
 
-                if(input.frameRate < 18) {
+                if(input.frameRate < 20) {
+
                     fpsPoor = true;
                     SPF.log("fpsPoor", fpsPoor);
+
+                    if(video != null)
+                        video.stopMotion();
                 }
 
+
                 if(video != null){
+
                     if(fpsPoor){
-                        if(f%10 ==0){
-                            video.render(false, input);
-                        } else {
-                            video.render(true, input);
+
+                        f++
+
+                        if(f == 20){
+
+                            video.render(input);
+                            f=0;
                         }
+
                     } else {
-                        video.render(true, input);
+                        video.render(input);
                     };
                 };
 
-                f++;
-
-                if(f>= 60){
-                    f=0;
-                };
             } else {
+
                 if(video)
-                    video.render(true, input);
+                    video.render(input);
+
             }
 
 

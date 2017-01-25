@@ -13167,12 +13167,15 @@ function Video() {
     var videoMask;
 
     var videoSprite;
-    var videoTexture;
+    var videoTexture1;
+    var videoTexture2;
     var videoSource;
 
     var videoSpriteMask;
     var videoTextureMask;
     var videoSourceMask;
+
+    var ratio;
 
     var video;
 
@@ -13247,7 +13250,6 @@ function Video() {
 
 
 
-
         var selectedVideo = videos[0];
 
         for(var i=0;i<videos.length;i++){
@@ -13270,6 +13272,8 @@ function Video() {
 
         var videoPath = serverPath+"video/"+selectedVideo["file"];
 
+        videoWidth = selectedVideo["width"];
+        videoHeight = selectedVideo["height"];
 
         SPF.log("videoPath", videoPath);
 
@@ -13311,15 +13315,12 @@ function Video() {
 
         $(dom).append(video);
 
+        if(input.isTouchDevice && input.isTouchDevice[0] == "android"){
+                $("#BPSPVideo").css({"position": "absolute", "display": "block", "opacity":0, top: 0, left: 0, width: videoWidth, height:videoHeight});
 
-        if(input.isTouchDevice){
-            if(input.isTouchDevice[0] == "android"){
-                $("#BPSPVideo").css({"position": "absolute", "display": "block", top: 0, left: 0, width: "100%", height:"100%"});
-            }
         } else {
             $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
         }
-
 
         video = document.getElementById('BPSPVideo');
 
@@ -13365,12 +13366,13 @@ function Video() {
 
         videoSprite = new PIXI.Sprite();
         videoSprite.width = videoWidth;
-        videoSprite.height = videoHeight;
+        videoSprite.height = videoHeight/2;
+        videoSprite.y = 0;
 
         videoSpriteMask = new PIXI.Sprite();
         videoSpriteMask.width = videoWidth;
-        videoSpriteMask.height = videoHeight;
-        videoSprite.y = 0;
+        videoSpriteMask.height = videoHeight/2;
+        videoSpriteMask.y = 0;
 
         videoContainer = new PIXI.Container();
         videoContainer.addChild(videoSpriteMask);
@@ -13380,55 +13382,52 @@ function Video() {
     this.create = function(PIXI, dom, container, _renderer, resolution, input, callback){
 
 
-
-        videoRenderTexture = new PIXI.RenderTexture.create(videoWidth, videoHeight*input.resolution);
+        videoRenderTexture = new PIXI.RenderTexture.create(videoWidth, videoHeight);
         videoMask = new PIXI.Sprite(videoRenderTexture);
 
         video.setAttribute('webkit-playsinline', 'webkit-playsinline');
         video.setAttribute('playsinline', 'playsinline');
 
-        videoTexture = PIXI.Texture.fromVideo(video);
+        videoTexture1 = PIXI.Texture.fromVideo(video,PIXI.SCALE_MODES.NEAREST);
 
-        videoSource = videoTexture.baseTexture.source;
+        videoTexture2 = PIXI.Texture.fromVideo(video,PIXI.SCALE_MODES.NEAREST);
+
+        videoSource = videoTexture1.baseTexture.source;
         videoSource.crossOrigin = "anonymous";
         videoSource.loop = false;
 
-        videoSprite.texture = videoTexture;
-        videoSpriteMask.texture = videoTexture;
 
-       videoSprite.mask = videoMask;
+        videoSprite.texture = videoTexture1;
 
-        var resolution = 1; // input.resolution;
+        videoSpriteMask.texture = videoTexture2;
 
-        videoSprite.scale.set((1)/resolution);
-        videoSpriteMask.scale.set((1)/resolution);
+        videoSprite.mask = videoMask;
 
         mainContainer.addChild(videoSprite);
         mainContainer.addChild(videoMask);
+
         container.addChild(mainContainer);
 
         video.pause();
 
         if(callback != null){
-
             callback();
         }
+
     };
 
-    this.render = function(realTime, input) {
+    this.stopMotion = function(){
+        videoTexture1.baseTexture.autoUpdate = false;
+        videoTexture2.baseTexture.autoUpdate = false;
+    };
+
+    this.render = function(input) {
 
         if(videoRenderTexture){
-
-            if(realTime){
-                renderer.render(videoContainer, videoRenderTexture);
-            } else {
-                videoTexture.baseTexture.autoUpdate = true;
-                videoTexture.baseTexture.update();
-                videoTexture.baseTexture.autoUpdate = false;
-
-            }
+            videoTexture1.baseTexture.update();
+            videoTexture2.baseTexture.update();
+            renderer.render(videoContainer, videoRenderTexture);
         }
-
 
     };
 
@@ -13454,38 +13453,46 @@ function Video() {
 
     this.resize = function(input){
 
+        if(videoTexture1){
+
+            if(videoTexture1.width >1)
+                videoSprite.texture.frame = new PIXI.Rectangle(0, 0, videoWidth, videoHeight/2);
+
+
+
+            if(videoTexture2.width >1)
+                videoSpriteMask.texture.frame = new PIXI.Rectangle(0, videoHeight/2, videoWidth, videoHeight/2);
+
+
+        } else {
+            return;
+        }
+
         var w =  input.width;
         var h =  input.height;
 
-        var resolution = 1; // input.resolution;
-
         if(videoSpriteMask) {
 
-            if(input.resolution == 2 && input.isTouchDevice){
-                videoSpriteMask.y = -(videoHeight/4);
-            }else {
-                videoSpriteMask.y = -(videoHeight/2);
+
+            mainContainer.width =  w;
+            ratio = w/videoWidth;
+
+            mainContainer.height = (videoHeight/4)*ratio;
+
+
+            if(mainContainer.height < h/2) {
+                mainContainer.height = h/2;
+                ratio = (h/2)/(videoHeight/4);
+                mainContainer.width = videoWidth*ratio;
             }
 
-            mainContainer.width = ((w * ( h / w)) * (2));
-            mainContainer.height = (h * 2) * resolution;
 
-
-            if( mainContainer.width < w){
-
-                var ratio = w/h;
-
-                mainContainer.width = w;
-
-                mainContainer.height = (h*resolution)*ratio;
-
-            }
-
-            mainContainer.position.x = ((w) / 2) - (mainContainer.width / 2);
-
-            mainContainer.position.y = ((h*resolution) / 2)- (mainContainer.height / 4);
+            mainContainer.position.x = w/2  - mainContainer.width/2;
+            mainContainer.position.y = h/2 -  mainContainer.height;
 
         }
+
+
     };
 
 }
@@ -13517,7 +13524,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.074;
+    var version = 0.075;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13607,10 +13614,13 @@ var fps = require('fps');
 
         domContainer = conf.container || document.body;
 
-        resolution = Math.floor(window.devicePixelRatio);
+        resolution = window.devicePixelRatio;
 
-        if(resolution >1)
+        if(resolution >1) {
             resolution = 2;
+        } else {
+            resolution = 1;
+        }
 
         renderer = PIXI.autoDetectRenderer(conf.width, conf.height, {
             antialiasing: false,
@@ -13769,7 +13779,8 @@ var fps = require('fps');
 
             var vid = document.getElementById('BPSPVideo');
 
-            vid.play();
+            if(!isTouchDevice())
+                vid.play();
 
             var debug = Boolean(getURLVars()["isDebug"]);
 
@@ -13954,8 +13965,7 @@ var fps = require('fps');
 
     function videoReady(){
 
-
-        $("#BPSPVideo").css({ "display": "none"});
+        // $("#BPSPVideo").css({ "display": "none"});
 
         isVideoReady = true;
 
@@ -14411,31 +14421,38 @@ var fps = require('fps');
 
             if(isTouchDevice()){
 
-                if(input.frameRate < 18) {
+                if(input.frameRate < 20) {
+
                     fpsPoor = true;
                     SPF.log("fpsPoor", fpsPoor);
+
+                    if(video != null)
+                        video.stopMotion();
                 }
 
+
                 if(video != null){
+
                     if(fpsPoor){
-                        if(f%10 ==0){
-                            video.render(false, input);
-                        } else {
-                            video.render(true, input);
+
+                        f++
+
+                        if(f == 20){
+
+                            video.render(input);
+                            f=0;
                         }
+
                     } else {
-                        video.render(true, input);
+                        video.render(input);
                     };
                 };
 
-                f++;
-
-                if(f>= 60){
-                    f=0;
-                };
             } else {
+
                 if(video)
-                    video.render(true, input);
+                    video.render(input);
+
             }
 
 
