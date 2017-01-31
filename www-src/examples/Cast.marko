@@ -16,6 +16,8 @@
 
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
+        <link rel="stylesheet" type="text/css" href="https://cloud.typography.com/7214534/7144972/css/fonts.css" />
+
         <link rel="stylesheet" href="../main.css"/>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
@@ -61,7 +63,7 @@
 
             init: function(PIXI, input) {
 
-                text = new PIXI.Text('SCARLET PLEASURE', {fontFamily : 'Arial Black', fontSize: 100, fill :input.colors[14], align : 'center'});
+                text = new PIXI.Text('SCARLET PLEASURE', {fontStyle:"normal", letterSpacing:3, fontWeight:"700", fontSize: 100, fill :0xFFFFFF, align : 'center'});
                 text.anchor.set(0.5);
 
                 backgroundColor = input.colors[15];
@@ -72,35 +74,37 @@
 
                 text.position.set(input.width/2, input.height/2);
 
-                text.style.fontSize = input.width/22;
+                text.style.fontSize = input.width/12;
 
 
             },
 
             render: function(PIXI, input) {
 
+                text.style.fontFamily = 'Gotham XNarrow A, Gotham XNarrow B ';
+
                 if(input.cast != null){
 
                     if(input.cast.id == "singer"){
 
                         text.text = "EMIL GOLL";
-                        text.style.fill = input.colors[1];
-                        backgroundColor = input.colors[11];
+                        text.style.fill = 0xFFFFFF;
+                        backgroundColor = 0xFA8474;
 
                     } else if(input.cast.id == "bass"){
                         text.text = "ALEXANDER MALONE";
-                        text.style.fill = input.colors[9];
-                        backgroundColor = input.colors[8];
+                        text.style.fill = 0xFFFFFF;
+                        backgroundColor = 0xC9953B;
 
                     } else if(input.cast.id == "drums"){
                         text.text = "JOACHIM DENCKER";
-                        text.style.fill = input.colors[9];
-                        backgroundColor = input.colors[6];
+                        text.style.fill = 0xFFFFFF;
+                        backgroundColor = 0xABC5C6;
 
                     } else if(input.cast.id == "all"){
                         text.text = "SCARLET PLEASURE";
-                        text.style.fill =input.colors[14]
-                        backgroundColor = input.colors[15];
+                        text.style.fill = 0xFFFFFF;
+                        backgroundColor = 0x5F1432;
                     } else {
                         text.text = "";
                         text.style.fill = 0x000000;

@@ -6,7 +6,7 @@ var init = function(){
 
         { "id":"intro", "label":"Intro", "label-min":"I", percentage:"2.4", starts:"0", ends:"5120" },
 
-        { "id":"verse1", "label":"Verse I", "label-min":"V", percentage:"17.4", starts:"5120", ends:"40220" },
+        { "id":"verse1", "label":"Verse I", "label-min":"V", percentage:"17", starts:"5120", ends:"40220" },
 
         { "id":"preChorus1", "label":"Pre Chorus I", "label-min":"PC", percentage:"8.2", starts:"40220", ends:"57190" },
 
