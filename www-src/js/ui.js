@@ -157,8 +157,8 @@ function Ui() {
 
         $(dom).append('<link href="'+style+'" rel="stylesheet" type="text/css" />');
 
-        playHead =  $('#BPSPUI-navigation').find(".play-head");
-        playHeadTail = $('#BPSPUI-navigation').find(".play-head-tail");
+        playHead =  uiNavigation.find(".play-head");
+        playHeadTail = uiNavigation.find(".play-head-tail");
 
         this.update(dom, title, firstName, lastName, tip, number);
 
@@ -166,7 +166,7 @@ function Ui() {
 
 
     this.getVideoPlayButton = function(){
-        return $('#BPSPUI').find(".video-play-button");
+        return uiContainer.find(".video-play-button");
     };
 
 
@@ -178,34 +178,34 @@ function Ui() {
     this.resize = function(input){
 
         if(screenOrientation().direction != "landscape" && input.isTouchDevice ) {
-            $('#BPSPUI').find(".orientation").css("display", "block");
+            uiContainer.find(".orientation").css("display", "block");
             setTimeout(function(){
-                $('#BPSPUI').find(".orientation").find("svg").addClass("tilt-phone");
+                uiContainer.find(".orientation").find("svg").addClass("tilt-phone");
             },1000);
         } else {
 
-            $('#BPSPUI').find(".orientation").css("display", "none");
+            uiContainer.find(".orientation").css("display", "none");
             setTimeout(function(){
-                $('#BPSPUI').find(".orientation").find("svg").removeClass("tilt-phone");
+                uiContainer.find(".orientation").find("svg").removeClass("tilt-phone");
             },1000);
         };
 
         var w =  input.width;
         var h =  input.height;
 
-        var left =  parseInt($('#BPSPUI-navigation').find(".navigation").css("left"));
+        var left =  parseInt(uiNavigation.find(".navigation").css("left"));
 
-        $('#BPSPUI').find(".top-line-left").css("width",(w/2)-(left/2)-36);
-        $('#BPSPUI').find(".top-line-right").css("width",(w/2)-(left/2)-36-2);
+        uiContainer.find(".top-line-left").css("width",(w/2)-(left/2)-36);
+        uiContainer.find(".top-line-right").css("width",(w/2)-(left/2)-36-2);
 
         var playerWidth = (w-left-left+1).roundTo(2);
 
-        $('#BPSPUI-navigation').find(".navigation").css("width", playerWidth);
+        uiNavigation.find(".navigation").css("width", playerWidth);
 
-        $('#BPSPUI').find(".info").css("width", playerWidth);
+        uiContainer.find(".info").css("width", playerWidth);
 
         var i = 0;
-        $('#BPSPUI-navigation').find(".navigation").find(".text" ).each(function( index ) {
+        uiNavigation.find(".navigation").find(".text" ).each(function( index ) {
             var section = sections[i];
             $(this).html(section["label"]);
             if(w < 1280){

@@ -28,6 +28,8 @@ function Video() {
 
     var video;
 
+    var $video;
+
     var mainContainer;
 
     var renderer;
@@ -164,11 +166,13 @@ function Video() {
 
         $(dom).append(video);
 
+        $video = $("#BPSPVideo");
+
         if(input.isTouchDevice && input.isTouchDevice[0] == "android"){
-                $("#BPSPVideo").css({"position": "absolute", "display": "block", top: 0, left: -videoWidth, width: videoWidth, height:videoHeight});
+            $video.css({"position": "absolute", "display": "block", top: 0, left: -videoWidth, width: videoWidth, height:videoHeight});
 
         } else {
-            $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
+            $video.css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
         }
 
         video = document.getElementById('BPSPVideo');

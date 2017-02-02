@@ -22,7 +22,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.79;
+    var version = 0.81;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -57,6 +57,16 @@ var fps = require('fps');
     var isSite;
 
     var startId;
+
+    var endMethod;
+
+    var renderMethod;
+
+    var $video;
+
+    var $navigation;
+
+    var $debug;
 
     var conf = {
             width: window.innerWidth,
@@ -284,6 +294,8 @@ var fps = require('fps');
 
             var prevPercent;
 
+            $video = $("#BPSPVideo");
+
             input.loading = setInterval(function(){
 
                 // console.log("SPF.isTouchDevice(): "+SPF.isTouchDevice());
@@ -313,7 +325,7 @@ var fps = require('fps');
 
                         if (percent >= 50) {
                             clearInterval(input.loading);
-                            $("#BPSPVideo").remove();
+                            $video.remove();
                             loader.load();
                             videoLoaded = true;
                         }
@@ -326,7 +338,7 @@ var fps = require('fps');
 
                         clearInterval(input.loading);
 
-                        $("#BPSPVideo").remove();
+                        $video.remove();
                         loader.load();
                         videoLoaded = true;
 
@@ -341,10 +353,20 @@ var fps = require('fps');
 
     };
 
-    function startFrontend(view, cover){
+    function startFrontend(view, cover, render, end){
 
-        if(domContainer != null && renderer != null && renderer.view != null )
-            domContainer.removeChild(renderer.view);
+        endMethod = end;
+
+        renderMethod = render;
+
+        try {
+
+            if(domContainer != null && renderer != null && renderer.view != null )
+                domContainer.removeChild(renderer.view);
+
+        } catch(error){
+
+        };
 
         domCover = cover;
 
@@ -356,9 +378,8 @@ var fps = require('fps');
         }, false);
 
         isSite = true;
+
         startUI();
-
-
 
     };
 
@@ -415,12 +436,13 @@ var fps = require('fps');
 
         //
 
+        $navigation = $("#BPSPUI-navigation");
 
         for(var i=0; i<sections.length; i++){
 
             var s = sections[i];
 
-            var target = $("#BPSPUI-navigation").find(".section-"+i);
+            var target = $navigation.find(".section-"+i);
 
             target.data("starts",  s.starts);
 
@@ -675,11 +697,9 @@ var fps = require('fps');
             // console.log("editingTrack activeCues: ",this.activeCues.length);
 
             if(cue) {
+
                 var cueData = JSON.parse(cue.text);
                 input.editing = cueData;
-
-                if(isSite)
-                    $("body").attr("data-video-editing", ""+input.editing.id);
 
             } else {
                 input.editing = null;
@@ -877,6 +897,8 @@ var fps = require('fps');
             return;
         }
 
+        // console.log("SPF render!");
+
         if(ticker){
             ticker.tick();
         }
@@ -970,27 +992,33 @@ var fps = require('fps');
                 SPF.log("input.duration", input.duration);
                 SPF.log("input.percentagePlayed", input.percentagePlayed);
 
-
                 if(isSite){
 
-                    $("body").attr("data-video-duration", ""+input.currentTime);
-                    $("body").attr("data-video-time", ""+input.duration);
-                    $("body").attr("data-video-percentage", ""+input.percentagePlayed);
+                    /*
+                    OUT! Use SPF.getInput() instead!
 
-                    if(video.getPositionPercentage() == 100){
+                        $("body").attr("data-video-duration", ""+input.currentTime);
+                        $("body").attr("data-video-time", ""+input.duration);
+                        $("body").attr("data-video-percentage", ""+input.percentagePlayed);
+
+                    */
+
+                    if(video.getPositionPercentage() >= 99){
+
+                        endMethod();
                         $("body").attr("data-current-section", "none");
+
+                        siteActive = false;
+
                     }
 
+                    renderMethod();
+
                 };
-
             }
-
-
 
             if(audio){
                 if(video){
-
-
                     audio.currentTime = video.getVideoSource().currentTime;
                     audio.volume = video.getVideoSource().volume;
                 }
@@ -998,6 +1026,7 @@ var fps = require('fps');
             renderer.render(stage);
 
             requestAnimationFrame(animate);
+
         };
 
     };
@@ -1017,9 +1046,21 @@ var fps = require('fps');
             backConf = conf;
         }
 
-        vContainer.removeChildren(); // TODO: Check that they get destroyed
+        // console.log("BEFORE we remove children");
+        // console.log(vContainer.children);
 
-        input.container = vContainer; // TODO: Check that we cleanup the containers for render
+        vContainer.removeChildren(); // RE - DONE! they all get destroyed :) - TODO: Check that they get destroyed
+
+        // console.log("AFTER we remove children");
+        // console.log(vContainer.children);
+
+        // console.log("BEFORE new vContainer");
+        // console.log(vContainer);
+
+        input.container = vContainer; // // RE - DONE! containers have no events only children to make the cleanup easier to handle  - TODO: Check that we cleanup the containers for render
+
+        // console.log("AFTER new vContainer");
+        // console.log(vContainer);
 
         if (typeof conf.load == 'function') {
 
@@ -1047,7 +1088,6 @@ var fps = require('fps');
         if(!stage.interactive){
 
             stage.on('mousedown', function(){
-
                 // console.log('mouseDownTouchStart');
                 mouseDownTouchStart();
             });
@@ -1086,6 +1126,10 @@ var fps = require('fps');
 
     };
 
+    function getInput(){
+        return input;
+    }
+
     function info(conf){
 
         title = conf.title;
@@ -1102,9 +1146,12 @@ var fps = require('fps');
             conf.debug = debug;
         }
 
-        $("#SPFDebug").css("display","none");
+
+        $debug = $("#SPFDebug");
+
+        $debug.css("display","none");
         if(Boolean(conf.debug))
-            $("#SPFDebug").css("display","block");
+            $debug.css("display","block");
 
         /*
         if(isSite == true){
@@ -1403,6 +1450,7 @@ var fps = require('fps');
         mouseDownTouchStart:mouseDownTouchStart,
         midgroundMask:midgroundMask,
         fullscreenSprite:fullscreenSprite,
+        getInput:getInput,
         log: require("./js/DebugConsole.js")
     };
 

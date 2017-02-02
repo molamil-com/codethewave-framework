@@ -13067,8 +13067,8 @@ function Ui() {
 
         $(dom).append('<link href="'+style+'" rel="stylesheet" type="text/css" />');
 
-        playHead =  $('#BPSPUI-navigation').find(".play-head");
-        playHeadTail = $('#BPSPUI-navigation').find(".play-head-tail");
+        playHead =  uiNavigation.find(".play-head");
+        playHeadTail = uiNavigation.find(".play-head-tail");
 
         this.update(dom, title, firstName, lastName, tip, number);
 
@@ -13076,7 +13076,7 @@ function Ui() {
 
 
     this.getVideoPlayButton = function(){
-        return $('#BPSPUI').find(".video-play-button");
+        return uiContainer.find(".video-play-button");
     };
 
 
@@ -13088,34 +13088,34 @@ function Ui() {
     this.resize = function(input){
 
         if(screenOrientation().direction != "landscape" && input.isTouchDevice ) {
-            $('#BPSPUI').find(".orientation").css("display", "block");
+            uiContainer.find(".orientation").css("display", "block");
             setTimeout(function(){
-                $('#BPSPUI').find(".orientation").find("svg").addClass("tilt-phone");
+                uiContainer.find(".orientation").find("svg").addClass("tilt-phone");
             },1000);
         } else {
 
-            $('#BPSPUI').find(".orientation").css("display", "none");
+            uiContainer.find(".orientation").css("display", "none");
             setTimeout(function(){
-                $('#BPSPUI').find(".orientation").find("svg").removeClass("tilt-phone");
+                uiContainer.find(".orientation").find("svg").removeClass("tilt-phone");
             },1000);
         };
 
         var w =  input.width;
         var h =  input.height;
 
-        var left =  parseInt($('#BPSPUI-navigation').find(".navigation").css("left"));
+        var left =  parseInt(uiNavigation.find(".navigation").css("left"));
 
-        $('#BPSPUI').find(".top-line-left").css("width",(w/2)-(left/2)-36);
-        $('#BPSPUI').find(".top-line-right").css("width",(w/2)-(left/2)-36-2);
+        uiContainer.find(".top-line-left").css("width",(w/2)-(left/2)-36);
+        uiContainer.find(".top-line-right").css("width",(w/2)-(left/2)-36-2);
 
         var playerWidth = (w-left-left+1).roundTo(2);
 
-        $('#BPSPUI-navigation').find(".navigation").css("width", playerWidth);
+        uiNavigation.find(".navigation").css("width", playerWidth);
 
-        $('#BPSPUI').find(".info").css("width", playerWidth);
+        uiContainer.find(".info").css("width", playerWidth);
 
         var i = 0;
-        $('#BPSPUI-navigation').find(".navigation").find(".text" ).each(function( index ) {
+        uiNavigation.find(".navigation").find(".text" ).each(function( index ) {
             var section = sections[i];
             $(this).html(section["label"]);
             if(w < 1280){
@@ -13179,6 +13179,8 @@ function Video() {
     var ratio;
 
     var video;
+
+    var $video;
 
     var mainContainer;
 
@@ -13316,11 +13318,13 @@ function Video() {
 
         $(dom).append(video);
 
+        $video = $("#BPSPVideo");
+
         if(input.isTouchDevice && input.isTouchDevice[0] == "android"){
-                $("#BPSPVideo").css({"position": "absolute", "display": "block", top: 0, left: -videoWidth, width: videoWidth, height:videoHeight});
+            $video.css({"position": "absolute", "display": "block", top: 0, left: -videoWidth, width: videoWidth, height:videoHeight});
 
         } else {
-            $("#BPSPVideo").css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
+            $video.css({"position": "absolute", "display": "none", top: 0, left: 0, width: "100%", height:"100%"});
         }
 
         video = document.getElementById('BPSPVideo');
@@ -13513,7 +13517,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.79;
+    var version = 0.81;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
@@ -13548,6 +13552,16 @@ var fps = require('fps');
     var isSite;
 
     var startId;
+
+    var endMethod;
+
+    var renderMethod;
+
+    var $video;
+
+    var $navigation;
+
+    var $debug;
 
     var conf = {
             width: window.innerWidth,
@@ -13775,6 +13789,8 @@ var fps = require('fps');
 
             var prevPercent;
 
+            $video = $("#BPSPVideo");
+
             input.loading = setInterval(function(){
 
                 // console.log("SPF.isTouchDevice(): "+SPF.isTouchDevice());
@@ -13804,7 +13820,7 @@ var fps = require('fps');
 
                         if (percent >= 50) {
                             clearInterval(input.loading);
-                            $("#BPSPVideo").remove();
+                            $video.remove();
                             loader.load();
                             videoLoaded = true;
                         }
@@ -13817,7 +13833,7 @@ var fps = require('fps');
 
                         clearInterval(input.loading);
 
-                        $("#BPSPVideo").remove();
+                        $video.remove();
                         loader.load();
                         videoLoaded = true;
 
@@ -13832,10 +13848,20 @@ var fps = require('fps');
 
     };
 
-    function startFrontend(view, cover){
+    function startFrontend(view, cover, render, end){
 
-        if(domContainer != null && renderer != null && renderer.view != null )
-            domContainer.removeChild(renderer.view);
+        endMethod = end;
+
+        renderMethod = render;
+
+        try {
+
+            if(domContainer != null && renderer != null && renderer.view != null )
+                domContainer.removeChild(renderer.view);
+
+        } catch(error){
+
+        };
 
         domCover = cover;
 
@@ -13847,9 +13873,8 @@ var fps = require('fps');
         }, false);
 
         isSite = true;
+
         startUI();
-
-
 
     };
 
@@ -13906,12 +13931,13 @@ var fps = require('fps');
 
         //
 
+        $navigation = $("#BPSPUI-navigation");
 
         for(var i=0; i<sections.length; i++){
 
             var s = sections[i];
 
-            var target = $("#BPSPUI-navigation").find(".section-"+i);
+            var target = $navigation.find(".section-"+i);
 
             target.data("starts",  s.starts);
 
@@ -14166,11 +14192,9 @@ var fps = require('fps');
             // console.log("editingTrack activeCues: ",this.activeCues.length);
 
             if(cue) {
+
                 var cueData = JSON.parse(cue.text);
                 input.editing = cueData;
-
-                if(isSite)
-                    $("body").attr("data-video-editing", ""+input.editing.id);
 
             } else {
                 input.editing = null;
@@ -14368,6 +14392,8 @@ var fps = require('fps');
             return;
         }
 
+        // console.log("SPF render!");
+
         if(ticker){
             ticker.tick();
         }
@@ -14461,27 +14487,33 @@ var fps = require('fps');
                 SPF.log("input.duration", input.duration);
                 SPF.log("input.percentagePlayed", input.percentagePlayed);
 
-
                 if(isSite){
 
-                    $("body").attr("data-video-duration", ""+input.currentTime);
-                    $("body").attr("data-video-time", ""+input.duration);
-                    $("body").attr("data-video-percentage", ""+input.percentagePlayed);
+                    /*
+                    OUT! Use SPF.getInput() instead!
 
-                    if(video.getPositionPercentage() == 100){
+                        $("body").attr("data-video-duration", ""+input.currentTime);
+                        $("body").attr("data-video-time", ""+input.duration);
+                        $("body").attr("data-video-percentage", ""+input.percentagePlayed);
+
+                    */
+
+                    if(video.getPositionPercentage() >= 99){
+
+                        endMethod();
                         $("body").attr("data-current-section", "none");
+
+                        siteActive = false;
+
                     }
 
+                    renderMethod();
+
                 };
-
             }
-
-
 
             if(audio){
                 if(video){
-
-
                     audio.currentTime = video.getVideoSource().currentTime;
                     audio.volume = video.getVideoSource().volume;
                 }
@@ -14489,6 +14521,7 @@ var fps = require('fps');
             renderer.render(stage);
 
             requestAnimationFrame(animate);
+
         };
 
     };
@@ -14508,9 +14541,21 @@ var fps = require('fps');
             backConf = conf;
         }
 
-        vContainer.removeChildren(); // TODO: Check that they get destroyed
+        // console.log("BEFORE we remove children");
+        // console.log(vContainer.children);
 
-        input.container = vContainer; // TODO: Check that we cleanup the containers for render
+        vContainer.removeChildren(); // RE - DONE! they all get destroyed :) - TODO: Check that they get destroyed
+
+        // console.log("AFTER we remove children");
+        // console.log(vContainer.children);
+
+        // console.log("BEFORE new vContainer");
+        // console.log(vContainer);
+
+        input.container = vContainer; // // RE - DONE! containers have no events only children to make the cleanup easier to handle  - TODO: Check that we cleanup the containers for render
+
+        // console.log("AFTER new vContainer");
+        // console.log(vContainer);
 
         if (typeof conf.load == 'function') {
 
@@ -14538,7 +14583,6 @@ var fps = require('fps');
         if(!stage.interactive){
 
             stage.on('mousedown', function(){
-
                 // console.log('mouseDownTouchStart');
                 mouseDownTouchStart();
             });
@@ -14577,6 +14621,10 @@ var fps = require('fps');
 
     };
 
+    function getInput(){
+        return input;
+    }
+
     function info(conf){
 
         title = conf.title;
@@ -14593,9 +14641,12 @@ var fps = require('fps');
             conf.debug = debug;
         }
 
-        $("#SPFDebug").css("display","none");
+
+        $debug = $("#SPFDebug");
+
+        $debug.css("display","none");
         if(Boolean(conf.debug))
-            $("#SPFDebug").css("display","block");
+            $debug.css("display","block");
 
         /*
         if(isSite == true){
@@ -14894,6 +14945,7 @@ var fps = require('fps');
         mouseDownTouchStart:mouseDownTouchStart,
         midgroundMask:midgroundMask,
         fullscreenSprite:fullscreenSprite,
+        getInput:getInput,
         log: require("./js/DebugConsole.js")
     };
 
