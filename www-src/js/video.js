@@ -54,8 +54,8 @@ function Video() {
 
 
         if(document.location.hostname == "codethewave.com" ){
-            // serverPath = "http://codethewave.com/";
-            serverPath = "./";
+            serverPath = "http://codethewave.com/";
+            // serverPath = "./";
         }
 
         if(String(document.location.pathname).indexOf("examples") >=1){

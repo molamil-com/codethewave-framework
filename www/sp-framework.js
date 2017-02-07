@@ -13206,8 +13206,8 @@ function Video() {
 
 
         if(document.location.hostname == "codethewave.com" ){
-            // serverPath = "http://codethewave.com/";
-            serverPath = "./";
+            serverPath = "http://codethewave.com/";
+            // serverPath = "./";
         }
 
         if(String(document.location.pathname).indexOf("examples") >=1){
@@ -13517,7 +13517,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.81;
+    var version = 0.82;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
