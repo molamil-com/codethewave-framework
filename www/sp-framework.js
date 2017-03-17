@@ -13238,8 +13238,8 @@ function Video() {
             videos = [
                 {file:"final-chroma02-w480-h270.mp4", width:480, height:540},
                 {file:"final-chroma02-w960-h540.mp4", width:960, height:1080},
-                {file:"final-chroma02-w1280-h720.mp4", width:1280, height:1440},
-                {file:"final-chroma02-w1920-h1080.mp4", width:1920, height:2160}
+                {file:"final-chroma02-w1280-h720.mp4", width:1280, height:1440}
+                /* {file:"final-chroma02-w1920-h1080.mp4", width:1920, height:2160} */
             ];
 
         }
@@ -13517,7 +13517,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.82;
+    var version = 0.83;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 
