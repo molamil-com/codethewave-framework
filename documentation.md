@@ -2,7 +2,7 @@
 
 SPFramework is a small framework to help digital artists to collaborate in the creation of an unique interactive video reactive experience for Scarlet Pleasure with the supoort of B&O Play.
 
-Library is located at http://scarletpleasure.molamil.com/sp-framework.js
+Library is located at https://scarletpleasure.molamil.com/sp-framework.js
 
 
 ## Table of Contents

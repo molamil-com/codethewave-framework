@@ -2,7 +2,7 @@
 
 Scarlet Pleasure Framework
 
-    Library: http://scarletpleasure.molamil.com/sp-framework.js
+    Library: https://scarletpleasure.molamil.com/sp-framework.js
 
 
     Description:
