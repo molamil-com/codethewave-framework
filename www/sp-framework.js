@@ -12896,7 +12896,7 @@ module.exports = {
 
 module.exports = {
 
-    serverPath: "http://scarletpleasure.molamil.com/"
+    serverPath: "https://scarletpleasure.molamil.com/"
 
     // serverPath: "../"
 
@@ -13517,7 +13517,7 @@ var fps = require('fps');
 
     // -- VARIABLES
 
-    var version = 0.83;
+    var version = 0.9;
 
     var serverPath = require("./js/serverPath.js").serverPath;
 

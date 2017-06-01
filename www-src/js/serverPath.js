@@ -1,7 +1,7 @@
 
 module.exports = {
 
-    serverPath: "http://scarletpleasure.molamil.com/"
+    serverPath: "https://scarletpleasure.molamil.com/"
 
     // serverPath: "../"
 
